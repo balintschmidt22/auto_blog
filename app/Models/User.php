@@ -44,6 +44,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function likedImages()
+    {
+        return $this->belongsToMany(Image::class)->withTimestamps();
+    }
+
+    public function ownImages()
+    {
+        return $this->hasMany(Image::class, 'user_id');
+    }
+
     public function isAdmin()
     {
         return $this->is_admin === 1;
