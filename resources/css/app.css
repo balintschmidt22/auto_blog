@@ -1,5 +1,28 @@
+/* body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    max-height: 10px;
+} */
+
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 80px;
+    width: 100%;
+}
+
 .topbar {
     margin-left: 20px;
+    margin-top: 15px;
+}
+
+#homebtn {
+    margin-right: 50px;
 }
 
 td {

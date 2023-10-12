@@ -20,19 +20,16 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                @if (!Request::is("/"))
-                <a href="/" class="topbar">Back to home page</a>
-                {{-- <a href="{{route('matches.index', ['page'=>'1'])}}" class="topbar">Matches</a>
-                <a href="{{route('teams.index')}}" class="topbar">Teams</a>
-                <a href="{{route('table.index')}}" class="topbar">Table</a>
-                <a href="{{route('favourites.index')}}" class="topbar">Favourites</a> --}}
-                <a href="" class="topbar">Upload</a>
-                <a href="" class="topbar">Photos</a>
-                <a href="" class="topbar">Users</a>
-                <a href="" class="topbar">Brands</a>
+            @if (!Request::is("/"))
+                <a href="/" class="topbar" id="homebtn"><button class="btn btn-primary mb-3">Back to home page</button></a>
+
+                <a href="" class="topbar"><button class="btn btn-primary mb-3">Upload <x-feathericon-upload /></button></a>
+                <a href="" class="topbar"><button class="btn btn-primary mb-3">Photos</button></a>
+                <a href="" class="topbar"><button class="btn btn-primary mb-3">Users</button></a>
+                <a href="{{route('brands.index')}}" class="topbar"><button class="btn btn-primary mb-3">Brands</button></a>
             @else
                 @auth
-                    <p>Hi {{Auth::user()->username}}!</p>
+                    <p class="topbar">Hi {{Auth::user()->username}}!</p>
                 @else
                     <p><small>(You need to login for some functions!)</small></p>
                 @endauth
@@ -91,9 +88,30 @@
         </main>
 
         <footer class="mb-4">
+            <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
             <div class="container">
                 <hr>
                 <div class="d-flex flex-column align-items-center">
+                    <div>
+                        <a href="" class="me-4 link-secondary">
+                            <i class="fab fa-facebook-f"></i>
+                          </a>
+                          <a href="" class="me-4 link-secondary">
+                            <i class="fab fa-twitter"></i>
+                          </a>
+                          <a href="" class="me-4 link-secondary">
+                            <i class="fab fa-google"></i>
+                          </a>
+                          <a href="" class="me-4 link-secondary">
+                            <i class="fab fa-instagram"></i>
+                          </a>
+                          <a href="" class="me-4 link-secondary">
+                            <i class="fab fa-linkedin"></i>
+                          </a>
+                          <a href="" class="me-4 link-secondary">
+                            <i class="fab fa-github"></i>
+                          </a>
+                    </div>
                     <div>
                         <span class="small">AutoBlog</span>
                         <span class="mx-1">·</span>
@@ -107,6 +125,7 @@
                     </div>
                 </div>
             </div>
+            </section>
         </footer>
 
         @yield('scripts')
