@@ -24,8 +24,8 @@
                 <a href="/" class="topbar" id="homebtn"><button class="btn btn-primary mb-3">Back to home page</button></a>
 
                 <a href="" class="topbar"><button class="btn btn-primary mb-3">Upload <x-feathericon-upload /></button></a>
-                <a href="" class="topbar"><button class="btn btn-primary mb-3">Photos</button></a>
-                <a href="" class="topbar"><button class="btn btn-primary mb-3">Users</button></a>
+                <a href="{{route('gallery.index')}}" class="topbar"><button class="btn btn-primary mb-3">Gallery</button></a>
+                <a href="{{route('users.index')}}" class="topbar"><button class="btn btn-primary mb-3">Users</button></a>
                 <a href="{{route('brands.index')}}" class="topbar"><button class="btn btn-primary mb-3">Brands</button></a>
             @else
                 @auth

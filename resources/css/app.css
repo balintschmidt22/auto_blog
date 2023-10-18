@@ -1,15 +1,5 @@
-/* body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
 footer {
-    max-height: 10px;
-} */
-
-footer {
-    position: absolute;
+    position: relative;
     left: 0;
     bottom: 0;
     height: 80px;
@@ -40,25 +30,9 @@ th {
 }
 
 .pagination {
-    display: inline-block;
-    margin-top: 30px;
-}
-
-.pagination a {
-    color: black;
-    float: left;
-    padding: 8px 16px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-    border: 1px solid #ddd;
-}
-
-.pagination a.active {
-    background-color: #4caf50;
-    color: white;
-    border: 1px solid #4caf50;
+    margin-left: 20px;
 }
 
 .pagination a:hover:not(.active) {
-    background-color: #ddd;
+    background-color: #83b5ff;
 }

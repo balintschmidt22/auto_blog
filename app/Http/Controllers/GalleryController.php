@@ -2,16 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use Illuminate\Http\Request;
 
-class ImageController extends Controller
+class GalleryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return view('gallery.index', [
+            // $images = Image::all()->toArray(),
+            // usort($images, function ($a, $b) {
+            //     return $a['created_at'] >= $b['created_at'];
+            // }),
+            'images' => Image::with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+            'image_count' => count(Image::all()->toArray()),
+        ]);
     }
 
     /**

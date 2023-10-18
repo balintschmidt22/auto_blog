@@ -30,16 +30,16 @@ class DatabaseSeeder extends Seeder
                 'remember_token' => Str::random(10),
             ]);
         }
-        $user_count = rand(5, 9);
+        $user_count = rand(14, 20);
         $users = User::factory($user_count)->create();
 
-        $brand_count = rand(8, 12);
+        $brand_count = rand(15, 25);
         $brands = Brand::factory($brand_count)->create();
 
-        $type_count = $brand_count * rand(3, 6);
+        $type_count = $brand_count * rand(4, 11);
         $types = Type::factory($type_count)->create();
 
-        $image_count = $user_count * rand(8, 15);
+        $image_count = $user_count * rand(6, 20);
         $images = Image::factory($image_count)->create();
 
         $types->each(function ($type) use (&$brands) {

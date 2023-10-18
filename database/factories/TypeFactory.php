@@ -16,8 +16,11 @@ class TypeFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = (new \Faker\Factory())::create();
+        $this->faker->addProvider(new \Faker\Provider\Fakecar($this->faker));
+
         return [
-            'type' => fake()->unique->word(),
+            'type' => $this->faker->unique()->vehicleModel(),
         ];
     }
 }

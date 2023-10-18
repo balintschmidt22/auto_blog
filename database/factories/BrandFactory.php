@@ -16,8 +16,11 @@ class BrandFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = (new \Faker\Factory())::create();
+        $this->faker->addProvider(new \Faker\Provider\Fakecar($this->faker));
+
         return [
-            'name' => fake()->unique->company(),
+            'name' => $this->faker->unique()->vehicleBrand(),
             'country' => fake()->country(),
         ];
     }

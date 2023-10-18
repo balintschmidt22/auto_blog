@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\FavouriteImageController;
-use App\Http\Controllers\ImageController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,7 +26,7 @@ Route::middleware('can:admin')->group(function () {
 
 });
 
-Route::resource('images', ImageController::class);
+Route::resource('gallery', GalleryController::class);
 Route::resource('brands', BrandController::class);
 Route::resource('types', TypeController::class);
 Route::resource('users', UserController::class);
