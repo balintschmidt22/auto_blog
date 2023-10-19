@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Image;
+use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class GalleryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("auth")->only(['create', 'store']);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -27,7 +37,10 @@ class GalleryController extends Controller
      */
     public function create()
     {
-        //
+        return view('gallery.create', [
+            'brands' => Brand::all(),
+            'types' => Type::all(),
+        ]);
     }
 
     /**
@@ -35,7 +48,36 @@ class GalleryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate(
+            [
+                'image' => ['required', 'file', 'image', 'max: 4096'],
+                'location' => ['required', 'string'],
+                'brand' => ['required', 'string'],
+                'type' => ['required', 'integer']
+            ]
+        );
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            $img = $file->store('images', ['disk' => 'public']);
+        }
+
+        $image = new Image;
+        $image->image = $img;
+        $image->location = $data['location'];
+        $image->type()->associate(
+            $data['type']
+        );
+        $image->user()->associate(
+            Auth::user()->id
+        );
+
+        $image->save();
+
+        Session::flash('image_uploaded', $image);
+
+        return Redirect::route('gallery.create');
     }
 
     /**

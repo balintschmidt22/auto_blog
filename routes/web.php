@@ -27,6 +27,9 @@ Route::middleware('can:admin')->group(function () {
 });
 
 Route::resource('gallery', GalleryController::class);
+Route::get('gallery/create', [GalleryController::class, 'create'])->middleware('auth')->name('gallery.create');
+
+
 Route::resource('brands', BrandController::class);
 Route::resource('types', TypeController::class);
 Route::resource('users', UserController::class);
