@@ -18,22 +18,9 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm">
             <div class="container">
-            @if (!Request::is("/"))
-                <a href="/" class="topbar" id="homebtn"><button class="btn btn-primary mb-3">Back to home page</button></a>
 
-                <a href="{{route('gallery.create')}}" class="topbar"><button class="btn btn-primary mb-3">Upload <x-feathericon-upload /></button></a>
-                <a href="{{route('gallery.index')}}" class="topbar"><button class="btn btn-primary mb-3">Gallery</button></a>
-                <a href="{{route('users.index')}}" class="topbar"><button class="btn btn-primary mb-3">Users</button></a>
-                <a href="{{route('brands.index')}}" class="topbar"><button class="btn btn-primary mb-3">Brands</button></a>
-            @else
-                @auth
-                    <p class="topbar">Hi {{Auth::user()->username}}!</p>
-                @else
-                    <p><small>(You need to login for some functions!)</small></p>
-                @endauth
-            @endif
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -41,27 +28,39 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
+                        <a href="/" class="topbar" id="homebtn"><button class="btn btn-primary mb-3"><i class="fa-solid fa-house fa-lg" style="color: #ffffff;"></i></button></a>
 
+                        <a href="{{route('gallery.create')}}" class="topbar"><button class="btn btn-primary mb-3">Upload <i class="fa-solid fa-upload fa-lg" style="color: #ffffff;"></i></i></button></a>
+                        <a href="{{route('gallery.index')}}" class="topbar"><button class="btn btn-primary mb-3">Gallery <i class="fa-regular fa-images fa-lg" style="color: #ffffff;"></i></button></a>
+                        <a href="{{route('users.index')}}" class="topbar"><button class="btn btn-primary mb-3">Users <i class="fa-solid fa-users fa-lg" style="color: #ffffff;"></i></button></a>
+                        <a href="{{route('brands.index')}}" class="topbar"><button class="btn btn-primary mb-3">Brands <i class="fa-solid fa-car fa-lg" style="color: #ffffff;"></i></button></a>
+                        @auth
+                            <a href="{{route('favourites.index')}}" class="topbar"><button class="btn btn-primary mb-3">Favourites <i class="fa-solid fa-heart fa-lg" style="color: #ffffff;"></i></button></a>
+                        @endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
+                        @auth
+                            <a href="{{route('favourites.index')}}" class="btn"><i class="fa-regular fa-circle-user fa-2xl" style="color: #ffffff;"></i></a>
+                        @endauth
+
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    <a class="nav-link text-white" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link text-white" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->username }}
                                 </a>
 
@@ -88,29 +87,29 @@
         </main>
 
         <footer class="mb-4">
-            <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+            <section class="d-flex justify-content-center justify-content-lg-between p-3 border-bottom">
             <div class="container">
                 <hr>
                 <div class="d-flex flex-column align-items-center">
                     <div>
-                        <a href="" class="me-4 link-secondary">
-                            <i class="fab fa-facebook-f"></i>
-                          </a>
-                          <a href="" class="me-4 link-secondary">
+                        <a class="me-4 link-secondary">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
+                        <a class="me-4 link-secondary">
                             <i class="fab fa-twitter"></i>
-                          </a>
-                          <a href="" class="me-4 link-secondary">
+                        </a>
+                        <a class="me-4 link-secondary">
                             <i class="fab fa-google"></i>
-                          </a>
-                          <a href="" class="me-4 link-secondary">
+                        </a>
+                        <a class="me-4 link-secondary">
                             <i class="fab fa-instagram"></i>
-                          </a>
-                          <a href="" class="me-4 link-secondary">
+                        </a>
+                        <a class="me-4 link-secondary">
                             <i class="fab fa-linkedin"></i>
-                          </a>
-                          <a href="" class="me-4 link-secondary">
+                        </a>
+                        <a class="me-4 link-secondary">
                             <i class="fab fa-github"></i>
-                          </a>
+                        </a>
                     </div>
                     <div>
                         <span class="small">AutoBlog</span>

@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Photos')
+@section('title', 'Favourites')
 
 @section('content')
 <div class="container">
     <div class="row">
-        <h1>Gallery</h1>
+        <h1>Favourite Images</h1>
     </div>
     @auth
 
