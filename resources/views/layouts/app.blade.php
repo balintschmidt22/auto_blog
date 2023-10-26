@@ -42,7 +42,7 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         @auth
-                            <a href="{{route('favourites.index')}}" class="btn"><i class="fa-regular fa-circle-user fa-2xl" style="color: #ffffff;"></i></a>
+                            <a href="{{route('users.show', ['user' => Auth::user()->id])}}" class="btn"><i class="fa-regular fa-circle-user fa-2xl" style="color: #ffffff;"></i></a>
                         @endauth
 
                         <!-- Authentication Links -->

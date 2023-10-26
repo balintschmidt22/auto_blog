@@ -36,7 +36,7 @@
                 {{-- TODO: Read images from DB --}}
 
                 @forelse ($images as $image)
-                    <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%">
+                    <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
                         <div class="card ratio-4x3 w-100">
                             @if(str_starts_with($image['image'],"https"))
                                 <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['name']}} image">
@@ -94,7 +94,7 @@
                 @endforelse
             </div>
 
-            <div class="d-flex flex-row justify-content-center">
+            <div class="d-flex flex-row justify-content-center mt-3">
                 {{-- TODO: Pagination --}}
                 {{ $images->links() }}
             </div>

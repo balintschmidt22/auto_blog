@@ -3,8 +3,7 @@
 
 @section('content')
     <div class="container">
-        <a href="{{route('gallery.index')}}">Back to gallery</a>
-        <h1>Upload a photo</h1>
+        <h1 class="mb-4">Upload a photo</h1>
 
         @if(Session::has('image_uploaded'))
             <div class="alert alert-success" role="alert">
@@ -19,7 +18,7 @@
             {{-- TODO: Validation --}}
 
             <div class="form-group row mb-3">
-                <label for="image" class="col-sm-2 col-form-label">Image*</label>
+                <label for="image" class="col-sm-2 col-form-label"><b>Image</b></label>
                 <div class="col-sm-10">
                     <div class="form-group">
                         <div class="row">
@@ -40,8 +39,8 @@
             </div>
 
             <div class="form-group row mb-3">
-                <label for="location" class="col-sm-2 col-form-label">Location*</label>
-                <div class="col-sm-10">
+                <label for="location" class="col-sm-2 col-form-label"><b>Location</b></label>
+                <div class="col-sm-8">
                     <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location') }}">
                     @error('location')
                         <div class="invalid-feedback">
@@ -52,8 +51,8 @@
             </div>
 
             <div class="form-group row mb-3">
-                <label for="brand" class="col-sm-2 col-form-label">Brand*</label>
-                <div class="col-sm-10">
+                <label for="brand" class="col-sm-2 col-form-label"><b>Brand</b></label>
+                <div class="col-sm-8">
                     <select name="brand" id="brand" class="form-control @error('brand') is-invalid @enderror">
                         <option value="{{ old('brand') }}">{{old('brand')}}</option>
                         @forelse($brands as $brand)
@@ -75,8 +74,8 @@
             </div>
 
             <div class="form-group row mb-3">
-                <label for="type" class="col-sm-2 col-form-label">Types*</label>
-                <div class="col-sm-10">
+                <label for="type" class="col-sm-2 col-form-label"><b>Types</b></label>
+                <div class="col-sm-8">
                     <select name="type" id="type" class="form-control @error('type') is-invalid @enderror">
                         <option value="{{ old('type') }}">{{old('type')}}</option>
                         @forelse($types as $type)

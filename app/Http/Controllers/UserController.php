@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -42,7 +43,13 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('users.show', [
+            $user = User::find($id),
+            'user' => $user,
+            $imgs = $user->ownImages(),
+            'image_count' => count($imgs->get()->toArray()),
+            'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+        ]);
     }
 
     /**
