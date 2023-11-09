@@ -21,12 +21,12 @@ jobs:
  
       - name: Run npm install
         run: npm install
-             npm run build
  
       - name: Prepare Laravel Application
         run: |
           cp .env.example .env
           php artisan key:generate
+          npm run build
  
       - name: Run tests
         run: php artisan test
