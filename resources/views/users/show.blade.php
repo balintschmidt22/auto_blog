@@ -55,9 +55,7 @@
                                         <span class="me-2">
                                             <i class="fas fa-user"></i>
                                             {{-- TODO: User --}}
-                                            <span>{{
-                                                $image->user ? $image->user->username : 'Unknown'
-                                            }}</span>
+                                            <span><a href="{{route('users.show', ['user'=>$image->user['id']])}}" class="text-decoration-none link-primary">{{$image->user->username}}</a></span>
                                         </span>
 
                                         <span class="me-2">
