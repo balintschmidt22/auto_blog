@@ -1,0 +1,108 @@
+@extends('layouts.app')
+@section('title', 'Profile: ' . $user->username)
+
+@section('content')
+    <div class="container">
+        <div class="row">
+            <h1 class="mb-3">Profile of {{$user->username}}</h1>
+        </div>
+        <div>
+            <h6 class="mb-2">Country: {{$user->country}}</h6>
+            <h6 class="mb-2">Email: {{$user->email}}</h6>
+            <h6 class="mb-2">Joined: {{$user->created_at}}</h6>
+            <h6 class="mb-2">Photos: {{$image_count}}</h6>
+        </div>
+        @auth
+            @if(Session::has('fav_added'))
+            <div class="alert alert-success" role="alert">
+                You liked:
+                {{App\Models\Brand::find( Session::get('fav_added')->type['brand_id'])['name']}}
+                {{Session::get('fav_added')->type['type']}} by {{Session::get('fav_added')->user['username']}}
+            </div>
+            @endif
+
+            @if(Session::has('fav_removed'))
+            <div class="alert alert-success" role="alert">
+                You disliked:
+                {{App\Models\Brand::find( Session::get('fav_removed')->type['brand_id'])['name']}}
+                {{Session::get('fav_removed')->type['type']}} by {{Session::get('fav_removed')->user['username']}}
+            </div>
+            @endif
+        @endauth
+
+        <div class="d-flex flex-row justify-content-center">
+            {{-- TODO: Pagination --}}
+            {{ $images->links() }}
+        </div>
+
+        <div class="row mt-3">
+            <div>
+                <div class="row">
+                    {{-- TODO: Read images from DB --}}
+
+                    @forelse ($images as $image)
+                        <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
+                            <div class="card ratio-4x3 w-100">
+                                @if(str_starts_with($image['image'],"https"))
+                                    <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['name']}} image">
+                                @else
+                                    <img class="card-img-top" src="{{URL::asset('storage/'.$image['image'])}}" alt="{{$image['user']['username']}} - {{$image['type']['name']}} image">
+                                @endif
+                                <div class="card-body">
+                                    {{-- TODO: Brand - Type --}}
+                                    <h5 class="card-title mb-0">{{App\Models\Brand::find( $image->type['brand_id'])['name']}} {{ $image->type['type'] }}</h5>
+                                    <p class="small mb-0">
+                                        <span class="me-2">
+                                            <i class="fas fa-user"></i>
+                                            {{-- TODO: User --}}
+                                            <span><a href="{{route('users.show', ['user'=>$image->user['id']])}}" class="text-decoration-none link-primary">{{$image->user->username}}</a></span>
+                                        </span>
+
+                                        <span class="me-2">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                            <span>
+                                                {{$image->location}}
+                                            </span>
+                                        </span>
+                                        <br>
+                                        <span>
+                                            <i class="far fa-calendar-alt"></i>
+                                            {{-- TODO: Date --}}
+                                            <span>{{ $image->created_at }}</span>
+                                        </span>
+                                    </p>
+
+                                </div>
+                                <div class="card-footer">
+                                    {{-- TODO: Link --}}
+                                    @auth
+                                        @if(in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
+                                            <td><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-solid fa-heart fa-xl" style="color: #ff0000;"></i></a></td>
+                                        @else
+                                            <td><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i></a></td>
+                                        @endif
+                                    @endauth
+                                    <a href="{{route('gallery.show', $image)}}" class="btn btn-primary">
+                                        <span>View image</span> <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12">
+                            <div class="alert alert-warning" role="alert">
+                                No images found!
+                            </div>
+                        </div>
+                    @endforelse
+                </div>
+
+                <div class="d-flex flex-row justify-content-center mt-3">
+                    {{-- TODO: Pagination --}}
+                    {{ $images->links() }}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @endsection

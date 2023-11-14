@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Brand;
+use App\Models\Image;
+use App\Models\Type;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+
+class GalleryController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware("auth")->only(['create', 'store']);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return view('gallery.index', [
+            // $images = Image::all()->toArray(),
+            // usort($images, function ($a, $b) {
+            //     return $a['created_at'] >= $b['created_at'];
+            // }),
+            'images' => Image::with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+            'image_count' => count(Image::all()->toArray()),
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('gallery.create', [
+            'brands' => Brand::all(),
+            'types' => Type::all(),
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $data = $request->validate(
+            [
+                'image' => ['required', 'file', 'image', 'max: 4096'],
+                'location' => ['required', 'string'],
+                'brand' => ['required', 'string'],
+                'type' => ['required', 'integer']
+            ]
+        );
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            $img = $file->store('images', ['disk' => 'public']);
+        }
+
+        $image = new Image;
+        $image->image = $img;
+        $image->location = $data['location'];
+        $image->type()->associate(
+            $data['type']
+        );
+        $image->user()->associate(
+            Auth::user()->id
+        );
+
+        $image->save();
+
+        Session::flash('image_uploaded', $image);
+
+        return Redirect::route('gallery.create');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}

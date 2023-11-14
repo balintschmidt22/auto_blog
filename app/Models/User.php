@@ -18,9 +18,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
+        'country',
+        'is_admin',
     ];
 
     /**
@@ -40,6 +42,20 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
+
+    public function likedImages()
+    {
+        return $this->belongsToMany(Image::class)->withTimestamps();
+    }
+
+    public function ownImages()
+    {
+        return $this->hasMany(Image::class, 'user_id');
+    }
+
+    public function isAdmin()
+    {
+        return $this->is_admin === 1;
+    }
 }
