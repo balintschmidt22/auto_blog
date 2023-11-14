@@ -50,9 +50,12 @@ class DatabaseSeeder extends Seeder
         });
 
         $images->each(function ($image) use (&$types) {
+            $type = $types->random();
+            $brand = $type->brand()->get()->first();
             $image->type()->associate(
-                $types->random()->id
+                $type->id
             );
+            $image['image'] = fake()->imageUrl(400, 300, $brand->name, FALSE, $type->type, FALSE);
             $image->save();
         });
 
@@ -70,10 +73,5 @@ class DatabaseSeeder extends Seeder
                 )
             );
         });
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }

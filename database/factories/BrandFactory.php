@@ -18,10 +18,12 @@ class BrandFactory extends Factory
     {
         $faker = (new \Faker\Factory())::create();
         $this->faker->addProvider(new \Faker\Provider\Fakecar($this->faker));
+        $name = $this->faker->unique()->vehicleBrand();
 
         return [
-            'name' => $this->faker->unique()->vehicleBrand(),
+            'name' => $name,
             'country' => fake()->country(),
+            'image' => fake()->imageUrl(100, 100, NULL, FALSE, $name, FALSE),
         ];
     }
 }

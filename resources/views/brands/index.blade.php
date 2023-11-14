@@ -27,6 +27,7 @@
                 {{-- @auth
                     <th>Favourites</th>
                 @endauth --}}
+                <th>Logo</th>
                 <th>Name</th>
                 <th>Country</th>
             </tr>
@@ -39,13 +40,14 @@
                         <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Add fav</button></a></td>
                     @endif
                 @endauth --}}
-                <td><a href="{{route('brands.show', ['brand'=>$brand['id']])}}">{{$brand['name']}}</a></td>
-                <td>{{$brand['country']}}</td>
-                {{-- @if(str_starts_with($brand['image'],"https"))
+                @if(str_starts_with($brand['image'],"https"))
                 <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image"></td>
                 @else
-                <td><img src="{{"storage/".$brand['image']}}" alt="{{$brand['name']}} image" style="width:100px"></td>
-                @endif --}}
+                <td><img src="{{"storage/".$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px"></td>
+                @endif
+                <td><a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a></td>
+                <td>{{$brand['country']}}</td>
+
             </tr>
         @empty
             <div class="col-12">

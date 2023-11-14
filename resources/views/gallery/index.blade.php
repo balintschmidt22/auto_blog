@@ -11,15 +11,15 @@
         @if(Session::has('fav_added'))
         <div class="alert alert-success" role="alert">
             You liked:
-            {{App\Models\Brand::find( Session::get('fav_added')->type['brand_id'])['name']}}
+            {{Session::get('fav_added')->type->brand()->get()->first()['name']}}
             {{Session::get('fav_added')->type['type']}} by {{Session::get('fav_added')->user['username']}}
         </div>
         @endif
 
         @if(Session::has('fav_removed'))
-        <div class="alert alert-success" role="alert">
+        <div class="alert alert-warning" role="alert">
             You disliked:
-            {{App\Models\Brand::find( Session::get('fav_removed')->type['brand_id'])['name']}}
+            {{Session::get('fav_removed')->type->brand()->get()->first()['name']}}
             {{Session::get('fav_removed')->type['type']}} by {{Session::get('fav_removed')->user['username']}}
         </div>
         @endif

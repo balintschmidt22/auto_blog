@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name')->unique();
             $table->string('country');
+            $table->string('image');
             $table->timestamps();
         });
     }

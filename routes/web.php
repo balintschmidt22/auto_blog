@@ -23,7 +23,7 @@ Route::get('/', function () {
 });
 
 Route::middleware('can:admin')->group(function () {
-
+    Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create');
 });
 
 Route::resource('gallery', GalleryController::class);
@@ -32,6 +32,7 @@ Route::get('gallery/create', [GalleryController::class, 'create'])->middleware('
 Route::resource('brands', BrandController::class);
 Route::resource('types', TypeController::class);
 Route::resource('users', UserController::class);
+
 Route::resource('favourites', FavouriteImageController::class)->middleware('auth');
 Route::get('favourites/add/{id}', [FavouriteImageController::class, 'add'])->middleware('auth')->name('favourites.add');
 

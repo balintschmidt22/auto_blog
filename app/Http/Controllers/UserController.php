@@ -43,8 +43,12 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
+        // $idExists = User::where('id', $id)->exists();
+
+        // abort_unless($idExists, 404, 'ID not found!');
+
         return view('users.show', [
-            $user = User::find($id),
+            $user = User::findOrFail($id),
             'user' => $user,
             $imgs = $user->ownImages(),
             'image_count' => count($imgs->get()->toArray()),

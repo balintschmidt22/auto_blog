@@ -12,6 +12,7 @@ class Brand extends Model
     protected $fillable = [
         'name',
         'country',
+        'image',
     ];
 
     public function types()
