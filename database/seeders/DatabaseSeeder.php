@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     {
         //User::factory(10)->create();
 
-        if (!User::where('name', '=', 'admin')->first()) {
+        if (!User::where('username', '=', 'admin')->first()) {
             User::factory()->create([
                 'username' => 'admin',
                 'email' => 'admin@autoblog.com',
@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
         $type_count = $brand_count * rand(4, 11);
         $types = Type::factory($type_count)->create();
 
-        $image_count = $user_count * rand(6, 20);
+        $image_count = $user_count * rand(10, 20);
         $images = Image::factory($image_count)->create();
 
         $types->each(function ($type) use (&$brands) {
@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
             $image->type()->associate(
                 $type->id
             );
-            $image['image'] = fake()->imageUrl(400, 300, $brand->name, FALSE, $type->type, FALSE);
+            $image['image'] = "https://live.staticflickr.com/3170/3115821566_7cd47f042f_c.jpg"; //fake()->imageUrl(400, 300, $brand->name, FALSE, $type->type, FALSE);
             $image->save();
         });
 

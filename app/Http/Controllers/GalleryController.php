@@ -112,13 +112,17 @@ class GalleryController extends Controller
         //
     }
 
-    public function getTypes(Request $request)
+    public function gettypes(Request $request)
     {
         $selectedBrand = $request->query('brand');
 
         $types = Type::where('brand_id', $selectedBrand)->pluck('type', 'id')->toArray();
+        $arr = [1, 2, 3];
         // json_encode($types);
 
-        return ['types' => $types];
+        // Session::flash('types', $arr);
+
+        // return Redirect::route('gallery.create');
+        //return response()->json(['types' => $arr]);
     }
 }

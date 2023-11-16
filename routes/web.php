@@ -33,7 +33,7 @@ Route::middleware('can:admin')->group(function () {
 //GALLERY
 Route::resource('gallery', GalleryController::class);
 Route::get('gallery/create', [GalleryController::class, 'create'])->middleware(['auth', 'verified'])->name('gallery.create');
-Route::get('gallery/get-types', [GalleryController::class, 'get-types'])->middleware(['auth', 'verified'])->name('gallery.get-types');
+Route::get('gallery/gettypes', [GalleryController::class, 'gettypes'])->middleware(['auth', 'verified'])->name('gallery.gettypes');
 
 //RESOURCE CONTROLLERS
 Route::resource('brands', BrandController::class);

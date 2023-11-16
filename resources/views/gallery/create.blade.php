@@ -11,6 +11,12 @@
             </div>
         @endif
 
+        {{-- @if(Session::has('types'))
+            <div class="alert alert-success" role="alert">
+                {{Session::get('types')}}
+            </div>
+        @endif --}}
+
         {{-- TODO: action, method, enctype --}}
         <form action="{{ route('gallery.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -56,7 +62,7 @@
                     <select name="brand" id="brand" class="form-control @error('brand') is-invalid @enderror">
                         <option value="{{ old('brand') }}">{{old('brand')}}</option>
                         @forelse($brands as $brand)
-                            <option value="{{$brand->id}}">{{$brand->name}}</option>
+                            <option value="{{$brand->name}}">{{$brand->name}}</option>
                         @empty
                             <div class="col-12">
                                 <div class="alert alert-warning" role="alert">
@@ -135,28 +141,40 @@
             var selectedBrand = document.getElementById('brand').value;
             console.log(selectedBrand)
 
-            // Make an AJAX request to fetch types based on the selectedBrand
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/gallery/get-types?brand=' + encodeURIComponent(selectedBrand), true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Clear existing options
-                    var typeDropdown = document.getElementById('type');
-                    typeDropdown.innerHTML = '';
-                    // Populate "Types" dropdown with new options
-                    data = xhr.responseText
-                    var types = JSON.parse(data).types;
-                    console.log(types)
-                    for (var key in types) {
-                            var option = document.createElement('option');
-                            option.value = key;
-                            option.text = types[key];
-                            typeDropdown.appendChild(option);
-                            console.log(option)
-                    }
-                }
-            };
-            xhr.send();
+            // fetch("/gallery/get-types?" + new URLSearchParams({
+            //         brand: selectedBrand,
+            //     })) //{
+            //     //method: 'get', // Default is 'get'
+            //     // mode: 'cors',
+            //     // headers: new Headers({
+            //     //     'Content-Type': 'application/json'
+            //     // })
+            //     // })
+            //     .then(response => response.json())
+            //     .then(json => console.log('Response', json))
+
+            //Make an AJAX request to fetch types based on the selectedBrand
+            // var xhr = new XMLHttpRequest();
+            // xhr.open('GET', '/gallery/gettypes?brand=' + encodeURIComponent(selectedBrand), true);
+            // xhr.onreadystatechange = function () {
+            //     if (xhr.readyState === 4 && xhr.status === 200) {
+            //         // Clear existing options
+            //         var typeDropdown = document.getElementById('type');
+            //         //typeDropdown.innerHTML = '';
+            //         // Populate "Types" dropdown with new options
+            //         data = xhr.responseText
+            //         var types = JSON.parse(data);
+            //         console.log(types)
+            //         for (var key in types) {
+            //                 var option = document.createElement('option');
+            //                 option.value = key;
+            //                 option.text = types[key];
+            //                 typeDropdown.appendChild(option);
+            //                 console.log(option)
+            //         }
+            //     }
+            // };
+            // xhr.send();
         }
     });
 </script>

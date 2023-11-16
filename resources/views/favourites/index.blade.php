@@ -37,10 +37,10 @@
                 @forelse ($images as $image)
                     <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width:50%">
                         <div class="card ratio-4x3 w-100">
-                            @if(str_starts_with($image['image'],"https"))
-                                <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['name']}} image">
+                            @if(str_starts_with($image['image'],"http"))
+                                <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
                             @else
-                                <img class="card-img-top" src="{{"storage/".$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['name']}} image">
+                                <img class="card-img-top" src="{{"storage/".$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
                             @endif
                             <div class="card-body">
                                 {{-- TODO: Brand - Type --}}
@@ -71,9 +71,9 @@
                                 {{-- TODO: Link --}}
                                 @auth
                                     @if(in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
-                                        <td><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-solid fa-heart fa-xl" style="color: #ff0000;"></i></a></td>
+                                        <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-solid fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
                                     @else
-                                        <td><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i></a></td>
+                                        <td><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></td>
                                     @endif
                                 @endauth
                                 <a href="{{route('gallery.show', $image)}}" class="btn btn-primary">
