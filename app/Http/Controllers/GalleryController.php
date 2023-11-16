@@ -14,7 +14,7 @@ class GalleryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware("auth")->only(['create', 'store']);
+        $this->middleware(["auth", "verified"])->only(['create', 'store']);
     }
 
     /**
@@ -110,5 +110,15 @@ class GalleryController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getTypes(Request $request)
+    {
+        $selectedBrand = $request->query('brand');
+
+        $types = Type::where('brand_id', $selectedBrand)->pluck('type', 'id')->toArray();
+        // json_encode($types);
+
+        return ['types' => $types];
     }
 }

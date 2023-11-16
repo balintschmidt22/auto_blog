@@ -24,7 +24,7 @@ class UserFactory extends Factory
             'password' => bcrypt('password'),
             'country' => fake()->country(),
             'is_admin' => false,
-            'remember_token' => Str::random(10),
+            'remember_token' => Str::random(100),
         ];
     }
 
