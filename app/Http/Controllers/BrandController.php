@@ -19,11 +19,7 @@ class BrandController extends Controller
     public function index()
     {
         return view('brands.index', [
-            $brands = Brand::all()->toArray(),
-            usort($brands, function ($a, $b) {
-                return strcasecmp($a['name'], $b['name']);
-            }),
-            'brands' => $brands
+            'brands' => Brand::all()->sortBy('name')->toArray(),
         ]);
     }
 

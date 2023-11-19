@@ -31,19 +31,21 @@ Route::middleware('can:admin')->group(function () {
 });
 
 //GALLERY
+Route::get('gallery/gettypes', [GalleryController::class, 'gettypes'])->middleware(['auth', 'verified'])->name('gallery.gettypes');
 Route::resource('gallery', GalleryController::class);
 Route::get('gallery/create', [GalleryController::class, 'create'])->middleware(['auth', 'verified'])->name('gallery.create');
-Route::get('gallery/gettypes', [GalleryController::class, 'gettypes'])->middleware(['auth', 'verified'])->name('gallery.gettypes');
 
 //RESOURCE CONTROLLERS
 Route::resource('brands', BrandController::class);
 Route::resource('types', TypeController::class);
+
+//USERS
 Route::resource('users', UserController::class);
+Route::post('users/search', [UserController::class, 'search'])->name('users.search');
 
 //FAVOURITES
 Route::resource('favourites', FavouriteImageController::class)->middleware('auth');
 Route::get('favourites/add/{id}', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
-
 
 // EMAIL VERIFICATION
 Route::get('/email/verify', function () {

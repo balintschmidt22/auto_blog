@@ -37,7 +37,7 @@
 
                 @forelse ($images as $image)
                     <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
-                        <div class="card ratio-4x3 w-100">
+                        <div class="card bg-light border-secondary mt-3 ratio-4x3 w-100">
                             @if(str_starts_with($image['image'],"http"))
                                 <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
                             @else

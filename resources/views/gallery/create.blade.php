@@ -11,12 +11,6 @@
             </div>
         @endif
 
-        {{-- @if(Session::has('types'))
-            <div class="alert alert-success" role="alert">
-                {{Session::get('types')}}
-            </div>
-        @endif --}}
-
         {{-- TODO: action, method, enctype --}}
         <form action="{{ route('gallery.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -83,16 +77,7 @@
                 <label for="type" class="col-sm-2 col-form-label"><b>Types</b></label>
                 <div class="col-sm-8">
                     <select name="type" id="type" class="form-control @error('type') is-invalid @enderror">
-                        <option value="{{ old('type') }}">{{old('type')}}</option>
-                        @forelse($types as $type)
-                            <option value="{{$type->id}}">{{$type->type}}</option>
-                        @empty
-                            <div class="col-12">
-                                <div class="alert alert-warning" role="alert">
-                                    No types!
-                                </div>
-                            </div>
-                        @endforelse
+                        <option value="{{ old('type')}}">{{old('type')}}</option>
                     </select>
                     @error('type')
                         <div class="invalid-feedback">
@@ -101,7 +86,6 @@
                     @enderror
                 </div>
             </div>
-
 
             <div class="text-center">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
@@ -112,69 +96,74 @@
 
 @section('scripts')
 <script>
-    const coverImageInput = document.querySelector('input#image');
-    const coverPreviewContainer = document.querySelector('#cover_preview');
-    const coverPreviewImage = document.querySelector('img#cover_preview_image');
+    const coverImageInput = document.querySelector("input#image");
+    const coverPreviewContainer = document.querySelector("#cover_preview");
+    const coverPreviewImage = document.querySelector("img#cover_preview_image");
 
-    coverImageInput.onchange = event => {
+    coverImageInput.onchange = (event) => {
         const [file] = coverImageInput.files;
         if (file) {
-            coverPreviewContainer.classList.remove('d-none');
+            coverPreviewContainer.classList.remove("d-none");
             coverPreviewImage.src = URL.createObjectURL(file);
         } else {
-            coverPreviewContainer.classList.add('d-none');
+            coverPreviewContainer.classList.add("d-none");
         }
-    }
+    };
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Initial population of "Types" dropdown based on the selected value of "Brand" dropdown
+    document.addEventListener("DOMContentLoaded", function () {
+        // const oldTypeValue = document.getElementById("type")[0].value;
+        // const oldTypeText = document.getElementById("type")[0].text;
+        // console.log(oldTypeText)
+        // console.log(oldTypeValue)
+
         updateTypeDropdown();
 
-        // Event listener for change in "Brand" dropdown
-        document.getElementById('brand').addEventListener('change', function () {
-            // Update "Types" dropdown whenever "Brand" changes
+        // if(oldTypeValue != ""){
+        //     document.getElementById("type")[0].value = oldTypeValue
+
+        //     document.getElementById("type")[0].text = oldTypeText
+        // }
+
+        document.getElementById("brand").addEventListener("change", function () {
             updateTypeDropdown();
         });
 
         // Function to update "Types" dropdown options based on the selected value of "Brand" dropdown
         function updateTypeDropdown() {
-            var selectedBrand = document.getElementById('brand').value;
-            console.log(selectedBrand)
+            var selectedBrand = document.getElementById("brand").value;
 
-            // fetch("/gallery/get-types?" + new URLSearchParams({
-            //         brand: selectedBrand,
-            //     })) //{
-            //     //method: 'get', // Default is 'get'
-            //     // mode: 'cors',
-            //     // headers: new Headers({
-            //     //     'Content-Type': 'application/json'
-            //     // })
-            //     // })
-            //     .then(response => response.json())
-            //     .then(json => console.log('Response', json))
+            if (selectedBrand != "") {
+                axios.defaults.headers.common = {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content"),
+                };
 
-            //Make an AJAX request to fetch types based on the selectedBrand
-            // var xhr = new XMLHttpRequest();
-            // xhr.open('GET', '/gallery/gettypes?brand=' + encodeURIComponent(selectedBrand), true);
-            // xhr.onreadystatechange = function () {
-            //     if (xhr.readyState === 4 && xhr.status === 200) {
-            //         // Clear existing options
-            //         var typeDropdown = document.getElementById('type');
-            //         //typeDropdown.innerHTML = '';
-            //         // Populate "Types" dropdown with new options
-            //         data = xhr.responseText
-            //         var types = JSON.parse(data);
-            //         console.log(types)
-            //         for (var key in types) {
-            //                 var option = document.createElement('option');
-            //                 option.value = key;
-            //                 option.text = types[key];
-            //                 typeDropdown.appendChild(option);
-            //                 console.log(option)
-            //         }
-            //     }
-            // };
-            // xhr.send();
+                axios
+                    .get("/gallery/gettypes", {
+                        params: {
+                            brand: selectedBrand,
+                        },
+                    })
+                    .then((response) => {
+                        const d = response;
+                        const types = d.data;
+
+                        var typeDropdown = document.getElementById("type");
+                        typeDropdown.innerHTML = "";
+
+                        for (var i in types) {
+                            var option = document.createElement("option");
+                            option.value = types[i]['id'];
+                            option.text = types[i]['type'];
+                            typeDropdown.appendChild(option);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching data:", error);
+                    });
+            }
         }
     });
 </script>

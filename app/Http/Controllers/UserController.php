@@ -13,13 +13,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('users.index', [
-            $users = User::all()->toArray(),
-            usort($users, function ($a, $b) {
-                return strcasecmp($a['username'], $b['username']);
-            }),
-            'users' => $users
-        ]);
+        $users = User::all()->sortBy('username')->toArray();
+        return view('users.search', compact('users'));
     }
 
     /**
@@ -78,5 +73,18 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->all();
+        $query = $q['params']['search'];
+
+        $users = collect(User::all());
+        $filteredUsers = $users->filter(function ($item) use ($query) {
+            return str_contains($item['username'], $query) !== false;
+        });
+
+        return $filteredUsers;
     }
 }

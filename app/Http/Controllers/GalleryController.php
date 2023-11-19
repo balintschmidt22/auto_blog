@@ -14,7 +14,7 @@ class GalleryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth", "verified"])->only(['create', 'store']);
+        $this->middleware(["auth", "verified"])->only(['create', 'store', 'gettypes']);
     }
 
     /**
@@ -38,8 +38,7 @@ class GalleryController extends Controller
     public function create()
     {
         return view('gallery.create', [
-            'brands' => Brand::all(),
-            'types' => Type::all(),
+            'brands' => Brand::all()->sortBy('name'),
         ]);
     }
 
@@ -116,13 +115,10 @@ class GalleryController extends Controller
     {
         $selectedBrand = $request->query('brand');
 
-        $types = Type::where('brand_id', $selectedBrand)->pluck('type', 'id')->toArray();
-        $arr = [1, 2, 3];
-        // json_encode($types);
+        $brandId = Brand::where('name', $selectedBrand)->get()->first()['id'];
 
-        // Session::flash('types', $arr);
+        $types = Type::orderBy('type')->where('brand_id', $brandId)->get()->toArray(); //pluck('type', 'id');
 
-        // return Redirect::route('gallery.create');
-        //return response()->json(['types' => $arr]);
+        return $types;
     }
 }
