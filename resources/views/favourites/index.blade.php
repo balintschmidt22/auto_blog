@@ -85,7 +85,7 @@
                 @empty
                     <div class="col-12">
                         <div class="alert alert-warning" role="alert">
-                            No images found!
+                            No favourite images found!
                         </div>
                     </div>
                 @endforelse
