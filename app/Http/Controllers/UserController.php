@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Image;
 use App\Models\User;
+//use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use PDF;
 
 class UserController extends Controller
 {
@@ -86,5 +87,12 @@ class UserController extends Controller
         });
 
         return $filteredUsers;
+    }
+
+    public function createPDF()
+    {
+        $users = User::get()->sortBy('username');
+        $pdf = PDF::loadView('users.pdf', compact('users'));
+        return $pdf->download('autoblog_users.pdf');
     }
 }

@@ -17,6 +17,9 @@
         </div>
         @endif
     @endauth
+    <div>
+        <a class="btn btn-primary mt-1 mb-3" href="{{ route('users.pdf.download') }}">Export to PDF</a>
+    </div>
     <div class="row">
         <div class="col">
             <div>

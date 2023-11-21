@@ -45,8 +45,16 @@ Route::resource('brands', BrandController::class);
 Route::resource('types', TypeController::class);
 
 //USERS
+//Route::get('users/show/{id}', [UserController::class, 'show'])->name('users.show2');
 Route::resource('users', UserController::class);
 Route::post('users/search', [UserController::class, 'search'])->name('users.search');
+Route::get('users/pdf/download', [UserController::class, 'createPDF'])->name('users.pdf.download');
+
+// Route::get('userspdf', function () {
+//     $data = User::get();
+//     $pdf = Pdf::loadView('pdf.autoblog_users', compact('data'));
+//     return $pdf->download('autoblog_users.pdf');
+// })->name('users.pdf');
 
 //FAVOURITES
 Route::resource('favourites', FavouriteImageController::class)->middleware('auth');
