@@ -95,4 +95,39 @@ class UserController extends Controller
         $pdf = PDF::loadView('users.pdf', compact('users'));
         return $pdf->download('autoblog_users.pdf');
     }
+
+    public function exportCSV(Request $request)
+    {
+        $fileName = 'users.csv';
+        $users = User::all()->sortBy('username');
+
+        $headers = array(
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        );
+
+        $columns = array('Username', 'Email', 'Country', 'Images', 'Registered');
+
+        $callback = function () use ($users, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($users as $user) {
+                $row['Username'] = $user->username;
+                $row['Email'] = $user->email;
+                $row['Country'] = $user->country;
+                $row['Images'] = $user->ownImages()->count();
+                $row['Registered'] = $user->created_at;
+
+                fputcsv($file, array($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Registered']));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

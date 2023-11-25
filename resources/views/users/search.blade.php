@@ -19,6 +19,7 @@
     @endauth
     <div>
         <a class="btn btn-primary mt-1 mb-3" href="{{ route('users.pdf.download') }}">Export to PDF</a>
+        <a class="btn btn-primary mt-1 mb-3" href="{{ route('users.csv.download') }}">Export to CSV</a>
     </div>
     <div class="row">
         <div class="col">

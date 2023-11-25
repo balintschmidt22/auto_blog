@@ -49,6 +49,7 @@ Route::resource('types', TypeController::class);
 Route::resource('users', UserController::class);
 Route::post('users/search', [UserController::class, 'search'])->name('users.search');
 Route::get('users/pdf/download', [UserController::class, 'createPDF'])->name('users.pdf.download');
+Route::get('users/csv/download', [UserController::class, 'exportCSV'])->name('users.csv.download');
 
 // Route::get('userspdf', function () {
 //     $data = User::get();
