@@ -24,24 +24,24 @@
     <div class="row">
         <div class="col">
             <div>
-                <table class="bordered" id="usersTable">
-                    <tr>
-                        @auth
+                <table class="table table-bordered" id="usersTable">
+                    <tr class="table-primary">
+                        {{-- @auth
                             <th>Follow</th>
-                        @endauth
+                        @endauth --}}
                         <th>Username</th>
                         <th>Country</th>
                         <th>Photos</th>
                     </tr>
                 @forelse($users as $user)
                     <tr>
-                        @auth <td></td>
-                        {{--    @if(in_array($brand['id'], array_column(Auth::user()->brands()->get()->toArray(), 'id')))
+                        {{-- @auth <td></td>
+                           @if(in_array($brand['id'], array_column(Auth::user()->brands()->get()->toArray(), 'id')))
                                 <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Remove</button></a></td>
                             @else
                                 <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Add fav</button></a></td>
-                            @endif --}}
-                        @endauth
+                            @endif
+                        @endauth --}}
                         <td><a href='{{route('users.show', ['user'=>$user['id']])}}' class="text-decoration-none">{{$user['username']}}</a></td>
                         <td>{{$user['country']}}</td>
                         <td>{{App\Models\User::find($user['id'])->ownImages()->count()}}</td>
@@ -61,7 +61,7 @@
                 <input type="text" size="25" id="searchInput" placeholder="Search..." class="float-left mt-4">
             </div>
             <div>
-                <table class="bordered float-left mt-4" id="foundUsers">
+                <table class="table table-bordered float-left mt-4" id="foundUsers">
                 </table>
             </div>
         </div>

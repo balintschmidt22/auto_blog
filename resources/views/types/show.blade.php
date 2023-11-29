@@ -1,13 +1,12 @@
 @extends('layouts.app')
-@section('title', 'Photos')
+@section('title', 'Type images')
 
 @section('content')
 <div class="container">
     <div class="row">
-        <h1>Gallery</h1>
+        <h1 class="mb-4">{{App\Models\Brand::find($type['brand_id'])['name']}} {{$type['type']}} ({{App\Models\Brand::find($type['brand_id'])['country']}}) - {{$image_count}}</h1>
     </div>
     @auth
-
         @if(Session::has('fav_added'))
         <div class="alert alert-success" role="alert">
             You liked:
@@ -36,12 +35,12 @@
                 {{-- TODO: Read images from DB --}}
 
                 @forelse ($images as $image)
-                    <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
-                        <div class="card bg-light border-secondary mt-3 ratio-4x3 w-100">
+                    <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width:50%">
+                        <div class="card ratio-4x3 w-100">
                             @if(str_starts_with($image['image'],"http"))
                                 <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
                             @else
-                                <img class="card-img-top" src="{{"storage/".$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
+                                <img class="card-img-top" src="{{URL::asset('storage/'.$image['image'])}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
                             @endif
                             <div class="card-body">
                                 {{-- TODO: Brand - Type --}}
@@ -70,17 +69,14 @@
                             </div>
                             <div class="card-footer">
                                 {{-- TODO: Link --}}
-                                @guest
-                                    <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
-                                @endguest
                                 @auth
                                     @if(in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
                                         <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-solid fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
                                     @else
-                                        <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
+                                        <td><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></td>
                                     @endif
                                 @endauth
-                                <a href="{{route('gallery.show', $image)}}" class="btn btn-primary float-end">
+                                <a href="{{route('gallery.show', $image)}}" class="btn btn-primary">
                                     <span>View image</span> <i class="fas fa-angle-right"></i>
                                 </a>
                             </div>

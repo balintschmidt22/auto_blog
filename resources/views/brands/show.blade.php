@@ -1,15 +1,11 @@
 @extends('layouts.app')
-@section('title', 'Brands')
+@section('title', 'Types')
 
 @section('content')
 <div class="container">
-    <h1>Brands - {{count($brands)}}</h1>
     @auth
         @if(Auth::user()->isAdmin())
-            <div>
-                <a href="{{route('brands.create')}}" class="text-decoration-none mb-4">Add brand</a>
-                <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a>
-            </div>
+            <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a>
         @endif
 
         @if(Session::has('fav_added'))
@@ -24,18 +20,25 @@
         </div>
         @endif
     @endauth
+
+    @if(str_starts_with($brand['image'],"https"))
+        <h1 class="mb-4 mt-2"><img src="{{$brand['image']}}" alt="{{$brand['name']}} image"> {{$brand['name']}} - Types: {{'count'($types)}}</h1>
+    @else
+        <h1 class="mb-4 mt-2"><img src="{{URL::asset('storage/'.$brand['image'])}}" alt="{{$brand['name']}} image" style="height:100px"> {{$brand['name']}} - Types: {{'count'($types)}} </h1>
+    @endif
+
     <div>
         <table class="table table-bordered">
-            <tr class="table-primary">
-                {{-- @auth
-                    <th>Favourites</th>
-                @endauth --}}
-                <th>Logo</th>
-                <th>Name</th>
-                <th>Country</th>
-                <th>Types</th>
-            </tr>
-        @forelse($brands as $brand)
+            @if (count($types) != 0)
+                <tr class="table-primary">
+                    {{-- @auth
+                        <th>Favourites</th>
+                    @endauth --}}
+                    <th>Type</th>
+                    <th>Images</th>
+                </tr>
+            @endif
+        @forelse($types as $type)
             <tr>
                 {{-- @auth
                     @if(in_array($brand['id'], array_column(Auth::user()->brands()->get()->toArray(), 'id')))
@@ -44,19 +47,13 @@
                         <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Add fav</button></a></td>
                     @endif
                 @endauth --}}
-                @if(str_starts_with($brand['image'],"https"))
-                <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image"></td>
-                @else
-                <td><img src="{{"storage/".$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px"></td>
-                @endif
-                <td><a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a></td>
-                <td>{{$brand['country']}}</td>
-                <td>{{App\Models\Brand::find($brand['id'])->types()->count()}}</td>
+                <td><a href="{{route('types.show', ['type'=>$type['id']])}}" class="text-decoration-none">{{$type['type']}}</a></td>
+                <td>{{App\Models\Type::find($type['id'])->images()->count()}}</td>
             </tr>
         @empty
             <div class="col-12">
                 <div class="alert alert-warning" role="alert">
-                    No brands found!
+                    No types found!
                 </div>
             </div>
         @endforelse

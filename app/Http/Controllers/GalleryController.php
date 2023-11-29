@@ -51,8 +51,8 @@ class GalleryController extends Controller
             [
                 'image' => ['required', 'file', 'image', 'max: 4096'],
                 'location' => ['required', 'string'],
-                'brand' => ['required', 'string'],
-                'type' => ['required', 'integer']
+                'brand' => ['required', 'string', 'exists:brands,name'],
+                'type' => ['required', 'integer', 'exists:types,id']
             ]
         );
 

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
+use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class TypeController extends Controller
 {
@@ -19,7 +23,9 @@ class TypeController extends Controller
      */
     public function create()
     {
-        //
+        return view('types.create', [
+            'brands' => Brand::all()
+        ]);
     }
 
     /**
@@ -27,7 +33,27 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate(
+            [
+                'brand' => ['required', 'string', 'exists:brands,name'],
+                'name' => ['required', 'string', 'unique:types,type'],
+            ]
+        );
+
+        $brandId = Brand::where('name', $data['brand'])->get()->first()['id'];
+
+        $type = new Type;
+        $type->type = $data['name'];
+
+        $type->brand()->associate(
+            $brandId
+        );
+
+        $type->save();
+
+        Session::flash('type_added', $type);
+
+        return Redirect::route('types.create');
     }
 
     /**
@@ -35,7 +61,13 @@ class TypeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('types.show', [
+            $type = Type::findOrFail($id),
+            'type' => $type,
+            $imgs = $type->images(),
+            'image_count' => count($imgs->get()->toArray()),
+            'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+        ]);
     }
 
     /**

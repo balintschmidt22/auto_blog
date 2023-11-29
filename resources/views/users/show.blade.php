@@ -50,7 +50,7 @@
                                 @endif
                                 <div class="card-body">
                                     {{-- TODO: Brand - Type --}}
-                                    <h5 class="card-title mb-0">{{App\Models\Brand::find( $image->type['brand_id'])['name']}} {{ $image->type['type'] }}</h5>
+                                    <h5 class="card-title mb-0"><a href="{{route('brands.show', ['brand'=>$image->type['brand_id']])}}" class="text-decoration-none">{{App\Models\Brand::find( $image->type['brand_id'])['name']}}</a> <a href="{{route('types.show', ['type'=>$image->type['id']])}}" class="text-decoration-none">{{ $image->type['type'] }}</a></h5>
                                     <p class="small mb-0">
                                         <span class="me-2">
                                             <i class="fas fa-user"></i>

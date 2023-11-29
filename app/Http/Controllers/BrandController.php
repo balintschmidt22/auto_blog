@@ -67,7 +67,11 @@ class BrandController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('brands.show', [
+            $brand = Brand::findOrFail($id),
+            'brand' => $brand,
+            'types' => $brand->types()->get()->toArray()
+        ]);
     }
 
     /**
