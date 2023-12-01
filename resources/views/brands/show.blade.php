@@ -22,9 +22,9 @@
     @endauth
 
     @if(str_starts_with($brand['image'],"https"))
-        <h1 class="mb-4 mt-2"><img src="{{$brand['image']}}" alt="{{$brand['name']}} image"> {{$brand['name']}} - Types: {{'count'($types)}}</h1>
+        <h1 class="mb-4 mt-2"><img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image"> {{$brand['name']}} ({{$brand['country']}}) - Types: {{'count'($types)}}</h1>
     @else
-        <h1 class="mb-4 mt-2"><img src="{{URL::asset('storage/'.$brand['image'])}}" alt="{{$brand['name']}} image" style="height:100px"> {{$brand['name']}} - Types: {{'count'($types)}} </h1>
+        <h1 class="mb-4 mt-2"><img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px"> {{$brand['name']}} ({{$brand['country']}}) - Types: {{'count'($types)}} </h1>
     @endif
 
     <div>

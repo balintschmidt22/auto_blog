@@ -84,7 +84,16 @@ class GalleryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('gallery.show', [
+            $image = Image::findOrFail($id),
+            $type = $image->type(),
+            'type' => $type->get()->first(),
+            'brand' => Brand::find($type->get()->first()['brand_id']),
+            'image' => $image,
+            $likes = $image->likedBy(),
+            'like_count' => count($likes->get()->toArray()),
+            'likes' => $likes,
+        ]);
     }
 
     /**

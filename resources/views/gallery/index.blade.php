@@ -60,7 +60,7 @@
                                         </span>
                                     </span>
                                     <br>
-                                    <span>
+                                    <span class="me-2">
                                         <i class="far fa-calendar-alt"></i>
                                         {{-- TODO: Date --}}
                                         <span>{{ $image->created_at }}</span>

@@ -4,7 +4,13 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <h1 class="mb-4">{{App\Models\Brand::find($type['brand_id'])['name']}} {{$type['type']}} ({{App\Models\Brand::find($type['brand_id'])['country']}}) - {{$image_count}}</h1>
+        <h1 class="mb-4">
+            @if(str_starts_with($brand['image'],"https"))
+                <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image">
+            @else
+                <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px">
+            @endif
+            {{$brand['name']}} {{$type['type']}} ({{$brand['country']}}) - {{$image_count}}</h1>
     </div>
     @auth
         @if(Session::has('fav_added'))
@@ -44,7 +50,7 @@
                             @endif
                             <div class="card-body">
                                 {{-- TODO: Brand - Type --}}
-                                <h5 class="card-title mb-0"><a href="{{route('brands.show', ['brand'=>$image->type['brand_id']])}}" class="text-decoration-none">{{App\Models\Brand::find( $image->type['brand_id'])['name']}}</a> <a href="{{route('types.show', ['type'=>$image->type['id']])}}" class="text-decoration-none">{{ $image->type['type'] }}</a></h5>
+                                <h5 class="card-title mb-0"><a href="{{route('brands.show', ['brand'=>$image->type['brand_id']])}}" class="text-decoration-none">{{$brand['name']}}</a> <a href="{{route('types.show', ['type'=>$image->type['id']])}}" class="text-decoration-none">{{ $image->type['type'] }}</a></h5>
                                 <p class="small mb-0">
                                     <span class="me-2">
                                         <i class="fas fa-user"></i>
@@ -59,7 +65,7 @@
                                         </span>
                                     </span>
                                     <br>
-                                    <span>
+                                    <span class="me-2">
                                         <i class="far fa-calendar-alt"></i>
                                         {{-- TODO: Date --}}
                                         <span>{{ $image->created_at }}</span>
@@ -69,6 +75,9 @@
                             </div>
                             <div class="card-footer">
                                 {{-- TODO: Link --}}
+                                @guest
+                                    <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
+                                @endguest
                                 @auth
                                     @if(in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
                                         <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-solid fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
@@ -76,7 +85,7 @@
                                         <td><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></td>
                                     @endif
                                 @endauth
-                                <a href="{{route('gallery.show', $image)}}" class="btn btn-primary">
+                                <a href="{{route('gallery.show', $image)}}" class="btn btn-primary float-end">
                                     <span>View image</span> <i class="fas fa-angle-right"></i>
                                 </a>
                             </div>

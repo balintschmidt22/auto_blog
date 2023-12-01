@@ -24,7 +24,7 @@ class TypeController extends Controller
     public function create()
     {
         return view('types.create', [
-            'brands' => Brand::all()
+            'brands' => Brand::all()->sortBy('name')
         ]);
     }
 
@@ -64,6 +64,7 @@ class TypeController extends Controller
         return view('types.show', [
             $type = Type::findOrFail($id),
             'type' => $type,
+            'brand' => Brand::find($type['brand_id']),
             $imgs = $type->images(),
             'image_count' => count($imgs->get()->toArray()),
             'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),

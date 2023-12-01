@@ -65,7 +65,7 @@
                                             </span>
                                         </span>
                                         <br>
-                                        <span>
+                                        <span class="me-2">
                                             <i class="far fa-calendar-alt"></i>
                                             {{-- TODO: Date --}}
                                             <span>{{ $image->created_at }}</span>
@@ -85,7 +85,7 @@
                                             <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
                                         @endif
                                     @endauth
-                                    <a href="{{route('gallery.show', $image)}}" class="btn btn-primary">
+                                    <a href="{{route('gallery.show', $image)}}" class="btn btn-primary float-end">
                                         <span>View image</span> <i class="fas fa-angle-right"></i>
                                     </a>
                                 </div>
