@@ -47,7 +47,7 @@ jobs:
           coverage: none
  
       - name: Run composer install
-        run: composer install -n --prefer-dist
+        run: composer install -n --prefer-dist --optimize-autoloader --no-dev
  
       - name: Run npm install
         run: npm install --production
@@ -58,6 +58,10 @@ jobs:
           php artisan key:generate
           touch database/database.sqlite
           php artisan migrate:fresh --seed
-          npm run prod
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          npm run build
+          npm run preview
           php artisan serve
    
