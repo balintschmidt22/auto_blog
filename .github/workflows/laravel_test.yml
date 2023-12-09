@@ -27,6 +27,7 @@ jobs:
           cp .env.example .env
           php artisan key:generate
           npm run build
+          touch database/database.sqlite
           php artisan migrate:fresh --seed
  
       - name: Run tests
