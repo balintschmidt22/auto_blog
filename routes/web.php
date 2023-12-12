@@ -33,6 +33,9 @@ Route::get('/', function () {
 //ADMIN FUNCTIONS
 Route::middleware('can:admin')->group(function () {
     Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create');
+    Route::get('types/create', [TypeController::class, 'create'])->name('types.create');
+    Route::get('users/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
+    Route::get('gallery/delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
 });
 
 //GALLERY
@@ -70,7 +73,7 @@ Route::get('/email/verify', function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
-    //TODO SESSION
+    //-TODO SESSION
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
@@ -130,3 +133,8 @@ Route::post('/password/reset', function (Request $request) {
 
 
 Auth::routes(['verify' => true]);
+
+
+Route::any('{any}', function () {
+    return redirect('/');
+});

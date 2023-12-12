@@ -5,7 +5,7 @@
 <div class="container">
     <h1>Users - {{count($users)}}</h1>
     @auth
-        @if(Session::has('fav_added'))
+        {{-- @if(Session::has('fav_added'))
         <div class="alert alert-success" role="alert">
             New user followed: {{Session::get('fav_added')->username}}
         </div>
@@ -14,6 +14,12 @@
         @if(Session::has('fav_removed'))
         <div class="alert alert-success" role="alert">
             User is no longer followed: {{Session::get('fav_removed')->username}}
+        </div>
+        @endif --}}
+
+        @if(Session::has('user_deleted'))
+        <div class="alert alert-warning" role="alert">
+            User deleted: {{Session::get('user_deleted')->username}}
         </div>
         @endif
     @endauth
@@ -80,41 +86,39 @@
             const tab = document.getElementById("foundUsers")
             tab.innerHTML = ""
 
-            if(query != ""){
-                axios.post('/users/search', {
-                    params: {
-                        search: query,
-                    },
+            axios.post('/users/search', {
+                params: {
+                    search: query,
+                },
+            })
+            .then((response) => {
+                // Update the data list with the filtered data
+                var users = Object.values(response.data);
+
+                var usernames = {}
+                users.forEach(u => {
+                    usernames[u['id']] = u['username']
                 })
-                .then((response) => {
-                    // Update the data list with the filtered data
-                    var users = Object.values(response.data);
 
-                    var usernames = {}
-                    users.forEach(u => {
-                        usernames[u['id']] = u['username']
-                    })
+                tab.innerHTML = ""
 
-                    tab.innerHTML = ""
-
-                    for (var id in usernames){
-                        var row = document.createElement("tr")
-                        var col = document.createElement("td")
-                        var a = document.createElement("a")
-                        //col.innerHTML = '<a href="' + id + '">' + usernames[id] + '</a>'
-                        col.innerHTML = "<a href='users/" + id + "' class='text-decoration-none'>" + usernames[id] + "</a>"
-                        //a.href = `{{route('users.show', ['user'=> 1])}}`
-                        //a.innerHTML = usernames[id]
-                        //a.classList.add("text-decoration-none")
-                        //col.append(a)
-                        row.appendChild(col)
-                        tab.appendChild(row)
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
-            }
+                for (var id in usernames){
+                    var row = document.createElement("tr")
+                    var col = document.createElement("td")
+                    var a = document.createElement("a")
+                    //col.innerHTML = '<a href="' + id + '">' + usernames[id] + '</a>'
+                    col.innerHTML = "<a href='users/" + id + "' class='text-decoration-none'>" + usernames[id] + "</a>"
+                    //a.href = `{{route('users.show', ['user'=> 1])}}`
+                    //a.innerHTML = usernames[id]
+                    //a.classList.add("text-decoration-none")
+                    //col.append(a)
+                    row.appendChild(col)
+                    tab.appendChild(row)
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
         });
     });
 </script>

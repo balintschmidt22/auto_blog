@@ -9,7 +9,14 @@
         @else
            <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:80px">
         @endif
-        <a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a> <a href="{{route('types.show', ['type'=>$type['id']])}}" class="text-decoration-none">{{$type['type']}}</a></h1>
+
+        <a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a> <a href="{{route('types.show', ['type'=>$type['id']])}}" class="text-decoration-none">{{$type['type']}}</a>
+        @auth
+            @if (Auth::user()->isAdmin())
+                <a href="{{route('gallery.delete', ['id' => $image['id']])}}" class="btn btn-danger">Delete Image</a>
+            @endif
+        @endauth
+        </h1>
     </div>
 
     @auth

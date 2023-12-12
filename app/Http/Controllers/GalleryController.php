@@ -15,6 +15,7 @@ class GalleryController extends Controller
     public function __construct()
     {
         $this->middleware(["auth", "verified"])->only(['create', 'store', 'gettypes']);
+        $this->middleware(["can:admin"])->only(['delete']);
     }
 
     /**
@@ -115,9 +116,14 @@ class GalleryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $image = Image::findOrFail($id);
+        $image->delete();
+
+        Session::flash('image_deleted', $image);
+
+        return redirect('/gallery');
     }
 
     public function gettypes(Request $request)

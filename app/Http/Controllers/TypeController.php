@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Session;
 
 class TypeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:admin')->only(['create', 'store']);
+    }
     /**
      * Display a listing of the resource.
      */

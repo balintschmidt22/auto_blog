@@ -23,6 +23,14 @@
             {{Session::get('fav_removed')->type['type']}} by {{Session::get('fav_removed')->user['username']}}
         </div>
         @endif
+
+        @if(Session::has('image_deleted'))
+        <div class="alert alert-warning" role="alert">
+            Image deleted:
+            {{Session::get('image_deleted')->type->brand()->get()->first()['name']}}
+            {{Session::get('image_deleted')->type['type']}} by {{Session::get('image_deleted')->user['username']}}
+        </div>
+        @endif
     @endauth
 
     <div class="d-flex flex-row justify-content-center">

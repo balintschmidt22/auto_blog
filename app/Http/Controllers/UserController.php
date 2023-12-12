@@ -6,9 +6,14 @@ use App\Models\User;
 //use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use PDF;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(["can:admin"])->only(['delete']);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -71,9 +76,14 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        Session::flash('user_deleted', $user);
+
+        return redirect('/users');
     }
 
     public function search(Request $request)
@@ -82,9 +92,13 @@ class UserController extends Controller
         $query = $q['params']['search'];
 
         $users = collect(User::all());
-        $filteredUsers = $users->filter(function ($item) use ($query) {
-            return str_contains($item['username'], $query) !== false;
-        });
+        if (trim($query) !== "") {
+            $filteredUsers = $users->filter(function ($item) use ($query) {
+                return str_contains($item['username'], $query) !== false;
+            });
+        } else {
+            $filteredUsers = [];
+        }
 
         return $filteredUsers;
     }

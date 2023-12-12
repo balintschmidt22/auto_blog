@@ -7,6 +7,13 @@
             <h1 class="mb-3">Profile of {{$user->username}}</h1>
         </div>
         <div>
+            @auth
+                @if (Auth::user()->isAdmin())
+                    <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger mb-3">Delete User</a>
+                @endif
+            @endauth
+        </div>
+        <div>
             <h6 class="mb-2">Country: {{$user->country}}</h6>
             <h6 class="mb-2">Email:  <a href="mailto:{{$user->email}}" target="_blank" class="text-decoration-none">{{$user->email}}</a></h6>
             <h6 class="mb-2">Joined: {{$user->created_at}}</h6>
