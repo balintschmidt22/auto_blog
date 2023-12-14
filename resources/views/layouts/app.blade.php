@@ -14,6 +14,11 @@
         @endif
     </title>
 
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
     @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/css/app.css'])
 </head>
 <body>
@@ -91,7 +96,7 @@
             <div class="container">
                 <hr>
                 <div class="d-flex flex-column align-items-center">
-                    <div>
+                    {{-- <div>
                         <a class="me-4 link-secondary">
                             <i class="fa-brands fa-facebook"></i>
                         </a>
@@ -110,7 +115,7 @@
                         <a class="me-4 link-secondary">
                             <i class="fab fa-github"></i>
                         </a>
-                    </div>
+                    </div> --}}
                     <div>
                         <span class="small">AutoBlog</span>
                         <span class="mx-1">·</span>
@@ -120,7 +125,9 @@
                     </div>
 
                     <div>
-                        <span class="small">Schmidt Bálint Márk - FRJR89</span>
+                        <span class="small">Schmidt Bálint Márk</span>
+                        <span class="mx-1">·</span>
+                        <span class="small">FRJR89</span>
                     </div>
                 </div>
             </div>

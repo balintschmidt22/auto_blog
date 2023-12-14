@@ -4,20 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class BrandController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:admin')->only(['create', 'store']);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         return view('brands.index', [
-            $brands = Brand::all()->toArray(),
-            usort($brands, function ($a, $b) {
-                return strcasecmp($a['name'], $b['name']);
-            }),
-            'brands' => $brands
+            'brands' => Brand::all()->sortBy('name')->toArray(),
         ]);
     }
 
@@ -26,7 +28,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        //
+        return view('brands.create');
     }
 
     /**
@@ -34,7 +36,30 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate(
+            [
+                'name' => ['required', 'string', 'unique:brands,name'],
+                'country' => ['required', 'string'],
+                'image' => ['required', 'file', 'image', 'max: 4096'],
+            ]
+        );
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            $img = $file->store('brands', ['disk' => 'public']);
+        }
+
+        $brand = new Brand;
+        $brand->name = $data['name'];
+        $brand->country = $data['country'];
+        $brand->image = $img;
+
+        $brand->save();
+
+        Session::flash('brand_added', $brand);
+
+        return Redirect::route('brands.create');
     }
 
     /**
@@ -42,7 +67,11 @@ class BrandController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('brands.show', [
+            $brand = Brand::findOrFail($id),
+            'brand' => $brand,
+            'types' => $brand->types()->get()->toArray()
+        ]);
     }
 
     /**

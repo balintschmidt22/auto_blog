@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('password');
             $table->string('country');
             $table->boolean('is_admin');
-            $table->rememberToken();
+            $table->rememberToken()->nullable();
             $table->timestamps();
         });
     }

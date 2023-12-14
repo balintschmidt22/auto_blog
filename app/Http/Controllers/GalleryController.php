@@ -14,7 +14,8 @@ class GalleryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware("auth")->only(['create', 'store']);
+        $this->middleware(["auth", "verified"])->only(['create', 'store', 'gettypes']);
+        $this->middleware(["can:admin"])->only(['delete']);
     }
 
     /**
@@ -38,8 +39,7 @@ class GalleryController extends Controller
     public function create()
     {
         return view('gallery.create', [
-            'brands' => Brand::all(),
-            'types' => Type::all(),
+            'brands' => Brand::all()->sortBy('name'),
         ]);
     }
 
@@ -52,8 +52,8 @@ class GalleryController extends Controller
             [
                 'image' => ['required', 'file', 'image', 'max: 4096'],
                 'location' => ['required', 'string'],
-                'brand' => ['required', 'string'],
-                'type' => ['required', 'integer']
+                'brand' => ['required', 'string', 'exists:brands,name'],
+                'type' => ['required', 'integer', 'exists:types,id']
             ]
         );
 
@@ -85,7 +85,16 @@ class GalleryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('gallery.show', [
+            $image = Image::findOrFail($id),
+            $type = $image->type(),
+            'type' => $type->get()->first(),
+            'brand' => Brand::find($type->get()->first()['brand_id']),
+            'image' => $image,
+            $likes = $image->likedBy(),
+            'like_count' => count($likes->get()->toArray()),
+            'likes' => $likes,
+        ]);
     }
 
     /**
@@ -107,8 +116,24 @@ class GalleryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $image = Image::findOrFail($id);
+        $image->delete();
+
+        Session::flash('image_deleted', $image);
+
+        return redirect('/gallery');
+    }
+
+    public function gettypes(Request $request)
+    {
+        $selectedBrand = $request->query('brand');
+
+        $brandId = Brand::where('name', $selectedBrand)->get()->first()['id'];
+
+        $types = Type::orderBy('type')->where('brand_id', $brandId)->get()->toArray(); //pluck('type', 'id');
+
+        return $types;
     }
 }

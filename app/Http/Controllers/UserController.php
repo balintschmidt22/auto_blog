@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Image;
 use App\Models\User;
+//use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use PDF;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(["can:admin"])->only(['delete']);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('users.index', [
-            $users = User::all()->toArray(),
-            usort($users, function ($a, $b) {
-                return strcasecmp($a['username'], $b['username']);
-            }),
-            'users' => $users
-        ]);
+        $users = User::all()->sortBy('username')->toArray();
+        return view('users.search', compact('users'));
     }
 
     /**
@@ -43,8 +44,12 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
+        // $idExists = User::where('id', $id)->exists();
+
+        // abort_unless($idExists, 404, 'ID not found!');
+
         return view('users.show', [
-            $user = User::find($id),
+            $user = User::findOrFail($id),
             'user' => $user,
             $imgs = $user->ownImages(),
             'image_count' => count($imgs->get()->toArray()),
@@ -71,8 +76,72 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        Session::flash('user_deleted', $user);
+
+        return redirect('/users');
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->all();
+        $query = $q['params']['search'];
+
+        $users = collect(User::all());
+        if (trim($query) !== "") {
+            $filteredUsers = $users->filter(function ($item) use ($query) {
+                return str_contains($item['username'], $query) !== false;
+            });
+        } else {
+            $filteredUsers = [];
+        }
+
+        return $filteredUsers;
+    }
+
+    public function createPDF()
+    {
+        $users = User::get()->sortBy('username');
+        $pdf = PDF::loadView('users.pdf', compact('users'));
+        return $pdf->download('autoblog_users.pdf');
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $fileName = 'users.csv';
+        $users = User::all()->sortBy('username');
+
+        $headers = array(
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        );
+
+        $columns = array('Username', 'Email', 'Country', 'Images', 'Registered');
+
+        $callback = function () use ($users, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($users as $user) {
+                $row['Username'] = $user->username;
+                $row['Email'] = $user->email;
+                $row['Country'] = $user->country;
+                $row['Images'] = $user->ownImages()->count();
+                $row['Registered'] = $user->created_at;
+
+                fputcsv($file, array($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Registered']));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
