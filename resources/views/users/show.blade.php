@@ -9,7 +9,9 @@
         <div>
             @auth
                 @if (Auth::user()->isAdmin())
-                    <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger mb-3">Delete User</a>
+                    @if (!$user->isAdmin())
+                        <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger mb-3">Delete User</a>
+                    @endif
                 @endif
             @endauth
         </div>
