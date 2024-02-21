@@ -58,3 +58,9 @@ th {
 .pagination a:hover:not(.active) {
     background-color: #83b5ff;
 }
+
+.card-img-top {
+    width: 100%;
+    height: 20vw;
+    object-fit: cover;
+}

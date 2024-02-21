@@ -71,6 +71,32 @@
                     <td>{{ $image->created_at }}</td>
                 </tr>
             </table>
+
+            <table>
+                    @forelse ($comments as $comment)
+                    <tr>
+                        <td>
+                            {{App\Models\User::find($comment['user_id'])['username']}}
+                        </td>
+                        <td>
+                            {{$comment['comment']}}
+                        </td>
+                        <td>
+                            {{$comment['created_at']}}
+                        </td>
+                    </tr>
+                    @empty
+                        <div class="col-12">
+                            <div class="alert alert-warning" role="alert">
+                                No comments so far
+                            </div>
+                        </div>
+                    @endforelse
+
+
+            </table>
+
+
         </div>
     </div>
 </div>

@@ -94,6 +94,7 @@ class GalleryController extends Controller
             $likes = $image->likedBy(),
             'like_count' => count($likes->get()->toArray()),
             'likes' => $likes,
+            'comments' => $image->comments()->orderBy('created_at', 'ASC')->get()->toArray(),
         ]);
     }
 
