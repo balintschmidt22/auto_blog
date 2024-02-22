@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FavouriteImageController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\TypeController;
@@ -59,6 +60,10 @@ Route::get('users/csv/download', [UserController::class, 'exportCSV'])->name('us
 //     $pdf = Pdf::loadView('pdf.autoblog_users', compact('data'));
 //     return $pdf->download('autoblog_users.pdf');
 // })->name('users.pdf');
+
+//COMMENTS
+Route::resource('comments', CommentController::class);
+Route::post('comments/add/{id}', [CommentController::class, 'addComment'])->middleware(['auth', 'verified'])->name('comments.add');
 
 //FAVOURITES
 Route::resource('favourites', FavouriteImageController::class)->middleware('auth');

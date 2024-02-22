@@ -85,6 +85,9 @@
                                         <td><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></td>
                                     @endif
                                 @endauth
+                                <span>
+                                    <a class="btn"><i class="fa-regular fa-comment fa-xl" style="color: #149f36;"></i> <b>{{count($image->comments()->get()->toArray())}}</b></a>
+                                </span>
                                 <a href="{{route('gallery.show', $image)}}" class="btn btn-primary float-end">
                                     <span>View image</span> <i class="fas fa-angle-right"></i>
                                 </a>

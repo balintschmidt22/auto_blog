@@ -35,6 +35,13 @@
             {{Session::get('fav_removed')->type['type']}} by {{Session::get('fav_removed')->user['username']}}
         </div>
         @endif
+
+        @if(Session::has('comment_added'))
+        <div class="alert alert-success mb-4" role="alert">
+            New comment added by you at
+            {{Session::get('comment_added')->created_at}}
+        </div>
+        @endif
     @endauth
 
     <div class="row">
@@ -56,6 +63,9 @@
                     <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
                 @endif
             @endauth
+            <span>
+                <a class="btn"><i class="fa-regular fa-comment fa-2xl" style="color: #149f36;"></i> <b>{{count($image->comments()->get()->toArray())}}</b></a>
+            </span>
 
             <table class="table table-bordered mt-3">
                 <tr>
@@ -71,33 +81,80 @@
                     <td>{{ $image->created_at }}</td>
                 </tr>
             </table>
-
-            <table>
-                    @forelse ($comments as $comment)
-                    <tr>
-                        <td>
-                            {{App\Models\User::find($comment['user_id'])['username']}}
-                        </td>
-                        <td>
-                            {{$comment['comment']}}
-                        </td>
-                        <td>
-                            {{$comment['created_at']}}
-                        </td>
-                    </tr>
-                    @empty
-                        <div class="col-12">
-                            <div class="alert alert-warning" role="alert">
-                                No comments so far
-                            </div>
-                        </div>
-                    @endforelse
-
-
-            </table>
-
-
         </div>
     </div>
+
+    <section style="background-color: #0D6EFD;">
+        <div class="container my-5 py-5">
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-12 col-lg-10">
+              <div class="card text-dark">
+                <div class="card-body p-4" style="background-color: #f8f9fa;">
+                  <h4 class="mb-0">Comments</h4>
+                  <p class="fw-light">Latest Comments section by users</p>
+                </div>
+                <hr class="my-0" style="height: 1px;" />
+
+                @forelse ($comments as $comment)
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-start">
+                            <img class="rounded-circle shadow-1-strong me-3"
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(33).webp" alt="avatar" width="60"
+                            height="60" />
+                            <div>
+                                <h6 class="fw-bold mb-1">{{App\Models\User::find($comment['user_id'])['username']}}</h6>
+                                <div class="d-flex align-items-center mb-3">
+                                    <p class="mb-0">
+                                        {{date('Y-m-d h:i:s',strtotime($comment['created_at']))}}
+                                        <a href="#!" class="link-muted"><i class="fas fa-pencil-alt ms-2"></i></a>
+                                        @if ($comment['user_id'] === $image->user['id'])
+                                            <span class="badge bg-primary">Creator</span>
+                                        @endif
+                                    </p>
+                                </div>
+                                <p class="mb-0">
+                                    {{$comment['comment']}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-0" style="height: 1px;" />
+                @empty
+                <div class="col-12">
+                    <div class="alert alert-warning" role="alert">
+                        No comments so far
+                    </div>
+                </div>
+                @endforelse
+                <div class="card-footer p-4 border-0" style="background-color: #f8f9fa;">
+
+                    <div class="d-flex flex-start w-100">
+                        <img class="rounded-circle shadow-1-strong me-3"
+                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(33).webp" alt="avatar" width="60"
+                        height="60" />
+                      <div class="form-outline w-100">
+                        <form action="{{ route('comments.add', $image['id']) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+
+                            <label class="form-label" for="comment">Comment:</label>
+                            <textarea class="form-control @error('comment') is-invalid @enderror" id="comment" name="comment" rows="4"
+                            style="background: #fff;" placeholder="Enter your thoughts here (max 2000 characters)"></textarea>
+
+                            @error('comment')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="float-end mt-2 pt-1">
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-arrow-up fa-lg" style="color: #ffffff;"></i> Post comment</button>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </section>
 </div>
 @endsection
