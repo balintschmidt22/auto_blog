@@ -24,7 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'country',
-        'is_admin',
+        'profile_picture',
+        'role',
     ];
 
     /**
@@ -58,7 +59,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdmin()
     {
-        return $this->is_admin === 1;
+        return $this->role === "adm";
+    }
+
+    public function isModerator()
+    {
+        return ($this->role === "adm" || $this->role === "mod");
     }
 
     public function commentedOn()

@@ -39,6 +39,11 @@ Route::middleware('can:admin')->group(function () {
     Route::get('gallery/delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
 });
 
+//MODERATOR FUNCTIONS (ADMIN CAN USE THEM)
+Route::middleware('can:moderator')->group(function () {
+    Route::get('comments/delete/{id}', [CommentController::class, 'delete'])->name('comments.delete');
+});
+
 //GALLERY
 Route::get('gallery/gettypes', [GalleryController::class, 'gettypes'])->middleware(['auth', 'verified'])->name('gallery.gettypes');
 Route::resource('gallery', GalleryController::class);

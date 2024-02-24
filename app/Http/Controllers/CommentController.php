@@ -13,6 +13,7 @@ class CommentController extends Controller
     public function __construct()
     {
         $this->middleware(['auth', 'verified'])->only('addComment');
+        $this->middleware(["can:moderator"])->only('destroy');
     }
 
     /**
@@ -97,8 +98,13 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $comment = Comment::findOrFail($id);
+        $comment->delete();
+
+        Session::flash('comment_deleted', $comment);
+
+        return redirect()->back();
     }
 }

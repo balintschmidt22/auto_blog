@@ -3,24 +3,56 @@
 
 @section('content')
     <div class="container">
-        <div class="row">
-            <h1 class="mb-3">Profile of {{$user->username}}</h1>
+        <div class="row flex">
+            <div class="col-auto">
+                <h1 class="mb-3"><img class="rounded-circle shadow-1-strong"
+                    src={{$user->profile_picture}} alt="avatar" width="100"
+                    height="100" /> Profile of {{$user->username}}
+                </h1><br>
+                <div>
+                    @auth
+                        @if (Auth::user()->isAdmin())
+                            @if (!$user->isAdmin())
+                                <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger mb-3">Delete User</a>
+                            @endif
+                        @endif
+                    @endauth
+                </div>
+            </div>
+            <div class="col float-end">
+                <table class="table table-bordered">
+                    <tr>
+                        <td><b>Role</b></td>
+                        <td>
+                            @if ($user->role === "adm")
+                                Admin
+                            @elseif ($user->role === "mod")
+                                Moderator
+                            @else
+                                User
+                            @endif
+                        </td>
+                    </tr>
+                    <tr class="text-left">
+                        <td><b>Country</b></td>
+                        <td>{{$user->country}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Email</b></td>
+                        <td><a href="mailto:{{$user->email}}" target="_blank" class="text-decoration-none">{{$user->email}}</a></td>
+                    </tr>
+                    <tr>
+                        <td><b>Joined</b></td>
+                        <td>{{$user->created_at}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Photos</b></td>
+                        <td>{{$image_count}}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <div>
-            @auth
-                @if (Auth::user()->isAdmin())
-                    @if (!$user->isAdmin())
-                        <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger mb-3">Delete User</a>
-                    @endif
-                @endif
-            @endauth
-        </div>
-        <div>
-            <h6 class="mb-2">Country: {{$user->country}}</h6>
-            <h6 class="mb-2">Email:  <a href="mailto:{{$user->email}}" target="_blank" class="text-decoration-none">{{$user->email}}</a></h6>
-            <h6 class="mb-2">Joined: {{$user->created_at}}</h6>
-            <h6 class="mb-2">Photos: {{$image_count}}</h6>
-        </div>
+
         @auth
             @if(Session::has('fav_added'))
             <div class="alert alert-success" role="alert">
@@ -94,6 +126,9 @@
                                             <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
                                         @endif
                                     @endauth
+                                    <span>
+                                        <a href="" class="btn"><i class="fa-regular fa-comment fa-xl" style="color: #149f36;"></i> <b>{{count($image->comments()->get()->toArray())}}</b></a>
+                                    </span>
                                     <a href="{{route('gallery.show', $image)}}" class="btn btn-primary float-end">
                                         <span>View image</span> <i class="fas fa-angle-right"></i>
                                     </a>

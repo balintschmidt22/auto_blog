@@ -35,7 +35,9 @@
                         {{-- @auth
                             <th>Follow</th>
                         @endauth --}}
+                        <th>Profile picture</th>
                         <th>Username</th>
+                        <th>Role</th>
                         <th>Country</th>
                         <th>Photos</th>
                     </tr>
@@ -48,7 +50,17 @@
                                 <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Add fav</button></a></td>
                             @endif
                         @endauth --}}
+                        <td><img class="rounded-circle shadow-1-strong"
+                            src={{$user['profile_picture']}} alt="avatar" width="60"
+                            height="60" /></td>
                         <td><a href='{{route('users.show', ['user'=>$user['id']])}}' class="text-decoration-none">{{$user['username']}}</a></td>
+                        <td>@if ($user['role'] === "adm")
+                            admin
+                        @elseif ($user['role'] === "mod")
+                            moderator
+                        @else
+                            user
+                        @endif</td>
                         <td>{{$user['country']}}</td>
                         <td>{{App\Models\User::find($user['id'])->ownImages()->count()}}</td>
                     </tr>
@@ -64,7 +76,7 @@
         </div>
         <div class="col-lg-4">
             <div>
-                <input type="text" size="25" id="searchInput" placeholder="Search..." class="float-left mt-4">
+                <input type="text" size="25" id="searchInput" placeholder="Search user..." class="float-left mt-4">
             </div>
             <div>
                 <table class="table table-bordered float-left mt-4" id="foundUsers">

@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => bcrypt('adminpwd'),
                 'country' => 'Hungary',
-                'is_admin' => true,
+                'profile_picture' => "https://i.imgur.com/fc3wHZH.png",
+                'role' => "adm",
                 'remember_token' => Str::random(10),
             ]);
         }
@@ -45,6 +46,20 @@ class DatabaseSeeder extends Seeder
 
         $comment_count = $image_count * 2 + rand(1, 30);
         $comments = Comment::factory($comment_count)->create();
+
+        foreach ($users as $user) {
+            $placeHolders = [
+                //"https://i.imgur.com/QqNNOcI.jpeg"
+                "https://i.imgur.com/NIW0rWI.jpeg"
+            ];
+            $user['profile_picture'] = $placeHolders[array_rand($placeHolders, 1)];
+            for ($i = 0; $i < 3; $i++) {
+                $users[$i]['role'] = "mod";
+                $users[$i]['profile_picture'] = "https://i.imgur.com/ui1n1Cx.png";
+            }
+
+            $user->save();
+        }
 
         $types->each(function ($type) use (&$brands) {
             $type->brand()->associate(

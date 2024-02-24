@@ -42,6 +42,16 @@
             {{Session::get('comment_added')->created_at}}
         </div>
         @endif
+
+        @if(Session::has('comment_deleted'))
+        <div class="alert alert-warning mb-4" role="alert">
+            Comment by
+            {{App\Models\User::find(Session::get('comment_deleted')->user_id)['username']}},
+            written at
+            {{Session::get('comment_deleted')->created_at}}
+            deleted
+        </div>
+        @endif
     @endauth
 
     <div class="row">
@@ -99,17 +109,25 @@
                     <div class="card-body p-4">
                         <div class="d-flex flex-start">
                             <img class="rounded-circle shadow-1-strong me-3"
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(33).webp" alt="avatar" width="60"
+                            src={{App\Models\User::find($comment['user_id'])['profile_picture']}} alt="avatar" width="60"
                             height="60" />
                             <div>
-                                <h6 class="fw-bold mb-1">{{App\Models\User::find($comment['user_id'])['username']}}</h6>
+                                <a href="{{route('users.show', ['user'=>$comment['user_id']])}}" class="text-decoration-none link-primary">
+                                    <h6 class="fw-bold mb-1">{{App\Models\User::find($comment['user_id'])['username']}}
+                                        @if ($comment['user_id'] === $image->user['id'])
+                                            <span class="badge bg-primary">Creator</span>
+                                        @endif
+                                    </h6>
+                                </a>
                                 <div class="d-flex align-items-center mb-3">
                                     <p class="mb-0">
                                         {{date('Y-m-d h:i:s',strtotime($comment['created_at']))}}
                                         <a href="#!" class="link-muted"><i class="fas fa-pencil-alt ms-2"></i></a>
-                                        @if ($comment['user_id'] === $image->user['id'])
-                                            <span class="badge bg-primary">Creator</span>
-                                        @endif
+                                        @auth
+                                            @if (Auth::user()->isModerator())
+                                                <a href="{{route('comments.delete', ["id"=>$comment['id']])}}" class="btn btn-danger btn-sm">Delete</a>
+                                            @endif
+                                        @endauth
                                     </p>
                                 </div>
                                 <p class="mb-0">
@@ -130,7 +148,9 @@
 
                     <div class="d-flex flex-start w-100">
                         <img class="rounded-circle shadow-1-strong me-3"
-                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(33).webp" alt="avatar" width="60"
+                        @auth src={{Auth::user()->profile_picture}} @endauth
+                        @guest src="https://i.imgur.com/QqNNOcI.jpeg" @endguest
+                        alt="avatar" width="60"
                         height="60" />
                       <div class="form-outline w-100">
                         <form action="{{ route('comments.add', $image['id']) }}" method="POST" enctype="multipart/form-data">
