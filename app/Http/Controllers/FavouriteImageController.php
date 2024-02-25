@@ -18,9 +18,10 @@ class FavouriteImageController extends Controller
      */
     public function index()
     {
-        return view('favourites.index', [
+        return view('gallery.index', [
             $imgs = Auth::user()->likedImages(),
             'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+            'title' => 'Favourite Images'
         ]);
     }
 
@@ -76,7 +77,7 @@ class FavouriteImageController extends Controller
     {
         $user = Auth::user();
 
-        $image = Image::find($id);
+        $image = Image::findOrFail($id);
 
         $favs = $user->likedImages()->get()->toArray();
         $fav_ids = array_column($favs, 'id');

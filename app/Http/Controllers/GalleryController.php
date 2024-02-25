@@ -24,12 +24,9 @@ class GalleryController extends Controller
     public function index()
     {
         return view('gallery.index', [
-            // $images = Image::all()->toArray(),
-            // usort($images, function ($a, $b) {
-            //     return $a['created_at'] >= $b['created_at'];
-            // }),
             'images' => Image::with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
-            'image_count' => count(Image::all()->toArray()),
+            //'image_count' => count(Image::all()->toArray()),
+            'title' => 'Gallery'
         ]);
     }
 

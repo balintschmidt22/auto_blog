@@ -65,13 +65,14 @@ class TypeController extends Controller
      */
     public function show(string $id)
     {
-        return view('types.show', [
+        return view('gallery.index', [
             $type = Type::findOrFail($id),
             'type' => $type,
             'brand' => Brand::find($type['brand_id']),
             $imgs = $type->images(),
             'image_count' => count($imgs->get()->toArray()),
             'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+            'title' => 'type'
         ]);
     }
 

@@ -108,9 +108,17 @@ class DatabaseSeeder extends Seeder
         $users->each(function ($user) use (&$images, &$image_count) {
             $user->likedImages()->sync(
                 $images->random(
-                    rand(0, $image_count)
+                    rand(0, ceil($image_count / 2))
                 )
             );
         });
+
+        foreach ($users as $user) {
+            $user->follows()->sync(
+                $users->random(
+                    rand(0, ceil($user_count / 2))
+                )
+            );
+        }
     }
 }

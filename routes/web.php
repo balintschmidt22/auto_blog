@@ -3,6 +3,7 @@
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FavouriteImageController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
@@ -73,6 +74,9 @@ Route::post('comments/add/{id}', [CommentController::class, 'addComment'])->midd
 //FAVOURITES
 Route::resource('favourites', FavouriteImageController::class)->middleware('auth');
 Route::get('favourites/add/{id}', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
+
+//FOLLOWS
+Route::get('follows/followUser/{id}', [FollowController::class, 'followUser'])->middleware(['auth', 'verified'])->name('follows.followUser');
 
 // EMAIL VERIFICATION
 Route::get('/email/verify', function () {

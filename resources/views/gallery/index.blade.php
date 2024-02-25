@@ -1,13 +1,23 @@
 @extends('layouts.app')
-@section('title', 'Photos')
+@section('title', 'Gallery')
 
 @section('content')
 <div class="container">
     <div class="row">
-        <h1>Gallery</h1>
+        <h1>
+            @if ($title === "type")
+                @if(str_starts_with($brand['image'],"https"))
+                    <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image">
+                @else
+                    <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px">
+                @endif
+                {{$brand['name']}} {{$type['type']}} ({{$brand['country']}}) - {{$image_count}}
+            @else
+                {{$title}}
+            @endif
+        </h1>
     </div>
     @auth
-
         @if(Session::has('fav_added'))
         <div class="alert alert-success" role="alert">
             You liked:
@@ -89,7 +99,7 @@
                                     @endif
                                 @endauth
                                 <span>
-                                    <a href="" class="btn"><i class="fa-regular fa-comment fa-xl" style="color: #149f36;"></i> <b>{{count($image->comments()->get()->toArray())}}</b></a>
+                                    <a class="btn"><i class="fa-regular fa-comment fa-xl" style="color: #149f36;"></i> <b>{{count($image->comments()->get()->toArray())}}</b></a>
                                 </span>
                                 <a href="{{route('gallery.show', $image)}}" class="btn btn-primary float-end">
                                     <span>View image</span> <i class="fas fa-angle-right"></i>
