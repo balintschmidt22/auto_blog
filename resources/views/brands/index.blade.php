@@ -23,13 +23,25 @@
             Favourite brand successfully removed with name: {{Session::get('fav_removed')->name}}
         </div>
         @endif
+
+        @if(Session::has('followed'))
+            <div class="alert alert-success" role="alert">
+                New brand followed: {{Session::get('followed')->name}}
+            </div>
+        @endif
+
+        @if(Session::has('unfollowed'))
+            <div class="alert alert-warning" role="alert">
+                Brand is no longer followed: {{Session::get('unfollowed')->name}}
+            </div>
+        @endif
     @endauth
     <div>
         <table class="table table-bordered table-striped">
             <tr class="table-primary">
-                {{-- @auth
-                    <th>Favourites</th>
-                @endauth --}}
+                @auth
+                    <th>Follow</th>
+                @endauth
                 <th>Logo</th>
                 <th>Name</th>
                 <th>Country</th>
@@ -37,13 +49,13 @@
             </tr>
         @forelse($brands as $brand)
             <tr>
-                {{-- @auth
-                    @if(in_array($brand['id'], array_column(Auth::user()->brands()->get()->toArray(), 'id')))
-                        <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Remove</button></a></td>
+                @auth
+                    @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
+                        <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
                     @else
-                        <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Add fav</button></a></td>
+                        <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
                     @endif
-                @endauth --}}
+                @endauth
                 @if(str_starts_with($brand['image'],"https"))
                 <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image"></td>
                 @else

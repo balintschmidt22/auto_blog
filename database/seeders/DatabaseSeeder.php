@@ -105,10 +105,15 @@ class DatabaseSeeder extends Seeder
             $comment->save();
         });
 
-        $users->each(function ($user) use (&$images, &$image_count) {
+        $users->each(function ($user) use (&$images, &$image_count, &$brands, &$brand_count) {
             $user->likedImages()->sync(
                 $images->random(
                     rand(0, ceil($image_count / 2))
+                )
+            );
+            $user->followedBrands()->sync(
+                $brands->random(
+                    rand(0, ceil($brand_count / 2))
                 )
             );
         });

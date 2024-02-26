@@ -21,22 +21,13 @@
                 <h1 class="mb-3"><img class="rounded-circle shadow-1-strong"
                     src={{$user->profile_picture}} alt="avatar" width="100"
                     height="100" /> Profile of {{$user->username}}
-                </h1><br>
-                <div>
-                    @auth
-                        @if (Auth::user()->isAdmin())
-                            @if (!$user->isAdmin())
-                                <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger mb-3">Delete User</a>
-                            @endif
-                        @endif
-                    @endauth
-                </div>
+                </h1>
             </div>
             <div class="col float-end">
                 <table class="table table-bordered table-striped table-hover">
                     <tr>
-                        <td colspan="2"><b>Role</b></td>
-                        <td colspan="2">
+                        <td><b>Role</b></td>
+                        <td>
                             @if ($user->role === "adm")
                                 Admin
                             @elseif ($user->role === "mod")
@@ -47,39 +38,50 @@
                         </td>
                     </tr>
                     <tr class="text-left">
-                        <td colspan="2"><b>Country</b></td>
-                        <td colspan="2">{{$user->country}}</td>
+                        <td><b>Country</b></td>
+                        <td>{{$user->country}}</td>
                     </tr>
                     <tr>
-                        <td colspan="2"><b>Email</b></td>
-                        <td colspan="2"><a href="mailto:{{$user->email}}" target="_blank" class="text-decoration-none">{{$user->email}}</a></td>
+                        <td><b>Email</b></td>
+                        <td><a href="mailto:{{$user->email}}" target="_blank" class="text-decoration-none">{{$user->email}}</a></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><b>Joined</b></td>
-                        <td colspan="2">{{$user->created_at}}</td>
+                        <td><b>Joined</b></td>
+                        <td>{{$user->created_at}}</td>
                     </tr>
                     <tr>
-                        <td colspan="2"><b>Photos</b></td>
-                        <td colspan="2">{{$image_count}}</td>
+                        <td><b>Photos</b></td>
+                        <td>{{$image_count}}</td>
                     </tr>
-                </table>
-
-                <table class="table table-bordered table-striped-columns table-hover">
-                    <tr>
-                        @auth
-                           @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
-                                <td class="col-1"><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
-                            @else
-                                <td><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+                    @auth
+                        @if (Auth::user()->isAdmin())
+                            @if (!$user->isAdmin())
+                                <tr>
+                                    <td colspan="2">
+                                    <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger">Delete User</a>
+                                    </td>
+                                </tr>
                             @endif
-                        @endauth
-                        <td class="col-4"><b>Followed By</b></td>
-                        <td class="col-4">{{count($user->followedBy()->get()->toArray())}}</td>
-                        <td class="col-4"><b>Follows</b></td>
-                        <td class="col-4">{{count($user->follows()->get()->toArray())}}</td>
-                    </tr>
+                        @endif
+                    @endauth
                 </table>
             </div>
+            <table class="table table-bordered table-striped-columns table-hover">
+                <tr>
+                    <td class="col-4">
+                        @auth
+                            @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
+                                <a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a>
+                            @else
+                                <a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a>
+                            @endif
+                        @endauth <b>Followed By</b>
+                    </td>
+                    <td class="col-4">{{count($user->followedBy()->get()->toArray())}}</td>
+                    <td class="col-4"><b>Follows</b></td>
+                    <td class="col-4">{{count($user->follows()->get()->toArray())}}</td>
+                </tr>
+            </table>
         </div>
 
         @auth
@@ -114,13 +116,13 @@
                         <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
                             <div class="card bg-light border-secondary mt-3 ratio-4x3 w-100">
                                 @if(str_starts_with($image['image'],"http"))
-                                    <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
+                                    <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                                 @else
-                                    <img class="card-img-top" src="{{URL::asset('storage/'.$image['image'])}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
+                                    <img class="card-img-top" src="{{URL::asset('storage/'.$image['image'])}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                                 @endif
                                 <div class="card-body">
                                     {{-- TODO: Brand - Type --}}
-                                    <h5 class="card-title mb-0"><a href="{{route('brands.show', ['brand'=>$image->type['brand_id']])}}" class="text-decoration-none">{{App\Models\Brand::find( $image->type['brand_id'])['name']}}</a> <a href="{{route('types.show', ['type'=>$image->type['id']])}}" class="text-decoration-none">{{ $image->type['type'] }}</a></h5>
+                                    <h5 class="card-title mb-0"><a href="{{route('brands.show', ['brand'=>$image->type['brand_id']])}}" class="text-decoration-none">{{App\Models\Brand::find($image->type['brand_id'])['name']}}</a> <a href="{{route('types.show', ['type'=>$image->type['id']])}}" class="text-decoration-none">{{ $image->type['type'] }}</a></h5>
                                     <p class="small mb-0">
                                         <span class="me-2">
                                             <i class="fas fa-user"></i>

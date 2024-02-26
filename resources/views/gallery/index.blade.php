@@ -57,13 +57,13 @@
                     <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
                         <div class="card bg-light border-secondary mt-3 ratio-4x3 w-100">
                             @if(str_starts_with($image['image'],"http"))
-                                <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
+                                <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                             @else
-                                <img class="card-img-top" src="{{"storage/".$image['image']}}" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
+                                <img class="card-img-top" src="{{URL::asset('storage/'.$image['image'])}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                             @endif
                             <div class="card-body">
                                 {{-- TODO: Brand - Type --}}
-                                <h5 class="card-title mb-0"><a href="{{route('brands.show', ['brand'=>$image->type['brand_id']])}}" class="text-decoration-none">{{App\Models\Brand::find( $image->type['brand_id'])['name']}}</a> <a href="{{route('types.show', ['type'=>$image->type['id']])}}" class="text-decoration-none">{{ $image->type['type'] }}</a></h5>
+                                <h5 class="card-title mb-0"><a href="{{route('brands.show', ['brand'=>$image->type['brand_id']])}}" class="text-decoration-none">{{App\Models\Brand::find($image->type['brand_id'])['name']}}</a> <a href="{{route('types.show', ['type'=>$image->type['id']])}}" class="text-decoration-none">{{ $image->type['type'] }}</a></h5>
                                 <p class="small mb-0">
                                     <span class="me-2">
                                         <i class="fas fa-user"></i>

@@ -41,13 +41,23 @@
                         <a href="{{route('brands.index')}}" class="topbar"><button class="btn btn-primary mb-3">Brands <i class="fa-solid fa-car fa-lg" style="color: #ffffff;"></i></button></a>
                         @auth
                             <a href="{{route('favourites.index')}}" class="topbar"><button class="btn btn-primary mb-3">Favourites <i class="fa-solid fa-heart fa-lg" style="color: #ffffff;"></i></button></a>
+
+                            <div class="dropdown">
+                                <a class="topbar btn btn-primary mb-3 dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Follows <i class="fa-solid fa-user-plus fa-lg" style="color: #ffffff;"></i>
+                                </a >
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                  <li><a class="dropdown-item" href="{{route('follows.followedUsers')}}">Users</a></li>
+                                  <li><a class="dropdown-item" href="{{route('follows.followedBrands')}}">Brands</a></li>
+                                </ul>
+                            </div>
                         @endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         @auth
-                            <a href="{{route('users.show', ['user' => Auth::user()->id])}}">
+                            <a href="{{route('users.show', ['user' => Auth::user()->id])}}" class="mb-3 topbar">
                                 <img class="rounded-circle shadow-1-strong me-2"
                                 src={{Auth::user()->profile_picture}} alt="avatar" width="45"
                                 height="45" />
@@ -58,18 +68,18 @@
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    <a class="nav-link text-white btn btn-primary topbar mb-3" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link text-white btn btn-primary topbar mb-3" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle text-white btn btn-primary topbar" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->username }}
                                 </a>
 

@@ -81,4 +81,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(User::class, 'user_user', 'follows', 'user_id')->withTimestamps();
     }
+
+    public function followedBrands()
+    {
+        return $this->belongsToMany(Brand::class, 'brand_user')->withTimestamps();
+    }
 }

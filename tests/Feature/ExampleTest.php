@@ -32,7 +32,7 @@ class ExampleTest extends TestCase
     public function test_an_action_that_requires_admin_authentication(): void
     {
         $user = User::factory()->create();
-        $user->is_admin = 1;
+        $user->role = "adm";
 
         $response = $this->actingAs($user)
             ->get('/brands/create');

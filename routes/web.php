@@ -78,6 +78,12 @@ Route::get('favourites/add/{id}', [FavouriteImageController::class, 'add'])->mid
 //FOLLOWS
 Route::get('follows/followUser/{id}', [FollowController::class, 'followUser'])->middleware(['auth', 'verified'])->name('follows.followUser');
 
+Route::get('follows/followBrand/{id}', [FollowController::class, 'followBrand'])->middleware(['auth', 'verified'])->name('follows.followBrand');
+
+Route::get('follows/followedUsers', [FollowController::class, 'followedUsers'])->middleware(['auth', 'verified'])->name('follows.followedUsers');
+
+Route::get('follows/followedBrands', [FollowController::class, 'followedBrands'])->middleware(['auth', 'verified'])->name('follows.followedBrands');
+
 // EMAIL VERIFICATION
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
