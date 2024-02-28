@@ -64,7 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isModerator()
     {
-        return ($this->role === "adm" || $this->role === "mod");
+        return($this->role === "adm" || $this->role === "mod");
     }
 
     public function commentedOn()
@@ -85,5 +85,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function followedBrands()
     {
         return $this->belongsToMany(Brand::class, 'brand_user')->withTimestamps();
+    }
+
+    public function messagesSent()
+    {
+        return $this->hasMany(Message::class, 'from_id');
+    }
+
+    public function messagesReceived()
+    {
+        return $this->hasMany(Message::class, 'to_id');
     }
 }

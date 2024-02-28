@@ -60,6 +60,8 @@ Route::resource('users', UserController::class);
 Route::post('users/search', [UserController::class, 'search'])->name('users.search');
 Route::get('users/pdf/download', [UserController::class, 'createPDF'])->name('users.pdf.download');
 Route::get('users/csv/download', [UserController::class, 'exportCSV'])->name('users.csv.download');
+Route::get('users/message/{id}', [UserController::class, 'message'])->middleware(['auth', 'verified'])->name('users.message');
+Route::post('users/addMessage/{id}', [UserController::class, 'addMessage'])->middleware(['auth', 'verified'])->name('users.addMessage');
 
 // Route::get('userspdf', function () {
 //     $data = User::get();

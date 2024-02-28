@@ -64,3 +64,32 @@ th {
     height: 250px;
     object-fit: cover;
 }
+
+.chat {
+    height: auto;
+    max-height: 40em;
+    flex-direction: column-reverse;
+    position: relative;
+    display: flex;
+}
+
+#chat3 .form-control {
+    border-color: transparent;
+}
+
+#chat3 .form-control:focus {
+    border-color: transparent;
+    box-shadow: inset 0px 0px 0px 1px transparent;
+}
+
+.bubble {
+    -ms-word-break: break-all;
+    word-break: break-all;
+
+    /* Non standard for webkit */
+    word-break: break-word;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+}

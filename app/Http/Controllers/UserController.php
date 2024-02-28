@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Message;
 use App\Models\User;
 //use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use PDF;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function __construct()
     {
+        $this->middleware(["auth", "verified"])->only(['message']);
         $this->middleware(["can:admin"])->only(['delete']);
     }
     /**
@@ -136,12 +139,56 @@ class UserController extends Controller
                 $row['Images'] = $user->ownImages()->count();
                 $row['Registered'] = $user->created_at;
 
-                fputcsv($file, array($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Registered']));
+                fputcsv($file, array ($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Registered']));
             }
 
             fclose($file);
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function message(string $id)
+    {
+        $user = Auth::user();
+        $otherUser = User::findOrFail($id);
+
+        $messagesSent = $user->messagesSent()->get()->where('to_id', '=', $id);
+        $messagesReceived = $user->messagesReceived()->get()->where('from_id', '=', $id);
+
+        $messages = $messagesSent->concat($messagesReceived)->values();
+
+        return view('messages.index', [
+            'messages' => $messages->sortByDesc('created_at'),
+            'otherUser' => $otherUser,
+        ]);
+    }
+
+    public function addMessage(Request $request, string $id)
+    {
+        $data = $request->validate(
+            [
+                'message' => ['required', 'string', 'min:1', 'max: 2000'],
+            ]
+        );
+
+        $user = Auth::id();
+
+        $message = new Message;
+        $message->message = $data['message'];
+
+        $message->from()->associate(
+            $user
+        );
+
+        $message->to()->associate(
+            $id
+        );
+
+        $message->save();
+
+        Session::flash('message_sent', $message);
+
+        return redirect()->back();
     }
 }

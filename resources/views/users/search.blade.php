@@ -39,6 +39,7 @@
                         <th>Photos</th>
                         @auth
                             <th>Follow</th>
+                            <th>Message</th>
                         @endauth
                     </tr>
                 @forelse($users as $user)
@@ -62,6 +63,8 @@
                             @else
                                 <td><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
                             @endif
+                            <td><a href="{{route('users.message', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-message" style="color: #ffffff;"></i></a>
+                            </td>
                         @endauth
                     </tr>
                 @empty

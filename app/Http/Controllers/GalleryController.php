@@ -67,7 +67,7 @@ class GalleryController extends Controller
             $data['type']
         );
         $image->user()->associate(
-            Auth::user()->id
+            Auth::id()
         );
 
         $image->save();

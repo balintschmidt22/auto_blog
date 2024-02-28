@@ -57,7 +57,7 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         @auth
-                            <a href="{{route('users.show', ['user' => Auth::user()->id])}}" class="mb-3 topbar">
+                            <a href="{{route('users.show', ['user' => Auth::id()])}}" class="mb-3 topbar">
                                 <img class="rounded-circle shadow-1-strong me-2"
                                 src={{Auth::user()->profile_picture}} alt="avatar" width="45"
                                 height="45" />

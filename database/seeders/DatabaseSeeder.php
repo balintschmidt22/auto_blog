@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Comment;
+use App\Models\Message;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
         }
         $user_count = rand(14, 20);
         $users = User::factory($user_count)->create();
+        //$users = $usrs->concat($admin);
 
         $brand_count = rand(15, 25);
         $brands = Brand::factory($brand_count)->create();
@@ -46,6 +48,9 @@ class DatabaseSeeder extends Seeder
 
         $comment_count = $image_count * 2 + rand(1, 30);
         $comments = Comment::factory($comment_count)->create();
+
+        $message_count = $user_count * 8 + rand(1, 10);
+        $messages = Message::factory($message_count)->create();
 
         foreach ($users as $user) {
             $placeHolders = [
@@ -103,6 +108,16 @@ class DatabaseSeeder extends Seeder
                 $images->random()->id
             );
             $comment->save();
+        });
+
+        $messages->each(function ($message) use (&$users) {
+            $message->from()->associate(
+                $users->random()->id
+            );
+            $message->to()->associate(
+                $users->random()->id
+            );
+            $message->save();
         });
 
         $users->each(function ($user) use (&$images, &$image_count, &$brands, &$brand_count) {

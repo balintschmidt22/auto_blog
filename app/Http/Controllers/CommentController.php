@@ -51,7 +51,7 @@ class CommentController extends Controller
             ]
         );
 
-        $user = Auth::user()->id;
+        $user = Auth::id();
 
         $comment = new Comment;
         $comment->comment = $data['comment'];
