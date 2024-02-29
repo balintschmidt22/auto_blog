@@ -54,32 +54,46 @@
                         <td>{{$image_count}}</td>
                     </tr>
                     @auth
-                        @if (Auth::user()->isAdmin())
-                            @if (!$user->isAdmin())
-                                <tr>
-                                    <td colspan="2">
-                                    <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger">Delete User</a>
-                                    </td>
-                                </tr>
-                            @endif
+                        @if (Auth::id() != $user->id)
+                            <tr>
+                                <td colspan="2">
+                                    @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
+                                        <a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary m-2"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a>
+                                    @else
+                                        <a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary m-2"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a>
+                                    @endif
+                                    <a href="{{route('users.message', ['id'=>$user['id']])}}" class="btn btn-primary m-2"><i class="fa-solid fa-message" style="color: #ffffff;"></i></a>
+                                    @if (Auth::user()->isAdmin())
+                                        @if (!$user->isAdmin())
+                                                <a href="" class="btn btn-warning m-2">Add moderator</a>
+                                                <a href="" class="btn btn-warning m-2">Remove moderator</a>
+                                                <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger m-2">Delete User</a>
+                                        @endif
+                                    @endif
+                                </td>
+                            </tr>
                         @endif
                     @endauth
                 </table>
             </div>
             <table class="table table-bordered table-striped-columns table-hover">
                 <tr>
-                    <td class="col-4">
-                        @auth
-                            @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
-                                <a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a>
-                            @else
-                                <a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a>
-                            @endif
-                        @endauth <b>Followed By</b>
-                    </td>
-                    <td class="col-4">{{count($user->followedBy()->get()->toArray())}}</td>
-                    <td class="col-4"><b>Follows</b></td>
-                    <td class="col-4">{{count($user->follows()->get()->toArray())}}</td>
+                    <td class="col-3"><b>Followed By</b></td>
+                    <td class="col-3">{{$followedBy}}</td>
+                    <td class="col-3"><b>Follows</b></td>
+                    <td class="col-3">{{$follows}}</td>
+                </tr>
+                <tr>
+                    <td class="col-3"><b>Likes Received</b></td>
+                    <td class="col-3">{{$likedBy}}</td>
+                    <td class="col-3"><b>Likes Given</b></td>
+                    <td class="col-3">{{$likesGiven}}</td>
+                </tr>
+                <tr>
+                    <td class="col-3"><b>Comments Received</b></td>
+                    <td class="col-3">{{$commentsGot}}</td>
+                    <td class="col-3"><b>Commented On</b></td>
+                    <td class="col-3">{{$commentedOn}}</td>
                 </tr>
             </table>
         </div>

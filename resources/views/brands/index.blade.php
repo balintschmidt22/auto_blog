@@ -12,18 +12,6 @@
             </div>
         @endif
 
-        @if(Session::has('fav_added'))
-        <div class="alert alert-success" role="alert">
-            New favourite brand successfully added with name: {{Session::get('fav_added')->name}}
-        </div>
-        @endif
-
-        @if(Session::has('fav_removed'))
-        <div class="alert alert-success" role="alert">
-            Favourite brand successfully removed with name: {{Session::get('fav_removed')->name}}
-        </div>
-        @endif
-
         @if(Session::has('followed'))
             <div class="alert alert-success" role="alert">
                 New brand followed: {{Session::get('followed')->name}}

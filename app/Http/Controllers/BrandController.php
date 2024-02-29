@@ -67,10 +67,20 @@ class BrandController extends Controller
      */
     public function show(string $id)
     {
+        $brand = Brand::findOrFail($id);
+        $likedBy = 0;
+        foreach ($brand->types()->get() as $t) {
+            foreach ($t->images()->get() as $i) {
+                $likedBy += count($i->likedBy()->get()->toArray());
+            }
+            ;
+        }
+
         return view('brands.show', [
-            $brand = Brand::findOrFail($id),
             'brand' => $brand,
-            'types' => $brand->types()->get()->toArray()
+            'types' => $brand->types()->get()->toArray(),
+            'followedBy' => count($brand->followedBy()->get()),
+            'likedBy' => $likedBy,
         ]);
     }
 

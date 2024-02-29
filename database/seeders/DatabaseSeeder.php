@@ -19,23 +19,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //User::factory(10)->create();
-
-        if (!User::where('username', '=', 'admin')->first()) {
-            User::factory()->create([
-                'username' => 'admin',
-                'email' => 'admin@autoblog.com',
-                'email_verified_at' => now(),
-                'password' => bcrypt('adminpwd'),
-                'country' => 'Hungary',
-                'profile_picture' => "https://i.imgur.com/fc3wHZH.png",
-                'role' => "adm",
-                'remember_token' => Str::random(10),
-            ]);
-        }
+        // if (!User::where('username', '=', 'admin')->first()) {
+        //     $admin = User::factory()->create([
+        //         'username' => 'admin',
+        //         'email' => 'admin@autoblog.com',
+        //         'email_verified_at' => now(),
+        //         'password' => bcrypt('adminpwd'),
+        //         'country' => 'Hungary',
+        //         'profile_picture' => "https://i.imgur.com/fc3wHZH.png",
+        //         'role' => "adm",
+        //         'remember_token' => Str::random(10),
+        //     ]);
+        // }
         $user_count = rand(14, 20);
         $users = User::factory($user_count)->create();
-        //$users = $usrs->concat($admin);
+
+        $admin = User::find(1);
+        $admin['username'] = 'admin';
+        $admin['email'] = 'admin@autoblog.com';
+        $admin['password'] = bcrypt('adminpwd');
+        $admin['country'] = 'Hungary';
+        $admin['profile_picture'] = "https://i.imgur.com/fc3wHZH.png";
+        $admin['role'] = "adm";
+        $admin->save();
 
         $brand_count = rand(15, 25);
         $brands = Brand::factory($brand_count)->create();
@@ -49,21 +55,22 @@ class DatabaseSeeder extends Seeder
         $comment_count = $image_count * 2 + rand(1, 30);
         $comments = Comment::factory($comment_count)->create();
 
-        $message_count = $user_count * 8 + rand(1, 10);
+        $message_count = $user_count * 10 + rand(1, 10);
         $messages = Message::factory($message_count)->create();
 
-        foreach ($users as $user) {
-            $placeHolders = [
-                //"https://i.imgur.com/QqNNOcI.jpeg"
-                "https://i.imgur.com/NIW0rWI.jpeg"
-            ];
-            $user['profile_picture'] = $placeHolders[array_rand($placeHolders, 1)];
-            for ($i = 0; $i < 3; $i++) {
-                $users[$i]['role'] = "mod";
-                $users[$i]['profile_picture'] = "https://i.imgur.com/ui1n1Cx.png";
-            }
-
+        foreach ($users->where('id', '>', 4) as $user) {
+            // $placeHolders = [
+            //     //"https://i.imgur.com/QqNNOcI.jpeg"
+            //     "https://i.imgur.com/NIW0rWI.jpeg"
+            // ];
+            $user['profile_picture'] = "https://i.imgur.com/NIW0rWI.jpeg";//$placeHolders[array_rand($placeHolders, 1)];
             $user->save();
+        }
+
+        for ($i = 1; $i < 4; $i++) {
+            $users[$i]['role'] = "mod";
+            $users[$i]['profile_picture'] = "https://i.imgur.com/ui1n1Cx.png";
+            $users[$i]->save();
         }
 
         $types->each(function ($type) use (&$brands) {
@@ -73,9 +80,19 @@ class DatabaseSeeder extends Seeder
             $type->save();
         });
 
-        $images->each(function ($image) use (&$types) {
+        $placeHolders = [
+            "https://i.imgur.com/EMeIRuc.jpg",
+            "https://i.imgur.com/3tkSpHa.jpg",
+            "https://i.imgur.com/jyjA6Sp.jpeg",
+            "https://i.imgur.com/dHyVVcC.jpeg",
+            "https://i.imgur.com/rddmXdD.jpeg",
+            "https://i.imgur.com/OrSgmyZ.jpeg",
+            "https://i.imgur.com/eeobjTw.jpeg"
+        ];
+
+        $images->each(function ($image) use (&$types, &$placeHolders) {
             $type = $types->random();
-            $brand = $type->brand()->get()->first();
+            //$brand = $type->brand()->get()->first();
             $image->type()->associate(
                 $type->id
             );
@@ -110,12 +127,13 @@ class DatabaseSeeder extends Seeder
             $comment->save();
         });
 
-        $messages->each(function ($message) use (&$users) {
+        $messages->each(function ($message) use (&$users, &$user_count) {
+            $id = $users->random()->id;
             $message->from()->associate(
-                $users->random()->id
+                $id
             );
             $message->to()->associate(
-                $users->random()->id
+                $users->where('id', '!=', $id)->random()->id
             );
             $message->save();
         });
@@ -135,7 +153,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($users as $user) {
             $user->follows()->sync(
-                $users->random(
+                $users->where('id', '!=', $user['id'])->random(
                     rand(0, ceil($user_count / 2))
                 )
             );

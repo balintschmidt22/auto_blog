@@ -21,6 +21,10 @@ class FollowController extends Controller
     {
         $user = Auth::user();
 
+        if ($user['id'] == $id) {
+            abort(404);
+        }
+
         $follow = User::findOrFail($id);
 
         $follows = $user->follows()->get()->toArray();

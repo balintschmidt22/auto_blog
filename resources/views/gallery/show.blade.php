@@ -101,7 +101,7 @@
               <div class="card text-dark">
                 <div class="card-body p-4" style="background-color: #f8f9fa;">
                   <h4 class="mb-0">Comments</h4>
-                  <p class="fw-light">Latest Comments section by users</p>
+                  <p class="fw-light">Latest comments by users</p>
                 </div>
                 <hr class="my-0" style="height: 1px;" />
 

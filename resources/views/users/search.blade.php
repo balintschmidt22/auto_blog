@@ -58,13 +58,17 @@
                         <td>{{$user['country']}}</td>
                         <td>{{App\Models\User::find($user['id'])->ownImages()->count()}}</td>
                         @auth
-                           @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
-                                <td><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
+                            @if (Auth::id() == $user['id'])
+                                <td>-</td>
+                                <td>-</td>
                             @else
-                                <td><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+                                @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
+                                    <td><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
+                                @else
+                                    <td><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+                                @endif
+                                <td><a href="{{route('users.message', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-message" style="color: #ffffff;"></i></a></td>
                             @endif
-                            <td><a href="{{route('users.message', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-message" style="color: #ffffff;"></i></a>
-                            </td>
                         @endauth
                     </tr>
                 @empty

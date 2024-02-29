@@ -8,24 +8,38 @@
             <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a>
         @endif
 
-        @if(Session::has('fav_added'))
-        <div class="alert alert-success" role="alert">
-            New favourite brand successfully added with name: {{Session::get('fav_added')->name}}
-        </div>
+        @if(Session::has('followed'))
+            <div class="alert alert-success" role="alert">
+                New brand followed: {{Session::get('followed')->name}}
+            </div>
         @endif
 
-        @if(Session::has('fav_removed'))
-        <div class="alert alert-success" role="alert">
-            Favourite brand successfully removed with name: {{Session::get('fav_removed')->name}}
-        </div>
+        @if(Session::has('unfollowed'))
+            <div class="alert alert-warning" role="alert">
+                Brand is no longer followed: {{Session::get('unfollowed')->name}}
+            </div>
         @endif
     @endauth
 
-    @if(str_starts_with($brand['image'],"https"))
-        <h1 class="mb-4 mt-2"><img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image"> {{$brand['name']}} ({{$brand['country']}}) - Types: {{'count'($types)}}</h1>
-    @else
-        <h1 class="mb-4 mt-2"><img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px"> {{$brand['name']}} ({{$brand['country']}}) - Types: {{'count'($types)}} </h1>
-    @endif
+    <h1 class="mb-3 mt-2">
+        @if(str_starts_with($brand['image'],"https"))
+            <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image">
+        @else
+            <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
+        @endif
+        {{$brand['name']}} <small>({{$brand['country']}})</small>
+        @auth
+            @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
+                <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
+            @else
+                <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+            @endif
+        @endauth
+         - Types: {{'count'($types)}}
+    </h1>
+    <div>
+        <h5 class="mb-3">| Follows: {{$followedBy}} | Likes: {{$likedBy}} |</h5>
+    </div>
 
     <div>
         <table class="table table-bordered">

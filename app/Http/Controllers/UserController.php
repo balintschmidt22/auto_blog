@@ -51,12 +51,27 @@ class UserController extends Controller
 
         // abort_unless($idExists, 404, 'ID not found!');
 
+        $user = User::findOrFail($id);
+        $likesGiven = count($user->likedImages()->get()->toArray());
+        $imgs = $user->ownImages();
+        $likedBy = 0;
+        $commentsGot = 0;
+        foreach ($imgs->get() as $i) {
+            $likedBy += count($i->likedBy()->get()->toArray());
+            $commentsGot += count($i->comments()->get()->toArray());
+        }
+        $commentedOn = count($user->commentedOn()->get()->toArray());
+
         return view('users.show', [
-            $user = User::findOrFail($id),
             'user' => $user,
-            $imgs = $user->ownImages(),
             'image_count' => count($imgs->get()->toArray()),
             'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+            'likesGiven' => $likesGiven,
+            'likedBy' => $likedBy,
+            'followedBy' => count($user->followedBy()->get()->toArray()),
+            'follows' => count($user->follows()->get()->toArray()),
+            'commentedOn' => $commentedOn,
+            'commentsGot' => $commentsGot,
         ]);
     }
 
@@ -82,6 +97,9 @@ class UserController extends Controller
     public function delete(string $id)
     {
         $user = User::findOrFail($id);
+        if ($id == 1) {
+            abort(404);
+        }
         $user->delete();
 
         Session::flash('user_deleted', $user);
@@ -153,6 +171,10 @@ class UserController extends Controller
         $user = Auth::user();
         $otherUser = User::findOrFail($id);
 
+        if ($user['id'] == $id) {
+            abort(404);
+        }
+
         $messagesSent = $user->messagesSent()->get()->where('to_id', '=', $id);
         $messagesReceived = $user->messagesReceived()->get()->where('from_id', '=', $id);
 
@@ -173,6 +195,10 @@ class UserController extends Controller
         );
 
         $user = Auth::id();
+
+        if ($user == $id) {
+            abort(404);
+        }
 
         $message = new Message;
         $message->message = $data['message'];
