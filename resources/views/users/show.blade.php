@@ -15,6 +15,18 @@
                     User is no longer followed: {{Session::get('unfollowed')->username}}
                 </div>
             @endif
+
+            @if(Session::has('moderator_added'))
+                <div class="alert alert-success" role="alert">
+                    New moderator added: {{Session::get('moderator_added')->username}}
+                </div>
+            @endif
+
+            @if(Session::has('moderator_removed'))
+                <div class="alert alert-warning" role="alert">
+                    Moderator removed: {{Session::get('moderator_removed')->username}}
+                </div>
+            @endif
         @endauth
         <div class="row flex">
             <div class="col-auto d-flex align-items-center">
@@ -65,11 +77,20 @@
                                     <a href="{{route('users.message', ['id'=>$user['id']])}}" class="btn btn-primary m-2"><i class="fa-solid fa-message" style="color: #ffffff;"></i></a>
                                     @if (Auth::user()->isAdmin())
                                         @if (!$user->isAdmin())
-                                                <a href="" class="btn btn-warning m-2">Add moderator</a>
-                                                <a href="" class="btn btn-warning m-2">Remove moderator</a>
+                                                @if (!$user->isModerator())
+                                                    <a href="{{route('users.addModerator', ["id"=>$user['id']])}}" class="btn btn-warning m-2">Add Moderator</a>
+                                                @else
+                                                    <a href="{{route('users.removeModerator', ["id"=>$user['id']])}}" class="btn btn-warning m-2">Remove Moderator</a>
+                                                @endif
                                                 <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger m-2">Delete User</a>
                                         @endif
                                     @endif
+                                </td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td colspan="2">
+                                    <a href="" class="btn btn-primary">Edit Profile</a>
                                 </td>
                             </tr>
                         @endif

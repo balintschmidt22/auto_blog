@@ -11,7 +11,7 @@ class BrandController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:admin')->only(['create', 'store']);
+        $this->middleware('can:admin')->only(['create', 'store', 'delete']);
     }
     /**
      * Display a listing of the resource.
@@ -103,8 +103,13 @@ class BrandController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $brand = Brand::findOrFail($id);
+        $brand->delete();
+
+        Session::flash('brand_deleted', $brand);
+
+        return redirect('brands');
     }
 }

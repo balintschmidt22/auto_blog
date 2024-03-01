@@ -14,8 +14,8 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth", "verified"])->only(['message']);
-        $this->middleware(["can:admin"])->only(['delete']);
+        $this->middleware(["auth", "verified"])->only(['message', 'addMessage']);
+        $this->middleware(["can:admin"])->only(['delete', 'addModerator', 'removeModerator']);
     }
     /**
      * Display a listing of the resource.
@@ -216,5 +216,33 @@ class UserController extends Controller
         Session::flash('message_sent', $message);
 
         return redirect()->back();
+    }
+
+    public function addModerator(string $id)
+    {
+        $user = User::findOrFail($id);
+
+        if (!$user->isModerator() && !$user->isAdmin()) {
+            $user['role'] = "mod";
+            $user->save();
+
+            Session::flash('moderator_added', $user);
+        }
+
+        return redirect('users/' . $user['id']);
+    }
+
+    public function removeModerator(string $id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->isModerator() && !$user->isAdmin()) {
+            $user['role'] = "usr";
+            $user->save();
+
+            Session::flash('moderator_removed', $user);
+        }
+
+        return redirect('users/' . $user['id']);
     }
 }

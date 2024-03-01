@@ -20,21 +20,9 @@ footer {
     height: 50px;
 }
 
-/* footer {
-    position: relative;
-    left: 0;
-    bottom: 0;
-    height: 80px;
-    width: 100%;
-} */
-
 .topbar {
-    margin-left: 20px;
+    margin-left: 16px;
     margin-top: 15px;
-}
-
-#homebtn {
-    margin-right: 50px;
 }
 
 td {

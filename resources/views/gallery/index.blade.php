@@ -12,6 +12,7 @@
                     <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px">
                 @endif
                 {{$brand['name']}} {{$type['type']}} ({{$brand['country']}}) - {{$image_count}}
+                <a href="{{route('types.delete', ['id'=>$type['id']])}}" class="btn btn-danger">Delete Type</a>
             @else
                 {{$title}}
             @endif

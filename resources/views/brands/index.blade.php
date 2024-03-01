@@ -7,8 +7,8 @@
     @auth
         @if(Auth::user()->isAdmin())
             <div>
-                <a href="{{route('brands.create')}}" class="text-decoration-none mb-4">Add brand</a>
-                <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a>
+                <a href="{{route('brands.create')}}" class="btn btn-primary mb-2">Add brand</a>
+                <a href="{{route('types.create')}}" class="btn btn-primary mb-2">Add type</a>
             </div>
         @endif
 
@@ -21,6 +21,12 @@
         @if(Session::has('unfollowed'))
             <div class="alert alert-warning" role="alert">
                 Brand is no longer followed: {{Session::get('unfollowed')->name}}
+            </div>
+        @endif
+
+        @if(Session::has('brand_deleted'))
+            <div class="alert alert-warning" role="alert">
+                Brand deleted: {{Session::get('brand_deleted')->name}}
             </div>
         @endif
     @endauth

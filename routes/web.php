@@ -36,8 +36,12 @@ Route::get('/', function () {
 Route::middleware('can:admin')->group(function () {
     Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create');
     Route::get('types/create', [TypeController::class, 'create'])->name('types.create');
+    Route::get('types/delete/{id}', [TypeController::class, 'delete'])->name('types.delete');
     Route::get('users/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
     Route::get('gallery/delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
+    Route::get('brands/delete/{id}', [BrandController::class, 'delete'])->name('brands.delete');
+    Route::get('users/addModerator/{id}', [UserController::class, 'addModerator'])->name('users.addModerator');
+    Route::get('users/removeModerator/{id}', [UserController::class, 'removeModerator'])->name('users.removeModerator');
 });
 
 //MODERATOR FUNCTIONS (ADMIN CAN USE THEM)

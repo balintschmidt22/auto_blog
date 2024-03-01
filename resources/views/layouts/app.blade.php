@@ -33,14 +33,14 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-                        <a href="/" class="topbar" id="homebtn"><button class="btn btn-primary mb-3"><i class="fa-solid fa-house fa-lg" style="color: #ffffff;"></i></button></a>
+                        <a href="/" class="btn btn-primary mb-3 topbar" style="margin-right: 40px"><i class="fa-solid fa-house fa-lg" style="color: #ffffff;"></i></a>
 
-                        <a href="{{route('gallery.create')}}" class="topbar"><button class="btn btn-primary mb-3">Upload <i class="fa-solid fa-upload fa-lg" style="color: #ffffff;"></i></i></button></a>
-                        <a href="{{route('gallery.index')}}" class="topbar"><button class="btn btn-primary mb-3">Gallery <i class="fa-regular fa-images fa-lg" style="color: #ffffff;"></i></button></a>
-                        <a href="{{route('users.index')}}" class="topbar"><button class="btn btn-primary mb-3">Users <i class="fa-solid fa-users fa-lg" style="color: #ffffff;"></i></button></a>
-                        <a href="{{route('brands.index')}}" class="topbar"><button class="btn btn-primary mb-3">Brands <i class="fa-solid fa-car fa-lg" style="color: #ffffff;"></i></button></a>
+                        <a href="{{route('gallery.create')}}" class="btn btn-primary mb-3 topbar">Upload <i class="fa-solid fa-upload fa-lg" style="color: #ffffff;"></i></a>
+                        <a href="{{route('gallery.index')}}" class="btn btn-primary mb-3 topbar">Gallery <i class="fa-regular fa-images fa-lg" style="color: #ffffff;"></i></a>
+                        <a href="{{route('users.index')}}" class="btn btn-primary mb-3 topbar">Users <i class="fa-solid fa-users fa-lg" style="color: #ffffff;"></i></a>
+                        <a href="{{route('brands.index')}}" class="btn btn-primary mb-3 topbar">Brands <i class="fa-solid fa-car fa-lg" style="color: #ffffff;"></i></a>
                         @auth
-                            <a href="{{route('favourites.index')}}" class="topbar"><button class="btn btn-primary mb-3">Favourites <i class="fa-solid fa-heart fa-lg" style="color: #ffffff;"></i></button></a>
+                            <a href="{{route('favourites.index')}}" class="btn btn-primary mb-3 topbar">Favourites <i class="fa-solid fa-heart fa-lg" style="color: #ffffff;"></i></a>
 
                             <div class="dropdown">
                                 <a class="topbar btn btn-primary mb-3 dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">

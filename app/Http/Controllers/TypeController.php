@@ -12,7 +12,7 @@ class TypeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:admin')->only(['create', 'store']);
+        $this->middleware('can:admin')->only(['create', 'store', 'delete']);
     }
     /**
      * Display a listing of the resource.
@@ -95,8 +95,14 @@ class TypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $type = Type::findOrFail($id);
+        $brandId = $type['brand_id'];
+        $type->delete();
+
+        Session::flash('type_deleted', $type);
+
+        return redirect('brands/' . $brandId);
     }
 }
