@@ -99,11 +99,11 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'noreply@autoblog.com'),
+        'name' => env('MAIL_FROM_NAME', 'AutoBlog'),
     ],
 
-    'reply_to' => ['address' => 'hello@example.com', 'name' => 'App Name'],
+    'reply_to' => ['address' => 'contact@autoblog.com', 'name' => 'AutoBlog Contact'],
 
     /*
     |--------------------------------------------------------------------------

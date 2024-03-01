@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ImageUploaded;
 use App\Models\Brand;
 use App\Models\Image;
 use App\Models\Type;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
@@ -71,6 +74,9 @@ class GalleryController extends Controller
         );
 
         $image->save();
+
+        $admin = User::find(1);
+        Mail::to($admin)->send(new ImageUploaded($image, $admin));
 
         Session::flash('image_uploaded', $image);
 

@@ -19,6 +19,11 @@ class Image extends Model
         return $this->belongsTo(Type::class, 'type_id');
     }
 
+    public function brand()
+    {
+        return $this->type()->get()->first()->brand()->get()->first();
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
