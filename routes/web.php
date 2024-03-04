@@ -54,8 +54,11 @@ Route::get('gallery/gettypes', [GalleryController::class, 'gettypes'])->middlewa
 Route::resource('gallery', GalleryController::class);
 Route::get('gallery/create', [GalleryController::class, 'create'])->middleware(['auth', 'verified'])->name('gallery.create');
 
-//RESOURCE CONTROLLERS
+//BRANDS
 Route::resource('brands', BrandController::class);
+Route::post('brands/search', [BrandController::class, 'search'])->name('brands.search');
+
+//TYPES
 Route::resource('types', TypeController::class);
 
 //USERS
@@ -79,7 +82,8 @@ Route::post('comments/add/{id}', [CommentController::class, 'addComment'])->midd
 
 //FAVOURITES
 Route::resource('favourites', FavouriteImageController::class)->middleware('auth');
-Route::get('favourites/add/{id}', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
+// Route::get('favourites/add/{id}', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
+Route::post('favourites/add', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
 
 //FOLLOWS
 Route::get('follows/followUser/{id}', [FollowController::class, 'followUser'])->middleware(['auth', 'verified'])->name('follows.followUser');

@@ -20,22 +20,6 @@
     </div>
 
     @auth
-        @if(Session::has('fav_added'))
-        <div class="alert alert-success mb-4" role="alert">
-            You liked:
-            {{Session::get('fav_added')->type->brand()->get()->first()['name']}}
-            {{Session::get('fav_added')->type['type']}} by {{Session::get('fav_added')->user['username']}}
-        </div>
-        @endif
-
-        @if(Session::has('fav_removed'))
-        <div class="alert alert-warning mb-4" role="alert">
-            You disliked:
-            {{Session::get('fav_removed')->type->brand()->get()->first()['name']}}
-            {{Session::get('fav_removed')->type['type']}} by {{Session::get('fav_removed')->user['username']}}
-        </div>
-        @endif
-
         @if(Session::has('comment_added'))
         <div class="alert alert-success mb-4" role="alert">
             New comment added by you at
@@ -64,15 +48,20 @@
         </div>
         <div class="col">
             @guest
-                <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
-            @endguest
-            @auth
-                @if(in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
-                    <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-solid fa-heart fa-2xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
-                @else
-                    <span><a href="{{route('favourites.add', ['id'=>$image['id']])}}" class="btn"><i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
-                @endif
-            @endauth
+                <span><a href="{{route('login')}}" class="btn" id="{{$image['id']}}"><i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;" id="liked"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
+                @endguest
+                @auth
+                    <span>
+                        <a class="btn likeButton" id="{{$image['id']}}">
+                            @if (in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
+                                <i class="fa-solid fa-heart fa-2xl" style="color: #ff0000;" id="disliked"></i>
+                            @else
+                                <i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;" id="liked"></i>
+                            @endif
+                            <b>{{count($image->likedBy()->get()->toArray())}}</b>
+                        </a>
+                    </span>
+                @endauth
             <span>
                 <a class="btn"><i class="fa-regular fa-comment fa-2xl" style="color: #149f36;"></i> <b>{{count($image->comments()->get()->toArray())}}</b></a>
             </span>
@@ -177,4 +166,39 @@
         </div>
     </section>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var likeButtons = document.getElementsByClassName("likeButton");
+
+        for (var i = 0; i < likeButtons.length; i++) {
+            likeButtons[i].addEventListener('click', function () {
+                const query = this.id
+
+                axios.post('/favourites/add', {
+                    params: {
+                        id: query,
+                    },
+                })
+                .then((response) => {
+                    var likeCount = response.data;
+
+                    var i = this.querySelector("i").id
+
+                    if(i == "disliked"){
+                        this.innerHTML = "<i class='fa-regular fa-heart fa-2xl' style='color: #ff0000;' id='liked'></i><b> " + likeCount + "</b>"
+                    }
+                    else{
+                        this.innerHTML = "<i class='fa-solid fa-heart fa-2xl' style='color: #ff0000;' id='disliked'></i><b> " + likeCount + "</b>"
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+            });
+        };
+    });
+</script>
 @endsection

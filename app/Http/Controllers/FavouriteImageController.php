@@ -73,25 +73,26 @@ class FavouriteImageController extends Controller
         //
     }
 
-    public function add(string $id)
+    public function add(Request $request)
     {
-        $user = Auth::user();
+        $q = $request->all();
+        $id = $q['params']['id'];
 
         $image = Image::findOrFail($id);
+
+        $user = Auth::user();
 
         $favs = $user->likedImages()->get()->toArray();
         $fav_ids = array_column($favs, 'id');
 
         if (!in_array($image['id'], $fav_ids)) {
             $user->likedImages()->sync($image, false);
-
-            Session::flash('fav_added', $image);
         } else {
             $user->likedImages()->detach($image);
-
-            Session::flash('fav_removed', $image);
         }
 
-        return redirect()->back();
+        $likeCount = count($image->likedBy()->get());
+
+        return $likeCount;
     }
 }

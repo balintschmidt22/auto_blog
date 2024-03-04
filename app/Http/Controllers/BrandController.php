@@ -18,7 +18,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        return view('brands.index', [
+        return view('brands.search', [
             'brands' => Brand::all()->sortBy('name')->toArray(),
         ]);
     }
@@ -111,5 +111,22 @@ class BrandController extends Controller
         Session::flash('brand_deleted', $brand);
 
         return redirect('brands');
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->all();
+        $query = $q['params']['search'];
+
+        $brands = collect(Brand::all());
+        if (trim($query) !== "") {
+            $filteredBrands = $brands->filter(function ($item) use ($query) {
+                return str_contains(strtolower($item['name']), strtolower($query)) !== false;
+            });
+        } else {
+            $filteredBrands = [];
+        }
+
+        return $filteredBrands;
     }
 }

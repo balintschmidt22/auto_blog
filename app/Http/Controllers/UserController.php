@@ -115,7 +115,7 @@ class UserController extends Controller
         $users = collect(User::all());
         if (trim($query) !== "") {
             $filteredUsers = $users->filter(function ($item) use ($query) {
-                return str_contains($item['username'], $query) !== false;
+                return str_contains(strtolower($item['username']), strtolower($query)) !== false;
             });
         } else {
             $filteredUsers = [];

@@ -24,8 +24,9 @@
         @endif
     @endauth
     <div>
-        <a class="btn btn-primary mt-1 mb-3" href="{{ route('users.pdf.download') }}">Export to PDF</a>
-        <a class="btn btn-primary mt-1 mb-3" href="{{ route('users.csv.download') }}">Export to CSV</a>
+        <a class="btn btn-primary mt-1 mb-2" href="{{ route('users.pdf.download') }}">Export to PDF</a>
+        <a class="btn btn-primary mt-1 mb-2 m-1" href="{{ route('users.csv.download') }}">Export to CSV</a>
+        <input type="text" size="25" id="searchInput" placeholder="Search user..." class="float-left m-2">
     </div>
     <div class="row">
         <div class="col">
@@ -83,10 +84,7 @@
         </div>
         <div class="col-lg-4">
             <div>
-                <input type="text" size="25" id="searchInput" placeholder="Search user..." class="float-left mt-4">
-            </div>
-            <div>
-                <table class="table table-bordered float-left mt-4" id="foundUsers">
+                <table class="table table-bordered float-left" id="foundUsers">
                 </table>
             </div>
         </div>
@@ -125,12 +123,8 @@
                     var row = document.createElement("tr")
                     var col = document.createElement("td")
                     var a = document.createElement("a")
-                    //col.innerHTML = '<a href="' + id + '">' + usernames[id] + '</a>'
+
                     col.innerHTML = "<a href='users/" + id + "' class='text-decoration-none'>" + usernames[id] + "</a>"
-                    //a.href = `{{route('users.show', ['user'=> 1])}}`
-                    //a.innerHTML = usernames[id]
-                    //a.classList.add("text-decoration-none")
-                    //col.append(a)
                     row.appendChild(col)
                     tab.appendChild(row)
                 }
