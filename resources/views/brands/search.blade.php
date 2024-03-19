@@ -25,7 +25,7 @@
     @endauth
     <div>
         @auth
-            @if(Auth::user()->isAdmin())
+            @if(Auth::user()->isModerator())
                 <a href="{{route('brands.create')}}" class="btn btn-primary mb-2 mt-1">Add brand</a>
                 <a href="{{route('types.create')}}" class="btn btn-primary mb-2 mt-1 m-1">Add type</a>
             @endif
@@ -54,9 +54,9 @@
                         @endif
                     @endauth
                     @if(str_starts_with($brand['image'],"https"))
-                    <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image"></td>
+                    <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px"></td>
                     @else
-                    <td><img src="{{"storage/".$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px"></td>
+                    <td><img src="{{"storage/".$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px; max-width: 160px;"></td>
                     @endif
                     <td><a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a></td>
                     <td>{{$brand['country']}}</td>

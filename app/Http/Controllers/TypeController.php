@@ -12,7 +12,8 @@ class TypeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:admin')->only(['create', 'store', 'delete']);
+        $this->middleware('can:moderator')->only(['create', 'edit', 'update', 'store']);
+        $this->middleware('can:admin')->only(['delete']);
     }
     /**
      * Display a listing of the resource.
@@ -81,7 +82,9 @@ class TypeController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('types.edit', [
+            'type' => Type::findOrFail($id)
+        ]);
     }
 
     /**
@@ -89,7 +92,18 @@ class TypeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate(
+            [
+                'name' => ['required', 'string', 'unique:types,type'],
+            ]
+        );
+        $type = Type::findOrFail($id);
+
+        $type->update(['type' => $data['name']]);
+
+        Session::flash('type_edited', $type);
+
+        return Redirect::route('types.show', [$id]);
     }
 
     /**

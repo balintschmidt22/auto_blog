@@ -11,7 +11,8 @@ class BrandController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:admin')->only(['create', 'store', 'delete']);
+        $this->middleware('can:moderator')->only(['create', 'edit', 'update', 'store']);
+        $this->middleware('can:admin')->only(['delete']);
     }
     /**
      * Display a listing of the resource.
@@ -89,7 +90,9 @@ class BrandController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('brands.edit', [
+            'brand' => Brand::findOrFail($id)
+        ]);
     }
 
     /**
@@ -97,7 +100,43 @@ class BrandController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate(
+            [
+                'name' => ['unique:brands,name'],
+                'country' => [],
+                'image' => ['file', 'image', 'max: 4096'],
+            ]
+        );
+        $brand = Brand::findOrFail($id);
+
+        if (!$request->filled('name')) {
+            $data['name'] = $brand['name'];
+        }
+        if (!$request->filled('country')) {
+            $data['country'] = $brand['country'];
+        }
+
+        if ($request->hasFile('image')) {
+            if ($brand['image'] !== null) {
+                if (str_starts_with($brand['image'], "https"))
+                    $brand['image'] = "";
+                else {
+                    unlink(public_path() . "/storage/" . $brand['image']);
+                }
+            }
+
+            $file = $data['image'];
+
+            $image = $file->store('images', ['disk' => 'public']);
+
+            $brand->image = $image;
+        }
+
+        $brand->update(['name' => $data['name'], 'country' => $data['country']]);
+
+        Session::flash('brand_edited', $brand);
+
+        return redirect('brands/' . $id);
     }
 
     /**

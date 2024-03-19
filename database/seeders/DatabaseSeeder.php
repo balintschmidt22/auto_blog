@@ -80,6 +80,11 @@ class DatabaseSeeder extends Seeder
             $type->save();
         });
 
+        foreach ($brands as $brand) {
+            $brand['image'] = "https://i.imgur.com/d6az7VI.png";
+            $brand->save();
+        }
+
         $placeHolders = [
             "https://i.imgur.com/EMeIRuc.jpg",
             "https://i.imgur.com/3tkSpHa.jpg",

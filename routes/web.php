@@ -32,21 +32,28 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//ADMIN FUNCTIONS
-Route::middleware('can:admin')->group(function () {
-    Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create');
-    Route::get('types/create', [TypeController::class, 'create'])->name('types.create');
-    Route::get('types/delete/{id}', [TypeController::class, 'delete'])->name('types.delete');
-    Route::get('users/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
-    Route::get('gallery/delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
-    Route::get('brands/delete/{id}', [BrandController::class, 'delete'])->name('brands.delete');
-    Route::get('users/addModerator/{id}', [UserController::class, 'addModerator'])->name('users.addModerator');
-    Route::get('users/removeModerator/{id}', [UserController::class, 'removeModerator'])->name('users.removeModerator');
-});
-
 //MODERATOR FUNCTIONS (ADMIN CAN USE THEM)
 Route::middleware('can:moderator')->group(function () {
     Route::get('comments/delete/{id}', [CommentController::class, 'delete'])->name('comments.delete');
+
+    Route::get('types/create', [TypeController::class, 'create'])->name('types.create');
+    // Route::get('types/edit/{id}', [TypeController::class, 'edit'])->name('types.edit');
+    // Route::patch('types/update', [TypeController::class, 'update'])->name('types.update');
+
+    Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create');
+    // Route::get('brands/edit/{id}', [BrandController::class, 'edit'])->name('brands.edit');
+    // Route::patch('brands/update', [BrandController::class, 'update'])->name('brands.update');
+});
+
+//ADMIN FUNCTIONS
+Route::middleware('can:admin')->group(function () {
+    Route::get('types/delete/{id}', [TypeController::class, 'delete'])->name('types.delete');
+    Route::get('brands/delete/{id}', [BrandController::class, 'delete'])->name('brands.delete');
+    Route::get('gallery/delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
+    Route::get('users/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
+
+    Route::get('users/addModerator/{id}', [UserController::class, 'addModerator'])->name('users.addModerator');
+    Route::get('users/removeModerator/{id}', [UserController::class, 'removeModerator'])->name('users.removeModerator');
 });
 
 //GALLERY
@@ -158,6 +165,13 @@ Route::post('/password/reset', function (Request $request) {
         : back()->withErrors(['email' => [__($status)]]);
 })->middleware('guest')->name('password.update');
 
+Route::fallback(function () {
+    return view('errors.403');
+});
+
+Route::fallback(function () {
+    return view('errors.404');
+});
 
 Auth::routes(['verify' => true]);
 

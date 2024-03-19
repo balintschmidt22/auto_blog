@@ -25,7 +25,7 @@
 
     <h1 class="mb-3 mt-2">
         @if(str_starts_with($brand['image'],"https"))
-            <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image">
+            <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
         @else
             <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
         @endif
@@ -40,12 +40,17 @@
          - Types: {{'count'($types)}}
     </h1>
     <div>
-        <h5 class="mb-3">| Follows: {{$followedBy}} | Likes: {{$likedBy}} |
+        <h5 class="mb-3">| Follows: {{$followedBy}} | Likes: {{$likedBy}}
             @auth
+                @if(Auth::user()->isModerator())
+                    | <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a>
+                    | <a href="{{route('brands.edit', [$brand])}}" class="text-decoration-none mb-4 text-warning">Modify brand</a>
+                @endif
                 @if(Auth::user()->isAdmin())
-                    <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a> |
+                    |
                     <a href="{{route('brands.delete', ['id'=>$brand['id']])}}" class="text-decoration-none mb-4 text-danger">Delete brand</a>
                 @endif
+                |
             @endauth
         </h5>
     </div>

@@ -7,12 +7,19 @@
         <h1>
             @if ($title === "type")
                 @if(str_starts_with($brand['image'],"https"))
-                    <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image">
+                    <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px">
                 @else
                     <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px">
                 @endif
                 {{$brand['name']}} {{$type['type']}} ({{$brand['country']}}) - {{$image_count}}
-                <a href="{{route('types.delete', ['id'=>$type['id']])}}" class="btn btn-danger">Delete Type</a>
+                @auth
+                    @if (Auth::user()->isModerator())
+                        <a href="{{route('types.edit', [$type])}}" class="btn btn-warning">Modify Type</a>
+                    @endif
+                    @if (Auth::user()->isAdmin())
+                        <a href="{{route('types.delete', ['id'=>$type['id']])}}" class="btn btn-danger">Delete Type</a>
+                    @endif
+                @endauth
             @else
                 {{$title}}
             @endif
@@ -25,6 +32,12 @@
             {{Session::get('image_deleted')->type->brand()->get()->first()['name']}}
             {{Session::get('image_deleted')->type['type']}} by {{Session::get('image_deleted')->user['username']}}
         </div>
+        @endif
+
+        @if(Session::has('type_edited'))
+            <div class="alert alert-success" role="alert">
+                Type successfully edited to: {{Session::get('type_edited')->type}}, at: {{Session::get('type_edited')->updated_at}}
+            </div>
         @endif
     @endauth
 
