@@ -45,9 +45,15 @@
                     </tr>
                 @forelse($users as $user)
                     <tr>
-                        <td><img class="rounded-circle shadow-1-strong"
-                            src={{$user['profile_picture']}} alt="avatar" width="60"
-                            height="60" /></td>
+                        @if(str_starts_with($user['profile_picture'],"https"))
+                            <td>
+                                <img class="rounded-circle shadow-1-strong" src={{$user['profile_picture']}} alt="{{$user['username']}} avatar" width="60" height="60">
+                            </td>
+                        @else
+                            <td>
+                                <img class="rounded-circle shadow-1-strong" src="{{"storage/".$user['profile_picture']}}" alt="{{$user['username']}} avatar" width="60" height="60">
+                            </td>
+                        @endif
                         <td><a href='{{route('users.show', ['user'=>$user['id']])}}' class="text-decoration-none">{{$user['username']}}</a></td>
                         <td>@if ($user['role'] === "adm")
                             admin

@@ -14,8 +14,8 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth", "verified"])->only(['message', 'addMessage']);
-        $this->middleware(["can:admin"])->only(['delete', 'addModerator', 'removeModerator']);
+        $this->middleware(["auth", "verified"])->only(['message', 'addMessage', 'useredit', 'userupdate']);
+        $this->middleware(["can:admin"])->only(['delete', 'addModerator', 'removeModerator', 'edit', 'update']);
     }
     /**
      * Display a listing of the resource.
@@ -80,7 +80,9 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('users.edit', [
+            'user' => User::findOrFail($id)
+        ]);
     }
 
     /**
@@ -88,7 +90,47 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate(
+            [
+                'name' => ['unique:users,username'],
+                'country' => [],
+                'email' => ['unique:users,email'],
+                'image' => ['file', 'image', 'max: 4096'],
+            ]
+        );
+        $user = User::findOrFail($id);
+
+        if (!$request->filled('name')) {
+            $data['name'] = $user['username'];
+        }
+        if (!$request->filled('country')) {
+            $data['country'] = $user['country'];
+        }
+        if (!$request->filled('email')) {
+            $data['email'] = $user['email'];
+        }
+
+        if ($request->hasFile('image')) {
+            if ($user['profile_picture'] !== null) {
+                if (str_starts_with($user['profile_picture'], "https"))
+                    $user['profile_picture'] = "";
+                else {
+                    unlink(public_path() . "/storage/" . $user['profile_picture']);
+                }
+            }
+
+            $file = $data['image'];
+
+            $image = $file->store('images', ['disk' => 'public']);
+
+            $user->profile_picture = $image;
+        }
+
+        $user->update(['username' => $data['name'], 'country' => $data['country'], 'email' => $data['email']]);
+
+        Session::flash('user_edited', $user);
+
+        return redirect('users/' . $id);
     }
 
     /**
@@ -245,4 +287,61 @@ class UserController extends Controller
 
         return redirect('users/' . $user['id']);
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function useredit(string $id)
+    {
+        if (Auth::id() != $id) {
+            abort(403);
+        }
+        return view('users.useredit', [
+            'user' => User::findOrFail($id)
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function userupdate(Request $request, string $id)
+    {
+        if (Auth::id() != $id) {
+            abort(403);
+        }
+        $data = $request->validate(
+            [
+                'country' => [],
+                'image' => ['file', 'image', 'max: 4096'],
+            ]
+        );
+        $user = User::findOrFail($id);
+
+        if (!$request->filled('country')) {
+            $data['country'] = $user['country'];
+        }
+
+        if ($request->hasFile('image')) {
+            if ($user['profile_picture'] !== null) {
+                if (str_starts_with($user['profile_picture'], "https"))
+                    $user['profile_picture'] = "";
+                else {
+                    unlink(public_path() . "/storage/" . $user['profile_picture']);
+                }
+            }
+
+            $file = $data['image'];
+
+            $image = $file->store('images', ['disk' => 'public']);
+
+            $user->profile_picture = $image;
+        }
+
+        $user->update(['country' => $data['country']]);
+
+        Session::flash('user_edited_by_themself', $user);
+
+        return redirect('users/' . $id);
+    }
+
 }

@@ -76,6 +76,8 @@ Route::get('users/pdf/download', [UserController::class, 'createPDF'])->name('us
 Route::get('users/csv/download', [UserController::class, 'exportCSV'])->name('users.csv.download');
 Route::get('users/message/{id}', [UserController::class, 'message'])->middleware(['auth', 'verified'])->name('users.message');
 Route::post('users/addMessage/{id}', [UserController::class, 'addMessage'])->middleware(['auth', 'verified'])->name('users.addMessage');
+Route::get('users/{user}/useredit', [UserController::class, 'useredit'])->middleware(['auth', 'verified'])->name('users.useredit');
+Route::patch('users/userupdate/{id}', [UserController::class, 'userupdate'])->middleware(['auth', 'verified'])->name('users.userupdate');
 
 // Route::get('userspdf', function () {
 //     $data = User::get();

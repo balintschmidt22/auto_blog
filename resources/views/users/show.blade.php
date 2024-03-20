@@ -27,12 +27,22 @@
                     Moderator removed: {{Session::get('moderator_removed')->username}}
                 </div>
             @endif
+
+            @if(Session::has('user_edited'))
+                <div class="alert alert-success" role="alert">
+                    User modified: {{Session::get('user_edited')->username}} at {{Session::get('user_edited')->updated_at}}
+                </div>
+            @endif
         @endauth
         <div class="row flex">
             <div class="col-auto d-flex align-items-center">
-                <h1 class="mb-3"><img class="rounded-circle shadow-1-strong"
-                    src={{$user->profile_picture}} alt="avatar" width="100"
-                    height="100" /> Profile of {{$user->username}}
+                <h1 class="mb-3">
+                    @if(str_starts_with($user['profile_picture'],"https"))
+                        <img class="rounded-circle shadow-1-strong" src={{$user->profile_picture}} alt="{{$user['username']}} avatar" width="100" height="100"/>
+                    @else
+                        <img class="rounded-circle shadow-1-strong" src="{{URL::asset('storage/'.$user->profile_picture)}}" alt="{{$user['username']}} avatar" width="100" height="100"/>
+                    @endif
+                    Profile of {{$user->username}}
                 </h1>
             </div>
             <div class="col float-end">
@@ -82,6 +92,7 @@
                                                 @else
                                                     <a href="{{route('users.removeModerator', ["id"=>$user['id']])}}" class="btn btn-warning m-2">Remove Moderator</a>
                                                 @endif
+                                                <a href="{{route('users.edit', [$user])}}" class="btn btn-warning m-2">Modify User</a>
                                                 <a href="{{route('users.delete', ["id"=>$user['id']])}}" class="btn btn-danger m-2">Delete User</a>
                                         @endif
                                     @endif
@@ -90,7 +101,11 @@
                         @else
                             <tr>
                                 <td colspan="2">
-                                    <a href="" class="btn btn-primary">Edit Profile</a>
+                                    @if (Auth::user()->isAdmin())
+                                        <a href="{{route('users.edit', [$user])}}" class="btn btn-primary">Edit Profile</a>
+                                    @else
+                                        <a href="{{route('users.useredit', [$user])}}" class="btn btn-primary">Edit Profile</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endif

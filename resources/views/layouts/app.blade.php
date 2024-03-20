@@ -57,11 +57,15 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         @auth
-                            <a href="{{route('users.show', ['user' => Auth::id()])}}" class="mb-3 topbar">
-                                <img class="rounded-circle shadow-1-strong me-2"
-                                src={{Auth::user()->profile_picture}} alt="avatar" width="45"
-                                height="45" />
-                            </a>
+                            @if(str_starts_with(Auth::user()->profile_picture,"https"))
+                                <a href="{{route('users.show', ['user' => Auth::id()])}}" class="mb-3 topbar">
+                                    <img class="rounded-circle shadow-1-strong me-2" src={{Auth::user()->profile_picture}} alt="avatar" width="45" height="45">
+                                </a>
+                            @else
+                                <a href="{{route('users.show', ['user' => Auth::id()])}}" class="mb-3 topbar">
+                                    <img class="rounded-circle shadow-1-strong me-2" src="{{URL::asset('storage/'.Auth::user()->profile_picture)}}" alt="avatar" width="45" height="45">
+                                </a>
+                            @endif
                         @endauth
 
                         <!-- Authentication Links -->
