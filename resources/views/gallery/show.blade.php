@@ -12,6 +12,9 @@
 
         <a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a> <a href="{{route('types.show', ['type'=>$type['id']])}}" class="text-decoration-none">{{$type['type']}}</a>
         @auth
+            @if(Auth::user()->isModerator())
+                <a href="{{route('gallery.edit', [$image])}}" class="btn btn-warning">Modify Image</a>
+            @endif
             @if (Auth::user()->isAdmin())
                 <a href="{{route('gallery.delete', ['id' => $image['id']])}}" class="btn btn-danger">Delete Image</a>
             @endif
@@ -36,6 +39,13 @@
             deleted
         </div>
         @endif
+
+        @if(Session::has('image_edited'))
+            <div class="alert alert-success" role="alert">
+                Photo successfully modified at {{Session::get('image_edited')->updated_at}}
+            </div>
+        @endif
+
     @endauth
 
     <div class="row">

@@ -18,6 +18,7 @@ class GalleryController extends Controller
     public function __construct()
     {
         $this->middleware(["auth", "verified"])->only(['create', 'store', 'gettypes']);
+        $this->middleware(["can:moderator"])->only(['edit', 'update']);
         $this->middleware(["can:admin"])->only(['delete']);
     }
 
@@ -106,7 +107,10 @@ class GalleryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('gallery.edit', [
+            'image' => Image::findOrFail($id),
+            'brands' => Brand::all()->sortBy('name')
+        ]);
     }
 
     /**
@@ -114,7 +118,44 @@ class GalleryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate(
+            [
+                'image' => ['file', 'image', 'max: 4096'],
+                'location' => ['required', 'string'],
+                'brand' => ['required', 'string', 'exists:brands,name'],
+                'type' => ['required', 'integer', 'exists:types,id'],
+            ]
+        );
+        $image = Image::findOrFail($id);
+
+        if (!$request->filled('location')) {
+            $data['location'] = $image['location'];
+        }
+        if ($request->filled('brand') && $request->filled('type')) {
+            $image->type()->associate($data['type']);
+        }
+
+        if ($request->hasFile('image')) {
+            if ($image['image'] !== null) {
+                if (str_starts_with($image['image'], "https"))
+                    $image['image'] = "";
+                else {
+                    unlink(public_path() . "/storage/" . $image['image']);
+                }
+            }
+
+            $file = $data['image'];
+
+            $picture = $file->store('images', ['disk' => 'public']);
+
+            $image->image = $picture;
+        }
+
+        $image->update(['location' => $data['location']]);
+
+        Session::flash('image_edited', $image);
+
+        return Redirect::route('gallery.show', [$id]);
     }
 
     /**
