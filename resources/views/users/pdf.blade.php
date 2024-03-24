@@ -15,12 +15,14 @@
                     <table class="bordered" id="usersTable">
                         <tr>
                             <th>Username</th>
+                            <th>Role</th>
                             <th>Country</th>
                             <th>Photos</th>
                         </tr>
                     @forelse($users as $user)
                         <tr>
                             <td><a href='{{route('users.show', ['user'=>$user['id']])}}' class="text-decoration-none">{{$user['username']}}</a></td>
+                            <td>{{$user['role']}}</td>
                             <td>{{$user['country']}}</td>
                             <td>{{App\Models\User::find($user['id'])->ownImages()->count()}}</td>
                         </tr>

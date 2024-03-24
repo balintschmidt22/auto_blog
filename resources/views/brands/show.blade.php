@@ -21,6 +21,12 @@
                 Type deleted: {{Session::get('type_deleted')->type}}
             </div>
         @endif
+
+        @if(Session::has('brand_edited'))
+            <div class="alert alert-success" role="alert">
+                Brand edited: {{Session::get('brand_edited')->name}} at {{Session::get('brand_edited')->updated_at}}
+            </div>
+        @endif
     @endauth
 
     <h1 class="mb-3 mt-2">

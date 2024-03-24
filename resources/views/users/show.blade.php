@@ -33,6 +33,12 @@
                     User modified: {{Session::get('user_edited')->username}} at {{Session::get('user_edited')->updated_at}}
                 </div>
             @endif
+
+            @if(Session::has('user_edited_by_themself'))
+                <div class="alert alert-success" role="alert">
+                    You edited your profile successfully at: {{Session::get('user_edited_by_themself')->updated_at}}
+                </div>
+            @endif
         @endauth
         <div class="row flex">
             <div class="col-auto d-flex align-items-center">
@@ -102,10 +108,11 @@
                             <tr>
                                 <td colspan="2">
                                     @if (Auth::user()->isAdmin())
-                                        <a href="{{route('users.edit', [$user])}}" class="btn btn-primary">Edit Profile</a>
+                                        <a href="{{route('users.edit', [$user])}}" class="btn btn-primary m-2">Edit Profile</a>
                                     @else
-                                        <a href="{{route('users.useredit', [$user])}}" class="btn btn-primary">Edit Profile</a>
+                                        <a href="{{route('users.useredit', [$user])}}" class="btn btn-primary m-2">Edit Profile</a>
                                     @endif
+                                    <a href="{{route('users.changePassword', ['id'=>$user['id']])}}" class="btn btn-primary m-2">Change Password</a>
                                 </td>
                             </tr>
                         @endif

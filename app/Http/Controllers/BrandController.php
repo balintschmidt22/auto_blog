@@ -102,19 +102,12 @@ class BrandController extends Controller
     {
         $data = $request->validate(
             [
-                'name' => ['unique:brands,name'],
-                'country' => [],
+                'name' => ['required', 'string', 'unique:brands,name' . $id],
+                'country' => ['required', 'string'],
                 'image' => ['file', 'image', 'max: 4096'],
             ]
         );
         $brand = Brand::findOrFail($id);
-
-        if (!$request->filled('name')) {
-            $data['name'] = $brand['name'];
-        }
-        if (!$request->filled('country')) {
-            $data['country'] = $brand['country'];
-        }
 
         if ($request->hasFile('image')) {
             if ($brand['image'] !== null) {

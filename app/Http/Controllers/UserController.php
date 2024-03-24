@@ -6,7 +6,7 @@ use App\Models\Message;
 use App\Models\User;
 //use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use PDF;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth", "verified"])->only(['message', 'addMessage', 'useredit', 'userupdate']);
+        $this->middleware(["auth", "verified"])->only(['message', 'addMessage', 'useredit', 'userUpdate', 'changePassword', 'updatePassword']);
         $this->middleware(["can:admin"])->only(['delete', 'addModerator', 'removeModerator', 'edit', 'update']);
     }
     /**
@@ -92,23 +92,13 @@ class UserController extends Controller
     {
         $data = $request->validate(
             [
-                'name' => ['unique:users,username'],
-                'country' => [],
-                'email' => ['unique:users,email'],
+                'name' => ['required', 'string', 'unique:users,username' . $id],
+                'country' => ['required', 'string'],
+                'email' => ['required', 'email', 'unique:users,email' . $id],
                 'image' => ['file', 'image', 'max: 4096'],
             ]
         );
         $user = User::findOrFail($id);
-
-        if (!$request->filled('name')) {
-            $data['name'] = $user['username'];
-        }
-        if (!$request->filled('country')) {
-            $data['country'] = $user['country'];
-        }
-        if (!$request->filled('email')) {
-            $data['email'] = $user['email'];
-        }
 
         if ($request->hasFile('image')) {
             if ($user['profile_picture'] !== null) {
@@ -169,7 +159,7 @@ class UserController extends Controller
     public function createPDF()
     {
         $users = User::get()->sortBy('username');
-        $pdf = PDF::loadView('users.pdf', compact('users'));
+        $pdf = \Barryvdh\DomPDF\Facade\PDF::loadView('users.pdf', compact('users'));
         return $pdf->download('autoblog_users.pdf');
     }
 
@@ -304,22 +294,18 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function userupdate(Request $request, string $id)
+    public function userUpdate(Request $request, string $id)
     {
         if (Auth::id() != $id) {
             abort(403);
         }
         $data = $request->validate(
             [
-                'country' => [],
+                'country' => ['required', 'string'],
                 'image' => ['file', 'image', 'max: 4096'],
             ]
         );
         $user = User::findOrFail($id);
-
-        if (!$request->filled('country')) {
-            $data['country'] = $user['country'];
-        }
 
         if ($request->hasFile('image')) {
             if ($user['profile_picture'] !== null) {
@@ -344,4 +330,43 @@ class UserController extends Controller
         return redirect('users/' . $id);
     }
 
+    public function changePassword(string $id)
+    {
+        if (Auth::id() != $id) {
+            abort(403);
+        }
+        return view('users.password');
+    }
+
+    public function updatePassword(Request $request, string $id)
+    {
+        if (Auth::id() != $id) {
+            abort(403);
+        }
+
+        $data = $request->validate(
+            [
+                'old_password' => ['required'],
+                'new_password' => [
+                    'required',
+                    'between:8,255',
+                    'confirmed'
+                ]
+            ]
+        );
+
+        $user = User::findOrFail($id);
+
+        if (!Hash::check($data['old_password'], Auth::user()->password)) {
+            Session::flash('password_error');
+
+            return redirect()->back();
+        }
+
+        $user->update(['password' => Hash::make($data['new_password'])]);
+
+        Session::flash('password_changed');
+
+        return redirect()->back();
+    }
 }

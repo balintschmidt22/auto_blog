@@ -5,12 +5,10 @@
     <div class="container bg-light">
         <h1 class="mb-4">Modify image</h1>
 
-        {{-- TODO: action, method, enctype --}}
         <form action="{{ route('gallery.update', ['gallery'=>$image['id']]) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('patch')
 
-            {{-- TODO: Validation --}}
             <div class="row">
                 <div class="col-lg-6 col-md-7 col-sm-10">
                     <div class="form-group row mb-3">
@@ -85,7 +83,7 @@
             </div>
 
             <div class="text-left">
-                <button type="submit" class="btn btn-primary mt-2"><i class="fas fa-save"></i> Update</button>
+                <button type="submit" class="btn btn-primary mt-2"><i class="fas fa-save"></i> Modify</button>
             </div>
         </form>
     </div>

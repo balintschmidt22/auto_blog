@@ -37,12 +37,8 @@ Route::middleware('can:moderator')->group(function () {
     Route::get('comments/delete/{id}', [CommentController::class, 'delete'])->name('comments.delete');
 
     Route::get('types/create', [TypeController::class, 'create'])->name('types.create');
-    // Route::get('types/edit/{id}', [TypeController::class, 'edit'])->name('types.edit');
-    // Route::patch('types/update', [TypeController::class, 'update'])->name('types.update');
 
     Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create');
-    // Route::get('brands/edit/{id}', [BrandController::class, 'edit'])->name('brands.edit');
-    // Route::patch('brands/update', [BrandController::class, 'update'])->name('brands.update');
 });
 
 //ADMIN FUNCTIONS
@@ -71,19 +67,20 @@ Route::resource('types', TypeController::class);
 //USERS
 //Route::get('users/show/{id}', [UserController::class, 'show'])->name('users.show2');
 Route::resource('users', UserController::class);
+
 Route::post('users/search', [UserController::class, 'search'])->name('users.search');
+
 Route::get('users/pdf/download', [UserController::class, 'createPDF'])->name('users.pdf.download');
 Route::get('users/csv/download', [UserController::class, 'exportCSV'])->name('users.csv.download');
+
 Route::get('users/message/{id}', [UserController::class, 'message'])->middleware(['auth', 'verified'])->name('users.message');
 Route::post('users/addMessage/{id}', [UserController::class, 'addMessage'])->middleware(['auth', 'verified'])->name('users.addMessage');
-Route::get('users/{user}/useredit', [UserController::class, 'useredit'])->middleware(['auth', 'verified'])->name('users.useredit');
-Route::patch('users/userupdate/{id}', [UserController::class, 'userupdate'])->middleware(['auth', 'verified'])->name('users.userupdate');
 
-// Route::get('userspdf', function () {
-//     $data = User::get();
-//     $pdf = Pdf::loadView('pdf.autoblog_users', compact('data'));
-//     return $pdf->download('autoblog_users.pdf');
-// })->name('users.pdf');
+Route::get('users/{user}/useredit', [UserController::class, 'useredit'])->middleware(['auth', 'verified'])->name('users.useredit');
+Route::patch('users/userUpdate/{id}', [UserController::class, 'userUpdate'])->middleware(['auth', 'verified'])->name('users.userUpdate');
+
+Route::get('users/changePassword/{id}', [UserController::class, 'changePassword'])->middleware(['auth', 'verified'])->name('users.changePassword');
+Route::patch('users/updatePassword/{id}', [UserController::class, 'updatePassword'])->middleware(['auth', 'verified'])->name('users.updatePassword');
 
 //COMMENTS
 Route::resource('comments', CommentController::class);
@@ -91,7 +88,6 @@ Route::post('comments/add/{id}', [CommentController::class, 'addComment'])->midd
 
 //FAVOURITES
 Route::resource('favourites', FavouriteImageController::class)->middleware('auth');
-// Route::get('favourites/add/{id}', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
 Route::post('favourites/add', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
 
 //FOLLOWS
@@ -109,7 +105,7 @@ Route::get('/email/verify', function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
-    //-TODO SESSION
+    //TODO SESSION
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
@@ -167,6 +163,7 @@ Route::post('/password/reset', function (Request $request) {
         : back()->withErrors(['email' => [__($status)]]);
 })->middleware('guest')->name('password.update');
 
+
 Route::fallback(function () {
     return view('errors.403');
 });
@@ -176,7 +173,6 @@ Route::fallback(function () {
 });
 
 Auth::routes(['verify' => true]);
-
 
 Route::any('{any}', function () {
     return redirect('/');

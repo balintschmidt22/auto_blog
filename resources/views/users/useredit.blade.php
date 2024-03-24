@@ -5,14 +5,14 @@
     <div class="container">
         <h1 class="mb-4">Edit user: {{$user['username']}}</h1>
 
-        <form action="{{ route('users.userupdate', ['id'=>$user['id']]) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('users.userUpdate', ['id'=>$user['id']]) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('patch')
 
             <div class="form-group row mb-3">
                 <label for="country" class="col-sm-2 col-form-label"><b>Country</b></label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control @error('country') is-invalid @enderror" id="country" name="country" value="{{ old('country') }}">
+                    <input type="text" class="form-control @error('country') is-invalid @enderror" id="country" name="country" value="{{ $user['country'] }}">
                     @error('country')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -43,7 +43,7 @@
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Edit</button>
             </div>
         </form>
     </div>

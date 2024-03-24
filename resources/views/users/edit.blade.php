@@ -5,17 +5,14 @@
     <div class="container">
         <h1 class="mb-4">Edit user: {{$user['username']}}</h1>
 
-        {{-- TODO: action, method, enctype --}}
         <form action="{{ route('users.update', ['user'=>$user['id']]) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('patch')
 
-            {{-- TODO: Validation --}}
-
             <div class="form-group row mb-3">
                 <label for="name" class="col-sm-2 col-form-label"><b>Username</b></label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}">
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ $user['username'] }}">
                     @error('name')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -27,7 +24,7 @@
             <div class="form-group row mb-3">
                 <label for="country" class="col-sm-2 col-form-label"><b>Country</b></label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control @error('country') is-invalid @enderror" id="country" name="country" value="{{ old('country') }}">
+                    <input type="text" class="form-control @error('country') is-invalid @enderror" id="country" name="country" value="{{$user['country'] }}">
                     @error('country')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -39,7 +36,7 @@
             <div class="form-group row mb-3">
                 <label for="email" class="col-sm-2 col-form-label"><b>Email</b></label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}">
+                    <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $user['email'] }}">
                     @error('email')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -70,7 +67,7 @@
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Edit</button>
             </div>
         </form>
     </div>
