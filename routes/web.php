@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -105,8 +107,7 @@ Route::get('/email/verify', function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
-    //TODO SESSION
-    return redirect('/home');
+    Session::flash('success', 'Your email has been verified');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 
@@ -123,7 +124,7 @@ Route::get('/password/reset', function () {
 })->middleware('guest')->name('password.request');
 
 Route::post('/password/email', function (Request $request) {
-    $request->validate(['email' => 'required|email']);
+    $request->validate(['email' => 'required|email:rfc,dns']);
 
     $status = Password::sendResetLink(
         $request->only('email')
@@ -141,7 +142,7 @@ Route::get('/password/reset/{token}', function (string $token) {
 Route::post('/password/reset', function (Request $request) {
     $request->validate([
         'token' => 'required',
-        'email' => 'required|email',
+        'email' => 'required|email:rfc,dns',
         'password' => 'required|min:8|confirmed',
     ]);
 

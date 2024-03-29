@@ -94,7 +94,7 @@ class UserController extends Controller
             [
                 'name' => ['required', 'string', 'unique:users,username' . $id],
                 'country' => ['required', 'string'],
-                'email' => ['required', 'email', 'unique:users,email' . $id],
+                'email' => ['required', 'email:rfc,dns', 'unique:users,email' . $id],
                 'image' => ['file', 'image', 'max: 4096'],
             ]
         );

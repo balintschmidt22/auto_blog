@@ -6,7 +6,6 @@ namespace Database\Seeders;
 use App\Models\Comment;
 use App\Models\Message;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Brand;
 use App\Models\Type;
@@ -58,15 +57,6 @@ class DatabaseSeeder extends Seeder
         $message_count = $user_count * 10 + rand(1, 10);
         $messages = Message::factory($message_count)->create();
 
-        foreach ($users->where('id', '>', 4) as $user) {
-            // $placeHolders = [
-            //     //"https://i.imgur.com/QqNNOcI.jpeg"
-            //     "https://i.imgur.com/NIW0rWI.jpeg"
-            // ];
-            $user['profile_picture'] = "https://i.imgur.com/NIW0rWI.jpeg";//$placeHolders[array_rand($placeHolders, 1)];
-            $user->save();
-        }
-
         for ($i = 1; $i < 4; $i++) {
             $users[$i]['role'] = "mod";
             $users[$i]['profile_picture'] = "https://i.imgur.com/ui1n1Cx.png";
@@ -79,11 +69,6 @@ class DatabaseSeeder extends Seeder
             );
             $type->save();
         });
-
-        foreach ($brands as $brand) {
-            $brand['image'] = "https://i.imgur.com/d6az7VI.png";
-            $brand->save();
-        }
 
         $placeHolders = [
             "https://i.imgur.com/EMeIRuc.jpg",

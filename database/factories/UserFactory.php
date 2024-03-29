@@ -23,7 +23,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => bcrypt('password'),
             'country' => fake()->country(),
-            'profile_picture' => "",
+            'profile_picture' => "https://i.imgur.com/NIW0rWI.jpeg",
             'role' => 'usr',
             'remember_token' => Str::random(100),
         ];
