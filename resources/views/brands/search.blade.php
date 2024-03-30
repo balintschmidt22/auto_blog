@@ -36,23 +36,16 @@
         <div class="col">
             <table class="table table-bordered table-striped">
                 <tr class="table-primary">
-                    @auth
-                        <th>Follow</th>
-                    @endauth
                     <th>Logo</th>
                     <th>Name</th>
                     <th>Country</th>
                     <th>Types</th>
+                    @auth
+                        <th>Follow</th>
+                    @endauth
                 </tr>
             @forelse($brands as $brand)
                 <tr>
-                    @auth
-                        @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
-                            <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
-                        @else
-                            <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
-                        @endif
-                    @endauth
                     @if(str_starts_with($brand['image'],"https"))
                         <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px"></td>
                     @else
@@ -61,6 +54,13 @@
                     <td><a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a></td>
                     <td>{{$brand['country']}}</td>
                     <td>{{App\Models\Brand::find($brand['id'])->types()->count()}}</td>
+                    @auth
+                        @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
+                            <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
+                        @else
+                            <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+                        @endif
+                    @endauth
                 </tr>
             @empty
                 <div class="col-12">
@@ -101,22 +101,17 @@
                 // Update the data list with the filtered data
                 var brands = Object.values(response.data);
 
-                var brandNames = {}
-                brands.forEach(b => {
-                    brandNames[b['id']] = b['name']
-                })
-
                 tab.innerHTML = ""
 
-                for (var id in brandNames){
+                brands.forEach(b => {
                     var row = document.createElement("tr")
                     var col = document.createElement("td")
                     var a = document.createElement("a")
 
-                    col.innerHTML = "<a href='brands/" + id + "' class='text-decoration-none'>" + brandNames[id] + "</a>"
+                    col.innerHTML = "<a href='brands/" + b['id'] + "' class='text-decoration-none'>" + b['name'] + "</a>"
                     row.appendChild(col)
                     tab.appendChild(row)
-                }
+                })
             })
             .catch(error => {
                 console.error('Error fetching data:', error);

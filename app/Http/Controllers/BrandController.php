@@ -79,7 +79,7 @@ class BrandController extends Controller
 
         return view('brands.show', [
             'brand' => $brand,
-            'types' => $brand->types()->get()->toArray(),
+            'types' => $brand->types()->get()->sortBy('type')->toArray(),
             'followedBy' => count($brand->followedBy()->get()),
             'likedBy' => $likedBy,
         ]);
@@ -150,11 +150,11 @@ class BrandController extends Controller
         $q = $request->all();
         $query = $q['params']['search'];
 
-        $brands = collect(Brand::all());
+        $brands = Brand::all();
         if (trim($query) !== "") {
             $filteredBrands = $brands->filter(function ($item) use ($query) {
                 return str_contains(strtolower($item['name']), strtolower($query)) !== false;
-            });
+            })->sortBy('name')->values();
         } else {
             $filteredBrands = [];
         }

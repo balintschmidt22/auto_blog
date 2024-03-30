@@ -118,22 +118,17 @@
                 // Update the data list with the filtered data
                 var users = Object.values(response.data);
 
-                var usernames = {}
-                users.forEach(u => {
-                    usernames[u['id']] = u['username']
-                })
-
                 tab.innerHTML = ""
 
-                for (var id in usernames){
+                users.forEach(u => {
                     var row = document.createElement("tr")
                     var col = document.createElement("td")
                     var a = document.createElement("a")
 
-                    col.innerHTML = "<a href='users/" + id + "' class='text-decoration-none'>" + usernames[id] + "</a>"
+                    col.innerHTML = "<a href='users/" + u['id'] + "' class='text-decoration-none'>" + u['username'] + "</a>"
                     row.appendChild(col)
                     tab.appendChild(row)
-                }
+                })
             })
             .catch(error => {
                 console.error('Error fetching data:', error);

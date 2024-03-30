@@ -144,11 +144,11 @@ class UserController extends Controller
         $q = $request->all();
         $query = $q['params']['search'];
 
-        $users = collect(User::all());
+        $users = User::all();
         if (trim($query) !== "") {
             $filteredUsers = $users->filter(function ($item) use ($query) {
                 return str_contains(strtolower($item['username']), strtolower($query)) !== false;
-            });
+            })->sortBy('username')->values();
         } else {
             $filteredUsers = [];
         }

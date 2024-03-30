@@ -11,11 +11,9 @@
             </div>
         @endif
 
-        {{-- TODO: action, method, enctype --}}
         <form action="{{ route('gallery.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            {{-- TODO: Validation --}}
             <div class="row">
                 <div class="col-lg-6 col-md-7 col-sm-10">
                     <div class="form-group row mb-3">
@@ -83,14 +81,13 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="text-left m-3">
+                        <button type="submit" class="btn btn-primary mt-2"><i class="fas fa-upload"></i> Upload</button>
+                    </div>
                 </div>
                 <div id="cover_preview" class="col-lg-6 col-md-2 col-sm-10 d-none">
                     <img id="cover_preview_image" src="#" alt="Image preview" height="240px">
                 </div>
-            </div>
-
-            <div class="text-left">
-                <button type="submit" class="btn btn-primary mt-2"><i class="fas fa-save"></i> Save</button>
             </div>
         </form>
     </div>
