@@ -10,7 +10,7 @@
             @method('patch')
 
             <div class="form-group row mb-3">
-                <label for="name" class="col-sm-2 col-form-label"><b>Username</b></label>
+                <label for="name" class="col-sm-2 col-form-label"><b>Username*</b></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ $user['username'] }}">
                     @error('name')
@@ -22,7 +22,7 @@
             </div>
 
             <div class="form-group row mb-3">
-                <label for="country" class="col-sm-2 col-form-label"><b>Country</b></label>
+                <label for="country" class="col-sm-2 col-form-label"><b>Country*</b></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control @error('country') is-invalid @enderror" id="country" name="country" value="{{$user['country'] }}">
                     @error('country')
@@ -34,7 +34,7 @@
             </div>
 
             <div class="form-group row mb-3">
-                <label for="email" class="col-sm-2 col-form-label"><b>Email</b></label>
+                <label for="email" class="col-sm-2 col-form-label"><b>Email*</b></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $user['email'] }}">
                     @error('email')

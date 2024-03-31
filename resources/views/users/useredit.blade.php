@@ -10,7 +10,7 @@
             @method('patch')
 
             <div class="form-group row mb-3">
-                <label for="country" class="col-sm-2 col-form-label"><b>Country</b></label>
+                <label for="country" class="col-sm-2 col-form-label"><b>Country*</b></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control @error('country') is-invalid @enderror" id="country" name="country" value="{{ $user['country'] }}">
                     @error('country')

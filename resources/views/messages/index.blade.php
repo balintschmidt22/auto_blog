@@ -8,7 +8,7 @@
                 Message sent!
             </div>
         @endif
-        <h1 class="mb-4">Messages with {{$otherUser['username']}}</h1>
+        <h1 class="mb-4">Messages with <a href="{{route('users.show', [$otherUser])}}" class="text-decoration-none">{{$otherUser['username']}}</a></h1>
         <section style="background-color: #0D6EFD;">
             <div class="container py-5">
               <div class="row">

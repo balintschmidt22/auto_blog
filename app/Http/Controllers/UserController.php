@@ -70,6 +70,7 @@ class UserController extends Controller
             'likedBy' => $likedBy,
             'followedBy' => count($user->followedBy()->get()->toArray()),
             'follows' => count($user->follows()->get()->toArray()),
+            'followedBrands' => count($user->followedBrands()->get()->toArray()),
             'commentedOn' => $commentedOn,
             'commentsGot' => $commentsGot,
         ]);
@@ -92,9 +93,9 @@ class UserController extends Controller
     {
         $data = $request->validate(
             [
-                'name' => ['required', 'string', 'unique:users,username' . $id],
+                'name' => ['required', 'string', 'unique:users,username,' . $id],
                 'country' => ['required', 'string'],
-                'email' => ['required', 'email:rfc,dns', 'unique:users,email' . $id],
+                'email' => ['required', 'email:rfc,dns', 'unique:users,email,' . $id],
                 'image' => ['file', 'image', 'max: 4096'],
             ]
         );
@@ -118,7 +119,10 @@ class UserController extends Controller
 
         $user->update(['username' => $data['name'], 'country' => $data['country'], 'email' => $data['email']]);
 
-        Session::flash('user_edited', $user);
+        if ($user->wasChanged()) {
+            Session::flash('user_edited', $user);
+        }
+
 
         return redirect('users/' . $id);
     }
@@ -325,7 +329,10 @@ class UserController extends Controller
 
         $user->update(['country' => $data['country']]);
 
-        Session::flash('user_edited_by_themself', $user);
+        if ($user->wasChanged()) {
+            Session::flash('user_edited_by_themself', $user);
+        }
+
 
         return redirect('users/' . $id);
     }

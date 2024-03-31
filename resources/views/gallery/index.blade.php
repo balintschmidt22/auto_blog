@@ -36,7 +36,7 @@
 
         @if(Session::has('type_edited'))
             <div class="alert alert-success" role="alert">
-                Type successfully edited to: {{Session::get('type_edited')->type}}, at: {{Session::get('type_edited')->updated_at}}
+                Type successfully edited at: {{Session::get('type_edited')->updated_at}}
             </div>
         @endif
     @endauth

@@ -83,7 +83,10 @@ class TypeController extends Controller
     public function edit(string $id)
     {
         return view('types.edit', [
-            'type' => Type::findOrFail($id)
+            $type = Type::findOrFail($id),
+            'type' => $type,
+            'brands' => Brand::all()->sortBy('name'),
+            'brand' => $type->brand()->first(),
         ]);
     }
 
@@ -94,14 +97,27 @@ class TypeController extends Controller
     {
         $data = $request->validate(
             [
-                'name' => ['required', 'string', 'unique:types,type' . $id],
+                'brand' => ['required', 'string', 'exists:brands,name'],
+                'name' => ['required', 'string', 'unique:types,type,' . $id],
             ]
         );
         $type = Type::findOrFail($id);
 
-        $type->update(['type' => $data['name']]);
+        $newBrand = Brand::where('name', '=', $data['brand'])->first();
 
-        Session::flash('type_edited', $type);
+        if ($type->brand()->first()['name'] !== $data['brand']) {
+            $type->brand()->dissociate();
+            $type->brand()->associate($newBrand['id']);
+            $type->save();
+        }
+
+        if ($type['type'] !== $data['name']) {
+            $type->update(['type' => $data['name']]);
+        }
+
+        if ($type->wasChanged()) {
+            Session::flash('type_edited', $type);
+        }
 
         return Redirect::route('types.show', [$id]);
     }

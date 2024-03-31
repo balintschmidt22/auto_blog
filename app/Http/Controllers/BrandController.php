@@ -102,7 +102,7 @@ class BrandController extends Controller
     {
         $data = $request->validate(
             [
-                'name' => ['required', 'string', 'unique:brands,name' . $id],
+                'name' => ['required', 'string', 'unique:brands,name,' . $id],
                 'country' => ['required', 'string'],
                 'image' => ['file', 'image', 'max: 4096'],
             ]
@@ -127,7 +127,10 @@ class BrandController extends Controller
 
         $brand->update(['name' => $data['name'], 'country' => $data['country']]);
 
-        Session::flash('brand_edited', $brand);
+        if ($brand->wasChanged()) {
+            Session::flash('brand_edited', $brand);
+        }
+
 
         return redirect('brands/' . $id);
     }

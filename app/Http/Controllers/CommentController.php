@@ -13,7 +13,7 @@ class CommentController extends Controller
     public function __construct()
     {
         $this->middleware(['auth', 'verified'])->only('addComment');
-        $this->middleware(["can:moderator"])->only('destroy');
+        $this->middleware(["can:moderator"])->only('delete');
     }
 
     /**

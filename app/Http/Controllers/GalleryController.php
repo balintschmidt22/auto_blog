@@ -153,7 +153,9 @@ class GalleryController extends Controller
 
         $image->update(['location' => $data['location']]);
 
-        Session::flash('image_edited', $image);
+        if ($image->wasChanged()) {
+            Session::flash('image_edited', $image);
+        }
 
         return Redirect::route('gallery.show', [$id]);
     }

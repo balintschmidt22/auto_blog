@@ -11,14 +11,11 @@
             </div>
         @endif
 
-        {{-- TODO: action, method, enctype --}}
         <form action="{{ route('brands.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            {{-- TODO: Validation --}}
-
             <div class="form-group row mb-3">
-                <label for="name" class="col-sm-2 col-form-label"><b>Name</b></label>
+                <label for="name" class="col-sm-2 col-form-label"><b>Name*</b></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}">
                     @error('name')
@@ -30,7 +27,7 @@
             </div>
 
             <div class="form-group row mb-3">
-                <label for="country" class="col-sm-2 col-form-label"><b>Country</b></label>
+                <label for="country" class="col-sm-2 col-form-label"><b>Country*</b></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control @error('country') is-invalid @enderror" id="country" name="country" value="{{ old('country') }}">
                     @error('country')
@@ -42,7 +39,7 @@
             </div>
 
             <div class="form-group row mb-3">
-                <label for="image" class="col-sm-2 col-form-label"><b>Image</b></label>
+                <label for="image" class="col-sm-2 col-form-label"><b>Image*</b></label>
                 <div class="col-sm-10">
                     <div class="form-group">
                         <div class="row">

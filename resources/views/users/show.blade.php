@@ -121,10 +121,10 @@
             </div>
             <table class="table table-bordered table-striped-columns table-hover">
                 <tr>
-                    <td class="col-3"><b>Followed By</b></td>
-                    <td class="col-3">{{$followedBy}}</td>
-                    <td class="col-3"><b>Follows</b></td>
-                    <td class="col-3">{{$follows}}</td>
+                    <td class="col-2"><b>Followed By</b></td>
+                    <td class="col-2">{{$followedBy}}</td>
+                    <td class="col-2"><b>Follows</b></td>
+                    <td class="col-2"><small>Users:</small> {{$follows}} <small>Brands:</small> {{$followedBrands}}</td>
                 </tr>
                 <tr>
                     <td class="col-3"><b>Likes Received</b></td>

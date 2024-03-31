@@ -14,7 +14,7 @@ class FollowController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'verified']);
+        $this->middleware(['auth', 'verified'])->only(['followUser', 'followBrand', 'followedUsers', 'followedBrands']);
     }
 
     public function followUser(string $id)
