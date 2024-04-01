@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all()->sortBy('username')->toArray();
+        $users = User::all()->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE)->toArray();
         return view('users.search', compact('users'));
     }
 
@@ -152,7 +152,7 @@ class UserController extends Controller
         if (trim($query) !== "") {
             $filteredUsers = $users->filter(function ($item) use ($query) {
                 return str_contains(strtolower($item['username']), strtolower($query)) !== false;
-            })->sortBy('username')->values();
+            })->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE)->values();
         } else {
             $filteredUsers = [];
         }
@@ -162,7 +162,7 @@ class UserController extends Controller
 
     public function createPDF()
     {
-        $users = User::get()->sortBy('username');
+        $users = User::get()->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE);
         $pdf = \Barryvdh\DomPDF\Facade\PDF::loadView('users.pdf', compact('users'));
         return $pdf->download('autoblog_users.pdf');
     }
@@ -170,7 +170,7 @@ class UserController extends Controller
     public function exportCSV(Request $request)
     {
         $fileName = 'users.csv';
-        $users = User::all()->sortBy('username');
+        $users = User::all()->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE);
 
         $headers = array(
             "Content-type" => "text/csv",

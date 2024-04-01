@@ -20,7 +20,7 @@ class BrandController extends Controller
     public function index()
     {
         return view('brands.search', [
-            'brands' => Brand::all()->sortBy('name')->toArray(),
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->toArray(),
         ]);
     }
 
@@ -79,7 +79,7 @@ class BrandController extends Controller
 
         return view('brands.show', [
             'brand' => $brand,
-            'types' => $brand->types()->get()->sortBy('type')->toArray(),
+            'types' => $brand->types()->get()->sortBy('type', SORT_NATURAL | SORT_FLAG_CASE)->toArray(),
             'followedBy' => count($brand->followedBy()->get()),
             'likedBy' => $likedBy,
         ]);
@@ -157,7 +157,7 @@ class BrandController extends Controller
         if (trim($query) !== "") {
             $filteredBrands = $brands->filter(function ($item) use ($query) {
                 return str_contains(strtolower($item['name']), strtolower($query)) !== false;
-            })->sortBy('name')->values();
+            })->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->values();
         } else {
             $filteredBrands = [];
         }

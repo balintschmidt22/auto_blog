@@ -29,7 +29,7 @@ class TypeController extends Controller
     public function create()
     {
         return view('types.create', [
-            'brands' => Brand::all()->sortBy('name')
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
         ]);
     }
 
@@ -85,7 +85,7 @@ class TypeController extends Controller
         return view('types.edit', [
             $type = Type::findOrFail($id),
             'type' => $type,
-            'brands' => Brand::all()->sortBy('name'),
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE),
             'brand' => $type->brand()->first(),
         ]);
     }

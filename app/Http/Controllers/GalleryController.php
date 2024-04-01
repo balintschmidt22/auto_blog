@@ -40,7 +40,7 @@ class GalleryController extends Controller
     public function create()
     {
         return view('gallery.create', [
-            'brands' => Brand::all()->sortBy('name'),
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE),
         ]);
     }
 
@@ -109,7 +109,7 @@ class GalleryController extends Controller
     {
         return view('gallery.edit', [
             'image' => Image::findOrFail($id),
-            'brands' => Brand::all()->sortBy('name')
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
         ]);
     }
 
