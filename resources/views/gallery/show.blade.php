@@ -61,16 +61,20 @@
                 <span><a href="{{route('login')}}" class="btn" id="{{$image['id']}}"><i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;" id="liked"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
                 @endguest
                 @auth
-                    <span>
-                        <a class="btn likeButton" id="{{$image['id']}}">
-                            @if (in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
-                                <i class="fa-solid fa-heart fa-2xl" style="color: #ff0000;" id="disliked"></i>
-                            @else
-                                <i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;" id="liked"></i>
-                            @endif
-                            <b>{{count($image->likedBy()->get()->toArray())}}</b>
-                        </a>
-                    </span>
+                    @if (Auth::user()->email_verified_at === null)
+                        <span><a href="{{route('verification.notice')}}" class="btn" id="{{$image['id']}}"><i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;" id="liked"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
+                    @else
+                        <span>
+                            <a class="btn likeButton" id="{{$image['id']}}">
+                                @if (in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
+                                    <i class="fa-solid fa-heart fa-2xl" style="color: #ff0000;" id="disliked"></i>
+                                @else
+                                    <i class="fa-regular fa-heart fa-2xl" style="color: #ff0000;" id="liked"></i>
+                                @endif
+                                <b>{{count($image->likedBy()->get()->toArray())}}</b>
+                            </a>
+                        </span>
+                    @endif
                 @endauth
             <span>
                 <a class="btn"><i class="fa-regular fa-comment fa-2xl" style="color: #149f36;"></i> <b>{{count($image->comments()->get()->toArray())}}</b></a>

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Message>
@@ -17,7 +18,7 @@ class MessageFactory extends Factory
     public function definition(): array
     {
         return [
-            'message' => fake()->text(200)
+            'message' => Crypt::encrypt(fake()->text(200))
         ];
     }
 }

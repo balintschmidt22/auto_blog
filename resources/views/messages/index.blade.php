@@ -159,7 +159,7 @@
                                 @if ($m['from_id'] === Auth::id())
                                     <div class="d-flex flex-row justify-content-end">
                                         <div>
-                                            <p class= "bubble small p-2 me-3 mb-1 text-white rounded-3 bg-primary" style="background-color: #f5f6f7;">{{$m['message']}}</p>
+                                            <p class= "bubble small p-2 me-3 mb-1 text-white rounded-3 bg-primary" style="background-color: #f5f6f7;">{{\Illuminate\Support\Facades\Crypt::decrypt($m['message'])}}</p>
                                             <p class="small me-3 mb-3 rounded-3 text-muted">{{$m['created_at']}}</p>
                                         </div>
                                         @if(str_starts_with(Auth::user()['profile_picture'],"https"))
@@ -176,7 +176,7 @@
                                             <img class="rounded-circle shadow-1-strong" src="{{URL::asset('storage/'.$otherUser['profile_picture'])}}" alt="{{$otherUser['username']}} avatar" width="60" height="60"/>
                                         @endif
                                         <div>
-                                            <p class="bubble small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{$m['message']}}</p>
+                                            <p class="bubble small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{\Illuminate\Support\Facades\Crypt::decrypt($m['message'])}}</p>
                                             <p class="small ms-3 mb-3 rounded-3 text-muted float-end">{{$m['created_at']}}</p>
                                         </div>
                                     </div>

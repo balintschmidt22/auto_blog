@@ -42,15 +42,12 @@
     @endauth
 
     <div class="d-flex flex-row justify-content-center">
-        {{-- TODO: Pagination --}}
         {{ $images->links() }}
     </div>
 
     <div class="row mt-3">
         <div>
             <div class="row">
-                {{-- TODO: Read images from DB --}}
-
                 @forelse ($images as $image)
                     <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
                         <div class="card bg-light border-secondary mt-3 ratio-4x3 w-100">
@@ -60,12 +57,10 @@
                                 <img class="card-img-top" src="{{URL::asset('storage/'.$image['image'])}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                             @endif
                             <div class="card-body">
-                                {{-- TODO: Brand - Type --}}
                                 <h5 class="card-title mb-0"><a href="{{route('brands.show', ['brand'=>$image->type['brand_id']])}}" class="text-decoration-none">{{App\Models\Brand::find($image->type['brand_id'])['name']}}</a> <a href="{{route('types.show', ['type'=>$image->type['id']])}}" class="text-decoration-none">{{ $image->type['type'] }}</a></h5>
                                 <p class="small mb-0">
                                     <span class="me-2">
                                         <i class="fas fa-user"></i>
-                                        {{-- TODO: User --}}
                                         <span><a href="{{route('users.show', ['user'=>$image->user['id']])}}" class="text-decoration-none link-primary">{{$image->user->username}}</a></span>
                                     </span>
 
@@ -78,7 +73,6 @@
                                     <br>
                                     <span class="me-2">
                                         <i class="far fa-calendar-alt"></i>
-                                        {{-- TODO: Date --}}
                                         <span>{{ $image->created_at }}</span>
                                     </span>
                                 </p>
@@ -89,16 +83,20 @@
                                     <span><a href="{{route('login')}}" class="btn" id="{{$image['id']}}"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;" id="liked"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
                                 @endguest
                                 @auth
-                                    <span>
-                                        <a class="btn likeButton" id="{{$image['id']}}">
-                                            @if (in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
-                                                <i class="fa-solid fa-heart fa-xl" style="color: #ff0000;" id="disliked"></i>
-                                            @else
-                                                <i class="fa-regular fa-heart fa-xl" style="color: #ff0000;" id="liked"></i>
-                                            @endif
-                                            <b>{{count($image->likedBy()->get()->toArray())}}</b>
-                                        </a>
-                                    </span>
+                                    @if (Auth::user()->email_verified_at === null)
+                                        <span><a href="{{route('verification.notice')}}" class="btn" id="{{$image['id']}}"><i class="fa-regular fa-heart fa-xl" style="color: #ff0000;" id="liked"></i> <b>{{count($image->likedBy()->get()->toArray())}}</b></a></span>
+                                    @else
+                                        <span>
+                                            <a class="btn likeButton" id="{{$image['id']}}">
+                                                @if (in_array($image['id'], array_column(Auth::user()->likedImages()->get()->toArray(), 'id')))
+                                                    <i class="fa-solid fa-heart fa-xl" style="color: #ff0000;" id="disliked"></i>
+                                                @else
+                                                    <i class="fa-regular fa-heart fa-xl" style="color: #ff0000;" id="liked"></i>
+                                                @endif
+                                                <b>{{count($image->likedBy()->get()->toArray())}}</b>
+                                            </a>
+                                        </span>
+                                    @endif
                                 @endauth
                                 <span>
                                     <a class="btn"><i class="fa-regular fa-comment fa-xl" style="color: #149f36;"></i> <b>{{count($image->comments()->get()->toArray())}}</b></a>
@@ -119,7 +117,6 @@
             </div>
 
             <div class="d-flex flex-row justify-content-center mt-3">
-                {{-- TODO: Pagination --}}
                 {{ $images->links() }}
             </div>
 

@@ -6,6 +6,7 @@ use App\Models\Message;
 use App\Models\User;
 //use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
@@ -237,7 +238,7 @@ class UserController extends Controller
         }
 
         $message = new Message;
-        $message->message = $data['message'];
+        $message->message = Crypt::encrypt($data['message']);
 
         $message->from()->associate(
             $user
