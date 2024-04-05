@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth", "verified"])->only(['message', 'addMessage', 'useredit', 'userUpdate', 'changePassword', 'updatePassword']);
+        $this->middleware(["auth", "verified"])->only(['message', 'addMessage', 'userEdit', 'userUpdate', 'changePassword', 'updatePassword']);
         $this->middleware(["can:admin"])->only(['delete', 'addModerator', 'removeModerator', 'edit', 'update']);
     }
     /**
@@ -286,7 +286,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function useredit(string $id)
+    public function userEdit(string $id)
     {
         if (Auth::id() != $id) {
             abort(403);

@@ -128,7 +128,7 @@ class DatabaseSeeder extends Seeder
             $message->save();
         });
 
-        $users->each(function ($user) use (&$images, &$image_count, &$brands, &$brand_count) {
+        $users->each(function ($user) use (&$images, &$image_count, &$brands, &$brand_count, &$users, &$user_count) {
             $user->likedImages()->sync(
                 $images->random(
                     rand(0, ceil($image_count / 2))
@@ -139,14 +139,11 @@ class DatabaseSeeder extends Seeder
                     rand(0, ceil($brand_count / 2))
                 )
             );
-        });
-
-        foreach ($users as $user) {
             $user->follows()->sync(
                 $users->where('id', '!=', $user['id'])->random(
                     rand(0, ceil($user_count / 2))
                 )
             );
-        }
+        });
     }
 }

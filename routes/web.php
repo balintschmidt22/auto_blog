@@ -78,7 +78,7 @@ Route::get('users/csv/download', [UserController::class, 'exportCSV'])->name('us
 Route::get('users/message/{id}', [UserController::class, 'message'])->middleware(['auth', 'verified'])->name('users.message');
 Route::post('users/addMessage/{id}', [UserController::class, 'addMessage'])->middleware(['auth', 'verified'])->name('users.addMessage');
 
-Route::get('users/{user}/useredit', [UserController::class, 'useredit'])->middleware(['auth', 'verified'])->name('users.useredit');
+Route::get('users/{user}/userEdit', [UserController::class, 'userEdit'])->middleware(['auth', 'verified'])->name('users.userEdit');
 Route::patch('users/userUpdate/{id}', [UserController::class, 'userUpdate'])->middleware(['auth', 'verified'])->name('users.userUpdate');
 
 Route::get('users/changePassword/{id}', [UserController::class, 'changePassword'])->middleware(['auth', 'verified'])->name('users.changePassword');

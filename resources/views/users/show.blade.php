@@ -110,7 +110,7 @@
                                     @if (Auth::user()->isAdmin())
                                         <a href="{{route('users.edit', [$user])}}" class="btn btn-primary m-2">Edit Profile</a>
                                     @else
-                                        <a href="{{route('users.useredit', [$user])}}" class="btn btn-primary m-2">Edit Profile</a>
+                                        <a href="{{route('users.userEdit', [$user])}}" class="btn btn-primary m-2">Edit Profile</a>
                                     @endif
                                     <a href="{{route('users.changePassword', ['id'=>$user['id']])}}" class="btn btn-primary m-2">Change Password</a>
                                 </td>
