@@ -113,7 +113,7 @@ class UserController extends Controller
 
             $file = $data['image'];
 
-            $image = $file->store('images', ['disk' => 'public']);
+            $image = $file->store('profile_pictures', ['disk' => 'public']);
 
             $user->profile_picture = $image;
         }
@@ -323,7 +323,7 @@ class UserController extends Controller
 
             $file = $data['image'];
 
-            $image = $file->store('images', ['disk' => 'public']);
+            $image = $file->store('profile_pictures', ['disk' => 'public']);
 
             $user->profile_picture = $image;
         }

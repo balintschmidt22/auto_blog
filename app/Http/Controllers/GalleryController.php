@@ -76,8 +76,10 @@ class GalleryController extends Controller
 
         $image->save();
 
-        $admin = User::find(1);
-        Mail::to($admin)->send(new ImageUploaded($image, $admin));
+        $admin = User::where('role', 'adm')->first();
+        if ($admin !== null) {
+            Mail::to($admin)->send(new ImageUploaded($image, $admin));
+        }
 
         Session::flash('image_uploaded', $image);
 
