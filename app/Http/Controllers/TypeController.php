@@ -20,7 +20,7 @@ class TypeController extends Controller
      */
     public function index()
     {
-        //
+        abort(404);
     }
 
     /**

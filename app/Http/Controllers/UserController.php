@@ -32,7 +32,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -40,7 +40,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        abort(404);
     }
 
     /**

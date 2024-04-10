@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FavouriteImageController;
@@ -32,14 +33,12 @@ use Illuminate\Support\Facades\Session;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 //MODERATOR FUNCTIONS (ADMIN CAN USE THEM)
 Route::middleware('can:moderator')->group(function () {
     Route::get('comments/delete/{id}', [CommentController::class, 'delete'])->name('comments.delete');
-
     Route::get('types/create', [TypeController::class, 'create'])->name('types.create');
-
     Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create');
 });
 
@@ -54,6 +53,7 @@ Route::middleware('can:admin')->group(function () {
     Route::get('users/removeModerator/{id}', [UserController::class, 'removeModerator'])->name('users.removeModerator');
 });
 
+//USER FUNCTIONS
 //GALLERY
 Route::get('gallery/gettypes', [GalleryController::class, 'gettypes'])->middleware(['auth', 'verified'])->name('gallery.gettypes');
 Route::resource('gallery', GalleryController::class);
@@ -67,7 +67,6 @@ Route::post('brands/search', [BrandController::class, 'search'])->name('brands.s
 Route::resource('types', TypeController::class);
 
 //USERS
-//Route::get('users/show/{id}', [UserController::class, 'show'])->name('users.show2');
 Route::resource('users', UserController::class);
 
 Route::post('users/search', [UserController::class, 'search'])->name('users.search');
@@ -85,11 +84,10 @@ Route::get('users/changePassword/{id}', [UserController::class, 'changePassword'
 Route::patch('users/updatePassword/{id}', [UserController::class, 'updatePassword'])->middleware(['auth', 'verified'])->name('users.updatePassword');
 
 //COMMENTS
-Route::resource('comments', CommentController::class);
 Route::post('comments/add/{id}', [CommentController::class, 'addComment'])->middleware(['auth', 'verified'])->name('comments.add');
 
 //FAVOURITES
-Route::resource('favourites', FavouriteImageController::class)->middleware('auth');
+Route::get('favourites', [FavouriteImageController::class, 'index'])->middleware(['auth', 'verified'])->name('favourites.index');
 Route::post('favourites/add', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
 
 //FOLLOWS
@@ -99,23 +97,11 @@ Route::get('follows/followedUsers', [FollowController::class, 'followedUsers'])-
 Route::get('follows/followedBrands', [FollowController::class, 'followedBrands'])->middleware(['auth', 'verified'])->name('follows.followedBrands');
 
 // EMAIL VERIFICATION
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
+Route::get('/email/verify', [VerificationController::class, 'show'])->middleware('auth')->name('verification.notice');
 
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verifyUser'])->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-    Session::flash('success', 'Your email has been verified');
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-
-    return back()->with('message', 'Verification link sent!');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+Route::post('/email/verification-notification', [VerificationController::class, 'send'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 //PASSWORD RESET
 
@@ -165,16 +151,8 @@ Route::post('/password/reset', function (Request $request) {
 })->middleware('guest')->name('password.update');
 
 
-Route::fallback(function () {
-    return view('errors.403');
-});
+Auth::routes(['verify' => true]);
 
 Route::fallback(function () {
     return view('errors.404');
-});
-
-Auth::routes(['verify' => true]);
-
-Route::any('{any}', function () {
-    return redirect('/');
 });

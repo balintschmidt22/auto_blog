@@ -8,8 +8,6 @@ use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-use Illuminate\Http\Request;
-
 class FollowController extends Controller
 {
     public function __construct()
