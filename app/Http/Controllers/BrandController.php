@@ -19,7 +19,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        return view('brands.search', [
+        return view('brands.index', [
             'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->toArray(),
         ]);
     }

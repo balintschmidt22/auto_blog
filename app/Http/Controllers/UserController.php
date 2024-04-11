@@ -24,7 +24,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all()->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE)->toArray();
-        return view('users.search', compact('users'));
+        return view('users.index', compact('users'));
     }
 
     /**

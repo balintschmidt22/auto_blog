@@ -114,26 +114,6 @@
             <div class="container">
                 <hr>
                 <div class="d-flex flex-column align-items-center">
-                    {{-- <div>
-                        <a class="me-4 link-secondary">
-                            <i class="fa-brands fa-facebook"></i>
-                        </a>
-                        <a class="me-4 link-secondary">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="me-4 link-secondary">
-                            <i class="fab fa-google"></i>
-                        </a>
-                        <a class="me-4 link-secondary">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a class="me-4 link-secondary">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
-                        <a class="me-4 link-secondary">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div> --}}
                     <div>
                         <span class="small">AutoBlog</span>
                         <span class="mx-1">·</span>
