@@ -19,7 +19,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
 
-    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'public/css/app.css'])
+    @vite(['public/sass/app.scss', 'public/js/app.js', 'public/css/app.css'])
 </head>
 <body>
     <div id="app">
