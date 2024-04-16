@@ -54,11 +54,14 @@ Route::get('gallery/create', [GalleryController::class, 'create'])->middleware([
 //BRANDS
 Route::resource('brands', BrandController::class);
 Route::post('brands/search', [BrandController::class, 'search'])->name('brands.search');
+Route::get('brands/pdf/download', [BrandController::class, 'createPDF'])->name('brands.pdf.download');
+Route::get('brands/csv/download', [BrandController::class, 'exportCSV'])->name('brands.csv.download');
 
 //TYPES
 Route::resource('types', TypeController::class);
 
 //USERS
+Route::get('users/messageBox', [UserController::class, 'messageBox'])->middleware(['auth', 'verified'])->name('users.messageBox');
 Route::resource('users', UserController::class);
 
 Route::post('users/search', [UserController::class, 'search'])->name('users.search');

@@ -6,6 +6,7 @@ use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BrandController extends Controller
 {
@@ -163,5 +164,45 @@ class BrandController extends Controller
         }
 
         return $filteredBrands;
+    }
+
+    public function createPDF()
+    {
+        $brands = Brand::get()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
+        $pdf = PDF::loadView('brands.pdf', compact('brands'));
+        return $pdf->download('autoblog_brands.pdf');
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $fileName = 'brands.csv';
+        $brands = Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
+
+        $headers = array(
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        );
+
+        $columns = array('Name', 'Country', 'Last_Modified');
+
+        $callback = function () use ($brands, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($brands as $brand) {
+                $row['Name'] = $brand->name;
+                $row['Country'] = $brand->country;
+                $row['Last_Modified'] = $brand->updated_at;
+
+                fputcsv($file, array ($row['Name'], $row['Country'], $row['Last_Modified']));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

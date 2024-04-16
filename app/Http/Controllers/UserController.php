@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\User;
-//use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +14,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth", "verified"])->only(['message', 'addMessage', 'userEdit', 'userUpdate', 'changePassword', 'updatePassword']);
+        $this->middleware(["auth", "verified"])->only(['messageBox', 'message', 'addMessage', 'userEdit', 'userUpdate', 'changePassword', 'updatePassword']);
         $this->middleware(["can:admin"])->only(['delete', 'addModerator', 'removeModerator', 'edit', 'update']);
     }
     /**
@@ -66,7 +65,7 @@ class UserController extends Controller
         return view('users.show', [
             'user' => $user,
             'image_count' => count($imgs->get()->toArray()),
-            'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+            'images' => $imgs->with(['type', 'user'])->orderBy('updated_at', 'DESC')->paginate(12),
             'likesGiven' => $likesGiven,
             'likedBy' => $likedBy,
             'followedBy' => count($user->followedBy()->get()->toArray()),
@@ -192,7 +191,7 @@ class UserController extends Controller
                 $row['Email'] = $user->email;
                 $row['Country'] = $user->country;
                 $row['Images'] = $user->ownImages()->count();
-                $row['Registered'] = $user->created_at;
+                $row['Registered'] = $user->updated_at;
 
                 fputcsv($file, array ($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Registered']));
             }
@@ -201,6 +200,46 @@ class UserController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function messageBox()
+    {
+        $user = Auth::user();
+
+        $allReceived = $user->messagesReceived();
+        $allSent = $user->messagesSent();
+
+        $recIds = $allReceived->pluck('from_id')->toArray();
+        $sentIds = $allSent->pluck('to_id')->toArray();
+
+        $ids = array_values(array_unique(array_merge($recIds, $sentIds)));
+
+        $received = collect();
+        $sent = collect();
+
+        // foreach ($ids as $i) {
+        //     $r = $allReceived->where('from_id', '=', $i)->orderBy('updated_at', 'desc')->first();
+        //     if ($r !== null) {
+        //         $received->push($r);
+        //     }
+        //     // $s = $allSent->where('to_id', '=', $i)->orderBy('updated_at', 'desc')->first();
+        //     // if ($r !== null && $s == null) {
+        //     //     $received->push($r);
+        //     // } else if ($r == null && $s !== null) {
+        //     //     $sent->push($s);
+        //     // } else if ($r !== null && $s !== null) {
+        //     //     if ($r['updated_at'] >= $s['updated_at']) {
+        //     //         $received->push($r);
+        //     //     } else {
+        //     //         $sent->push($s);
+        //     //     }
+        //     // }
+        // }
+
+        return view('messages.box', [
+            'received' => $allReceived->orderBy('updated_at', 'desc')->get(),
+            'sent' => $allSent->orderBy('updated_at', 'desc')->get(),
+        ]);
     }
 
     public function message(string $id)
@@ -218,7 +257,7 @@ class UserController extends Controller
         $messages = $messagesSent->concat($messagesReceived)->values();
 
         return view('messages.index', [
-            'messages' => $messages->sortByDesc('created_at'),
+            'messages' => $messages->sortByDesc('updated_at'),
             'otherUser' => $otherUser,
         ]);
     }

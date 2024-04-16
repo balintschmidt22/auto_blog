@@ -61,11 +61,11 @@ th {
     display: flex;
 }
 
-#chat3 .form-control {
+#chat2 .form-control {
     border-color: transparent;
 }
 
-#chat3 .form-control:focus {
+#chat2 .form-control:focus {
     border-color: transparent;
     box-shadow: inset 0px 0px 0px 1px transparent;
 }
@@ -80,4 +80,21 @@ th {
     -webkit-hyphens: auto;
     -moz-hyphens: auto;
     hyphens: auto;
+}
+
+.box {
+    height: auto;
+    max-height: 35em;
+    position: relative;
+    display: flex;
+}
+
+.three-lines {
+    max-height: 60px;
+    line-height: 20px;
+    overflow: hidden;
+}
+
+.navbar .navbar-collapse {
+    text-align: center;
 }

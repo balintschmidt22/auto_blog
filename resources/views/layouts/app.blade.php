@@ -19,11 +19,11 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
 
-    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/css/app.css'])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'public/css/app.css'])
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div class="container">
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -33,25 +33,25 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-                        <a href="/" class="btn btn-primary mb-3 topbar" style="margin-right: 40px"><i class="fa-solid fa-house fa-lg" style="color: #ffffff;"></i></a>
+                        <a href="/" class="btn btn-primary mb-3 topbar"><i class="fa-solid fa-house fa-lg" style="color: #ffffff;"></i></a>
 
                         <a href="{{route('gallery.create')}}" class="btn btn-primary mb-3 topbar">Upload <i class="fa-solid fa-upload fa-lg" style="color: #ffffff;"></i></a>
                         <a href="{{route('gallery.index')}}" class="btn btn-primary mb-3 topbar">Gallery <i class="fa-regular fa-images fa-lg" style="color: #ffffff;"></i></a>
                         <a href="{{route('users.index')}}" class="btn btn-primary mb-3 topbar">Users <i class="fa-solid fa-users fa-lg" style="color: #ffffff;"></i></a>
                         <a href="{{route('brands.index')}}" class="btn btn-primary mb-3 topbar">Brands <i class="fa-solid fa-car fa-lg" style="color: #ffffff;"></i></a>
-                        @auth
-                            <a href="{{route('favourites.index')}}" class="btn btn-primary mb-3 topbar">Favourites <i class="fa-solid fa-heart fa-lg" style="color: #ffffff;"></i></a>
+                        <a href="{{route('favourites.index')}}" class="btn btn-primary mb-3 topbar">Favourites <i class="fa-solid fa-heart fa-lg" style="color: #ffffff;"></i></a>
 
-                            <div class="dropdown">
-                                <a class="topbar btn btn-primary mb-3 dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                  Follows <i class="fa-solid fa-user-plus fa-lg" style="color: #ffffff;"></i>
-                                </a >
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                  <li><a class="dropdown-item" href="{{route('follows.followedUsers')}}">Users</a></li>
-                                  <li><a class="dropdown-item" href="{{route('follows.followedBrands')}}">Brands</a></li>
-                                </ul>
-                            </div>
-                        @endauth
+                        <div class="dropdown">
+                            <a class="topbar btn btn-primary mb-3 dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                Follows <i class="fa-solid fa-user-plus fa-lg" style="color: #ffffff;"></i>
+                            </a >
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" href="{{route('follows.followedUsers')}}">Users</a></li>
+                                <li><a class="dropdown-item" href="{{route('follows.followedBrands')}}">Brands</a></li>
+                            </ul>
+                        </div>
+
+                        <a href="{{route('users.messageBox')}}" class="btn btn-primary mb-3 topbar">Messages <i class="fa-solid fa-envelope fa-lg" style="color: #ffffff;"></i></a>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

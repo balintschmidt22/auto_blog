@@ -3,34 +3,36 @@
 
 @section('content')
 <div class="container">
-    <h1>Brands - {{count($brands)}}</h1>
-    @auth
-        @if(Session::has('followed'))
-            <div class="alert alert-success" role="alert">
-                New brand followed: {{Session::get('followed')->name}}
-            </div>
-        @endif
-
-        @if(Session::has('unfollowed'))
-            <div class="alert alert-warning" role="alert">
-                Brand is no longer followed: {{Session::get('unfollowed')->name}}
-            </div>
-        @endif
-
-        @if(Session::has('brand_deleted'))
-            <div class="alert alert-warning" role="alert">
-                Brand deleted: {{Session::get('brand_deleted')->name}}
-            </div>
-        @endif
-    @endauth
-    <div>
+    <h1>Brands - {{count($brands)}}
         @auth
             @if(Auth::user()->isModerator())
                 <a href="{{route('brands.create')}}" class="btn btn-primary mb-2 mt-1">Add brand</a>
                 <a href="{{route('types.create')}}" class="btn btn-primary mb-2 mt-1 m-1">Add type</a>
             @endif
         @endauth
-        <input type="text" size="25" id="searchInput" placeholder="Search brand..." class="float-left m-2">
+    </h1>
+    @if(Session::has('followed'))
+        <div class="alert alert-success" role="alert">
+            New brand followed: {{Session::get('followed')->name}}
+        </div>
+    @endif
+
+    @if(Session::has('unfollowed'))
+        <div class="alert alert-warning" role="alert">
+            Brand is no longer followed: {{Session::get('unfollowed')->name}}
+        </div>
+    @endif
+
+    @if(Session::has('brand_deleted'))
+        <div class="alert alert-warning" role="alert">
+            Brand deleted: {{Session::get('brand_deleted')->name}}
+        </div>
+    @endif
+    <div>
+        <a class="btn btn-primary mt-1 mb-2" href="{{ route('brands.pdf.download') }}">Export to PDF</a>
+        <a class="btn btn-primary mt-1 mb-2 m-1" href="{{ route('brands.csv.download') }}">Export to CSV</a>
+        <input type="text" size="25" id="searchInput" placeholder="Search brand..." class="float-left mb-2 mt-1">
+        <input type="text" size="25" id="typeInput" placeholder="Search type..." class="float-left mb-2 mt-1 ml-2">
     </div>
     <div class="row">
         <div class="col">
