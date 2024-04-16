@@ -30,8 +30,8 @@
     @endauth
 
     <h1 class="mb-3 mt-2">
-        @if(str_starts_with($brand['image'],"https"))
-            <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
+        @if(str_starts_with($brand['image'],"placeholder"))
+            <img src="{{url($brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
         @else
             <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
         @endif

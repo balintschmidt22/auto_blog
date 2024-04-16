@@ -6,8 +6,8 @@
     <div class="row">
         <h1>
             @if ($title === "type")
-                @if(str_starts_with($brand['image'],"https"))
-                    <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px">
+                @if(str_starts_with($brand['image'],"placeholder"))
+                    <img src="{{url($brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px">
                 @else
                     <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px">
                 @endif
@@ -51,8 +51,8 @@
                 @forelse ($images as $image)
                     <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
                         <div class="card bg-light border-secondary mt-3 ratio-4x3 w-100">
-                            @if(str_starts_with($image['image'],"http"))
-                                <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
+                            @if(str_starts_with($image['image'],"placeholder"))
+                                <img class="card-img-top" src="{{url($image['image'])}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                             @else
                                 <img class="card-img-top" src="{{URL::asset('storage/'.$image['image'])}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                             @endif

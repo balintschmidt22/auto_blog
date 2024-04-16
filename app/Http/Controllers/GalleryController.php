@@ -139,7 +139,7 @@ class GalleryController extends Controller
 
         if ($request->hasFile('image')) {
             if ($image['image'] !== null) {
-                if (str_starts_with($image['image'], "https"))
+                if (str_starts_with($image['image'], "placeholder"))
                     $image['image'] = "";
                 else {
                     unlink(public_path() . "/storage/" . $image['image']);

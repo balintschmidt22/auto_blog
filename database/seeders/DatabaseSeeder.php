@@ -18,18 +18,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // if (!User::where('username', '=', 'admin')->first()) {
-        //     $admin = User::factory()->create([
-        //         'username' => 'admin',
-        //         'email' => 'admin@autoblog.com',
-        //         'email_verified_at' => now(),
-        //         'password' => bcrypt('adminpwd'),
-        //         'country' => 'Hungary',
-        //         'profile_picture' => "https://i.imgur.com/fc3wHZH.png",
-        //         'role' => "adm",
-        //         'remember_token' => Str::random(10),
-        //     ]);
-        // }
         $user_count = rand(14, 20);
         $users = User::factory($user_count)->create();
 
@@ -38,7 +26,7 @@ class DatabaseSeeder extends Seeder
         $admin['email'] = 'admin@autoblog.com';
         $admin['password'] = bcrypt('adminpwd');
         $admin['country'] = 'Hungary';
-        $admin['profile_picture'] = "https://i.imgur.com/fc3wHZH.png";
+        $admin['profile_picture'] = "placeholders/Admin_Profile.png";
         $admin['role'] = "adm";
         $admin->save();
 
@@ -59,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
         for ($i = 1; $i < 4; $i++) {
             $users[$i]['role'] = "mod";
-            $users[$i]['profile_picture'] = "https://i.imgur.com/ui1n1Cx.png";
+            $users[$i]['profile_picture'] = "placeholders/Moderator_Profile.png";
             $users[$i]->save();
         }
 
@@ -70,37 +58,11 @@ class DatabaseSeeder extends Seeder
             $type->save();
         });
 
-        $placeHolders = [
-            "https://i.imgur.com/EMeIRuc.jpg",
-            "https://i.imgur.com/3tkSpHa.jpg",
-            "https://i.imgur.com/jyjA6Sp.jpeg",
-            "https://i.imgur.com/dHyVVcC.jpeg",
-            "https://i.imgur.com/rddmXdD.jpeg",
-            "https://i.imgur.com/OrSgmyZ.jpeg",
-            "https://i.imgur.com/eeobjTw.jpeg"
-        ];
-
-        $images->each(function ($image) use (&$types, &$placeHolders) {
+        $images->each(function ($image) use (&$types, &$users) {
             $type = $types->random();
-            //$brand = $type->brand()->get()->first();
             $image->type()->associate(
                 $type->id
             );
-            $placeHolders = [
-                "https://i.imgur.com/EMeIRuc.jpg",
-                "https://i.imgur.com/3tkSpHa.jpg",
-                "https://i.imgur.com/jyjA6Sp.jpeg",
-                "https://i.imgur.com/dHyVVcC.jpeg",
-                "https://i.imgur.com/rddmXdD.jpeg",
-                "https://i.imgur.com/OrSgmyZ.jpeg",
-                "https://i.imgur.com/eeobjTw.jpeg"
-            ];
-            $image['image'] = $placeHolders[array_rand($placeHolders, 1)];
-            //fake()->imageUrl(400, 300, $brand->name, FALSE, $type->type, FALSE);
-            $image->save();
-        });
-
-        $images->each(function ($image) use (&$users) {
             $image->user()->associate(
                 $users->random()->id
             );

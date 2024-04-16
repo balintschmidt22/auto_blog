@@ -112,7 +112,7 @@ class BrandController extends Controller
 
         if ($request->hasFile('image')) {
             if ($brand['image'] !== null) {
-                if (str_starts_with($brand['image'], "https"))
+                if (str_starts_with($brand['image'], "placeholder"))
                     $brand['image'] = "";
                 else {
                     unlink(public_path() . "/storage/" . $brand['image']);

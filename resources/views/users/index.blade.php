@@ -45,7 +45,7 @@
                     </tr>
                 @forelse($users as $user)
                     <tr>
-                        @if(str_starts_with($user['profile_picture'],"https"))
+                        @if(str_starts_with($user['profile_picture'],"placeholder"))
                             <td>
                                 <img class="rounded-circle shadow-1-strong" src={{$user['profile_picture']}} alt="{{$user['username']}} avatar" width="60" height="60">
                             </td>

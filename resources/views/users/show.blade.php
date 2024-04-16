@@ -43,8 +43,8 @@
         <div class="row flex">
             <div class="col-auto d-flex align-items-center">
                 <h1 class="mb-3">
-                    @if(str_starts_with($user['profile_picture'],"https"))
-                        <img class="rounded-circle shadow-1-strong" src={{$user->profile_picture}} alt="{{$user['username']}} avatar" width="100" height="100"/>
+                    @if(str_starts_with($user['profile_picture'],"placeholder"))
+                        <img class="rounded-circle shadow-1-strong" src={{url($user->profile_picture)}} alt="{{$user['username']}} avatar" width="100" height="100"/>
                     @else
                         <img class="rounded-circle shadow-1-strong" src="{{URL::asset('storage/'.$user->profile_picture)}}" alt="{{$user['username']}} avatar" width="100" height="100"/>
                     @endif
@@ -152,8 +152,8 @@
                     @forelse ($images as $image)
                         <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch" style="flex: 50%, width: 50%">
                             <div class="card bg-light border-secondary mt-3 ratio-4x3 w-100">
-                                @if(str_starts_with($image['image'],"http"))
-                                    <img class="card-img-top" src="{{$image['image']}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
+                                @if(str_starts_with($image['image'],"placeholder"))
+                                    <img class="card-img-top" src="{{url($image['image'])}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                                 @else
                                     <img class="card-img-top" src="{{URL::asset('storage/'.$image['image'])}}" alt="{{$image['user']['username']}} - {{App\Models\Brand::find($image->type['brand_id'])['name']}} {{$image['type']['type']}} image">
                                 @endif

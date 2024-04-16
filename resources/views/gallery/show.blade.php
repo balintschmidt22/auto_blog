@@ -4,8 +4,8 @@
 @section('content')
 <div class="container">
     <div>
-        <h1 class="mb-4"> @if(str_starts_with($brand['image'],"https"))
-            <img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:80px">
+        <h1 class="mb-4"> @if(str_starts_with($brand['image'],"placeholder"))
+            <img src="{{url($brand['image'])}}" class="img-thumbnail" alt="{{url($brand['name'])}} image" style="height:80px">
         @else
            <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:80px">
         @endif
@@ -50,8 +50,8 @@
 
     <div class="row">
         <div class="col">
-            @if(str_starts_with($image['image'],"http"))
-                <img src="{{$image['image']}}" class="img-fluid" style="max-width: 100%; height: auto" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
+            @if(str_starts_with($image['image'],"placeholder"))
+                <img src="{{url($image['image'])}}" class="img-fluid" style="max-width: 100%; height: auto" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
             @else
                 <img src="{{URL::asset('storage/'.$image['image'])}}" class="img-fluid" style="max-width: 100%; height: auto" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image">
             @endif
@@ -112,7 +112,7 @@
                     <div class="card-body p-4">
                         <div class="d-flex flex-start">
                             <img class="rounded-circle shadow-1-strong me-3"
-                            src={{App\Models\User::find($comment['user_id'])['profile_picture']}} alt="avatar" width="60"
+                            src={{url(App\Models\User::find($comment['user_id'])['profile_picture'])}} alt="avatar" width="60"
                             height="60" />
                             <div>
                                 <a href="{{route('users.show', ['user'=>$comment['user_id']])}}" class="text-decoration-none link-primary">
@@ -125,7 +125,6 @@
                                 <div class="d-flex align-items-center mb-3">
                                     <p class="mb-0">
                                         {{date('Y-m-d h:i:s',strtotime($comment['created_at']))}}
-                                        <a href="#!" class="link-muted"><i class="fas fa-pencil-alt ms-2"></i></a>
                                         @auth
                                             @if (Auth::user()->isModerator())
                                                 <a href="{{route('comments.delete', ["id"=>$comment['id']])}}" class="btn btn-danger btn-sm">Delete</a>
@@ -133,7 +132,7 @@
                                         @endauth
                                     </p>
                                 </div>
-                                <p class="mb-0">
+                                <p class="mb-0 bubble">
                                     {{$comment['comment']}}
                                 </p>
                             </div>
@@ -151,8 +150,8 @@
 
                     <div class="d-flex flex-start w-100">
                         <img class="rounded-circle shadow-1-strong me-3"
-                        @auth src={{Auth::user()->profile_picture}} @endauth
-                        @guest src="https://i.imgur.com/QqNNOcI.jpeg" @endguest
+                        @auth src={{url(Auth::user()->profile_picture)}} @endauth
+                        @guest src="url(placeholders/User_Profile_Blank.jpg)" @endguest
                         alt="avatar" width="60"
                         height="60" />
                       <div class="form-outline w-100">

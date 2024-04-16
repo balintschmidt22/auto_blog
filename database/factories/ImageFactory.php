@@ -16,8 +16,20 @@ class ImageFactory extends Factory
      */
     public function definition(): array
     {
+        $placeHolders = [
+            'Alfa_Romeo_Giulia.jpg',
+            'Audi_100.jpeg',
+            'Ford_GT.jpg',
+            'Ford_Model_T.jpg',
+            'Lancia_Fulvia.jpg',
+            'Maserati_Biturbo.jpg',
+            'Mercedes_S_Klasse.jpg',
+            'Volvo_S80.jpg',
+        ];
+        $image = $placeHolders[array_rand($placeHolders, 1)];
+
         return [
-            'image' => "", //fake()->imageUrl(400, 300, NULL, TRUE, fake()->word(), FALSE),
+            'image' => 'placeholders/' . $image,
             'location' => fake()->city(),
         ];
     }

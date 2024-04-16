@@ -10,7 +10,7 @@
         </div>
     @endif --}}
     <div class="d-flex justify-content-center align-items-center">
-        <img src="{{url('autoblog_logo.png')}}" alt="AutoBlog Logo" class="img-fluid mt-3">
+        <img src="{{url('placeholders/autoblog_logo.png')}}" alt="AutoBlog Logo" class="img-fluid mt-3">
     </div>
     <div class="d-flex justify-content-center align-items-center">
         <h2 class="mt-5">Welcome to the site!</h2>

@@ -103,7 +103,7 @@ class UserController extends Controller
 
         if ($request->hasFile('image')) {
             if ($user['profile_picture'] !== null) {
-                if (str_starts_with($user['profile_picture'], "https"))
+                if (str_starts_with($user['profile_picture'], "placeholder"))
                     $user['profile_picture'] = "";
                 else {
                     unlink(public_path() . "/storage/" . $user['profile_picture']);
@@ -353,7 +353,7 @@ class UserController extends Controller
 
         if ($request->hasFile('image')) {
             if ($user['profile_picture'] !== null) {
-                if (str_starts_with($user['profile_picture'], "https"))
+                if (str_starts_with($user['profile_picture'], "placeholder"))
                     $user['profile_picture'] = "";
                 else {
                     unlink(public_path() . "/storage/" . $user['profile_picture']);

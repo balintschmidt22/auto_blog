@@ -21,7 +21,7 @@
                         </tr>
                     @forelse($brands as $brand)
                         <tr>
-                            @if(str_starts_with($brand['image'],"https"))
+                            @if(str_starts_with($brand['image'],"placeholder"))
                                 <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image" style="height:60px"></td>
                             @else
                                 <td><img src="{{"storage/".$brand['image']}}" alt="{{$brand['name']}} image" style="height:60px; max-width: 100px;"></td>

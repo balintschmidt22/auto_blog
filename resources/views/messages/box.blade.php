@@ -21,8 +21,8 @@
                                     <li class="p-2 border-bottom">
                                         <div class="d-flex flex-row">
                                             <div>
-                                                @if(str_starts_with(App\Models\User::find($r['from_id'])['profile_picture'],"https"))
-                                                    <img class="rounded-circle shadow-1-strong d-flex align-self-center me-3" src={{App\Models\User::find($r['from_id'])['profile_picture']}} alt="{{App\Models\User::find($r['from_id'])['username']}} avatar" width="60" height="60"/>
+                                                @if(str_starts_with(App\Models\User::find($r['from_id'])['profile_picture'],"placeholder"))
+                                                    <img class="rounded-circle shadow-1-strong d-flex align-self-center me-3" src={{url(App\Models\User::find($r['from_id'])['profile_picture'])}} alt="{{App\Models\User::find($r['from_id'])['username']}} avatar" width="60" height="60"/>
                                                 @else
                                                     <img class="rounded-circle shadow-1-strong d-flex align-self-center me-3" src="{{URL::asset('storage/'.App\Models\User::find($r['from_id'])['profile_picture'])}}" alt="{{App\Models\User::find($r['from_id'])['username']}} avatar" width="60" height="60"/>
                                                 @endif
@@ -57,8 +57,8 @@
                                         <li class="p-2 border-bottom">
                                             <div class="d-flex flex-row">
                                                 <div>
-                                                    @if(str_starts_with(App\Models\User::find($s['to_id'])['profile_picture'],"https"))
-                                                        <img class="rounded-circle shadow-1-strong d-flex align-self-center me-3" src={{App\Models\User::find($s['to_id'])['profile_picture']}} alt="{{App\Models\User::find($s['to_id'])['username']}} avatar" width="60" height="60"/>
+                                                    @if(str_starts_with(App\Models\User::find($s['to_id'])['profile_picture'],"placeholder"))
+                                                        <img class="rounded-circle shadow-1-strong d-flex align-self-center me-3" src={{url(App\Models\User::find($s['to_id'])['profile_picture'])}} alt="{{App\Models\User::find($s['to_id'])['username']}} avatar" width="60" height="60"/>
                                                     @else
                                                         <img class="rounded-circle shadow-1-strong d-flex align-self-center me-3" src="{{URL::asset('storage/'.App\Models\User::find($s['to_id'])['profile_picture'])}}" alt="{{App\Models\User::find($s['to_id'])['username']}} avatar" width="60" height="60"/>
                                                     @endif
