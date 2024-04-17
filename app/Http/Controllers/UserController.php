@@ -180,7 +180,7 @@ class UserController extends Controller
             "Expires" => "0"
         );
 
-        $columns = array('Username', 'Email', 'Country', 'Images', 'Registered');
+        $columns = array('Username', 'Email', 'Country', 'Images', 'Last Modified');
 
         $callback = function () use ($users, $columns) {
             $file = fopen('php://output', 'w');
@@ -191,9 +191,9 @@ class UserController extends Controller
                 $row['Email'] = $user->email;
                 $row['Country'] = $user->country;
                 $row['Images'] = $user->ownImages()->count();
-                $row['Registered'] = $user->updated_at;
+                $row['Last Modified'] = $user->updated_at;
 
-                fputcsv($file, array ($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Registered']));
+                fputcsv($file, array ($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Last Modified']));
             }
 
             fclose($file);

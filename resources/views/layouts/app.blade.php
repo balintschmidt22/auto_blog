@@ -59,11 +59,11 @@
                         @auth
                             @if(str_starts_with(Auth::user()->profile_picture,"placeholder"))
                                 <a href="{{route('users.show', ['user' => Auth::id()])}}" class="mb-3 topbar">
-                                    <img class="rounded-circle shadow-1-strong me-2" src={{url(Auth::user()->profile_picture)}} alt="avatar" width="45" height="45">
+                                    <img class="rounded-circle shadow-1-strong me-1" src={{url(Auth::user()->profile_picture)}} alt="avatar" width="45" height="45">
                                 </a>
                             @else
                                 <a href="{{route('users.show', ['user' => Auth::id()])}}" class="mb-3 topbar">
-                                    <img class="rounded-circle shadow-1-strong me-2" src="{{URL::asset('storage/'.Auth::user()->profile_picture)}}" alt="avatar" width="45" height="45">
+                                    <img class="rounded-circle shadow-1-strong me-1" src="{{URL::asset('storage/'.Auth::user()->profile_picture)}}" alt="avatar" width="45" height="45">
                                 </a>
                             @endif
                         @endauth

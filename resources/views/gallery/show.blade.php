@@ -112,8 +112,12 @@
                     <div class="card-body p-4">
                         <div class="d-flex flex-start">
                             <img class="rounded-circle shadow-1-strong me-3"
-                            src={{url(App\Models\User::find($comment['user_id'])['profile_picture'])}} alt="avatar" width="60"
-                            height="60" />
+                                @if(str_starts_with(App\Models\User::find($comment['user_id'])['profile_picture'],"placeholder"))
+                                    src={{url(App\Models\User::find($comment['user_id'])['profile_picture'])}}
+                                @else
+                                    src={{URL::asset("storage/".App\Models\User::find($comment['user_id'])['profile_picture'])}}
+                                @endif
+                            alt="avatar" width="60" height="60" />
                             <div>
                                 <a href="{{route('users.show', ['user'=>$comment['user_id']])}}" class="text-decoration-none link-primary">
                                     <h6 class="fw-bold mb-1">{{App\Models\User::find($comment['user_id'])['username']}}
@@ -150,8 +154,14 @@
 
                     <div class="d-flex flex-start w-100">
                         <img class="rounded-circle shadow-1-strong me-3"
-                        @auth src={{url(Auth::user()->profile_picture)}} @endauth
-                        @guest src="url(placeholders/User_Profile_Blank.jpg)" @endguest
+                        @auth
+                            @if(str_starts_with(Auth::user()['profile_picture'],"placeholder"))
+                                src={{url(Auth::user()['profile_picture'])}}
+                            @else
+                                src={{URL::asset("storage/".Auth::user()['profile_picture'])}}
+                            @endif
+                        @endauth
+                        @guest src={{url('placeholders/User_Profile_Blank.jpg')}} @endguest
                         alt="avatar" width="60"
                         height="60" />
                       <div class="form-outline w-100">

@@ -59,6 +59,7 @@ Route::get('brands/csv/download', [BrandController::class, 'exportCSV'])->name('
 
 //TYPES
 Route::resource('types', TypeController::class);
+Route::post('types/search', [TypeController::class, 'search'])->name('types.search');
 
 //USERS
 Route::get('users/messageBox', [UserController::class, 'messageBox'])->middleware(['auth', 'verified'])->name('users.messageBox');

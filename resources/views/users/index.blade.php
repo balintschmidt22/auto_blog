@@ -115,10 +115,17 @@
                 },
             })
             .then((response) => {
-                // Update the data list with the filtered data
                 var users = Object.values(response.data);
 
                 tab.innerHTML = ""
+
+                if(users.length > 0){
+                    var row = document.createElement("tr")
+                    var col = document.createElement("th")
+                    col.innerHTML = "<b>Users found</b> - " + users.length
+                    row.appendChild(col)
+                    tab.appendChild(row)
+                }
 
                 users.forEach(u => {
                     var row = document.createElement("tr")

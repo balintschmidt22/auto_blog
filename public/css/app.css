@@ -21,8 +21,8 @@ footer {
 }
 
 .topbar {
-    margin-left: 16px;
-    margin-top: 15px;
+    margin-left: 15px;
+    margin-top: 16px;
 }
 
 td {
@@ -33,10 +33,6 @@ td {
 th {
     text-align: center;
     vertical-align: middle;
-}
-
-.bordered td {
-    border: 1px solid grey;
 }
 
 .pagination {

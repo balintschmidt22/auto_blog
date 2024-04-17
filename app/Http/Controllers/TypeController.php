@@ -135,4 +135,21 @@ class TypeController extends Controller
 
         return redirect('brands/' . $brandId);
     }
+
+    public function search(Request $request)
+    {
+        $q = $request->all();
+        $query = $q['params']['search'];
+
+        $types = Type::all();
+        if (trim($query) !== "") {
+            $filteredTypes = $types->filter(function ($item) use ($query) {
+                return str_contains(strtolower($item['type']), strtolower($query)) !== false;
+            })->sortBy('type', SORT_NATURAL | SORT_FLAG_CASE)->values();
+        } else {
+            $filteredTypes = [];
+        }
+
+        return $filteredTypes;
+    }
 }

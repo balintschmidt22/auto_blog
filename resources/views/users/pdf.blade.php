@@ -5,7 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Users PDF</title>
-    {{-- <link rel="stylesheet" href="public/css/app.css"> --}}
+    <style>
+    th {
+        text-align: center;
+        vertical-align: middle;
+        background: lightgray
+    }
+    td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    table{
+        border: 1px solid black;
+    }
+    h1{
+        margin-bottom: 1em;
+    }
+    </style>
 </head>
 <body>
     <div class="container">

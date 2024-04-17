@@ -65,22 +65,12 @@
         <table class="table table-bordered">
             @if (count($types) != 0)
                 <tr class="table-primary">
-                    {{-- @auth
-                        <th>Favourites</th>
-                    @endauth --}}
                     <th>Type</th>
                     <th>Images</th>
                 </tr>
             @endif
         @forelse($types as $type)
             <tr>
-                {{-- @auth
-                    @if(in_array($brand['id'], array_column(Auth::user()->brands()->get()->toArray(), 'id')))
-                        <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Remove</button></a></td>
-                    @else
-                        <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Add fav</button></a></td>
-                    @endif
-                @endauth --}}
                 <td><a href="{{route('types.show', ['type'=>$type['id']])}}" class="text-decoration-none">{{$type['type']}}</a></td>
                 <td>{{App\Models\Type::find($type['id'])->images()->count()}}</td>
             </tr>

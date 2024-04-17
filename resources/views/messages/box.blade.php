@@ -29,7 +29,9 @@
                                             </div>
                                             <div class="pt-1">
                                                 <p class="fw-bold mb-0"><a href="{{route('users.show', [$r['from_id']])}}" class="text-decoration-none">{{App\Models\User::find($r['from_id'])['username']}}</a></p>
-                                                <p class="small text-muted bubble three-lines">{{\Illuminate\Support\Facades\Crypt::decrypt($r['message'])}}</p>
+                                                <a href="{{route('users.message', ['id'=>$r['from_id']])}}" class="d-flex text-decoration-none">
+                                                    <p class="small text-muted bubble three-lines">{{\Illuminate\Support\Facades\Crypt::decrypt($r['message'])}}</p>
+                                                </a>
                                             </div>
                                         </div>
                                         <div class="pt-1">
@@ -66,7 +68,8 @@
                                                 <div class="pt-1">
                                                     <p class="fw-bold mb-0"><a href="{{route('users.show', [$s['to_id']])}}" class="text-decoration-none">{{App\Models\User::find($s['to_id'])['username']}}</a></p>
                                                     <a href="{{route('users.message', ['id'=>$s['to_id']])}}" class="d-flex text-decoration-none">
-                                                    <p class="small text-muted bubble three-lines">{{\Illuminate\Support\Facades\Crypt::decrypt($s['message'])}}</p></a>
+                                                        <p class="small text-muted bubble three-lines">{{\Illuminate\Support\Facades\Crypt::decrypt($s['message'])}}</p>
+                                                    </a>
                                                 </div>
                                             </div>
                                             <div class="pt-1">
