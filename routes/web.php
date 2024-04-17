@@ -87,8 +87,8 @@ Route::get('favourites', [FavouriteImageController::class, 'index'])->middleware
 Route::post('favourites/add', [FavouriteImageController::class, 'add'])->middleware(['auth', 'verified'])->name('favourites.add');
 
 //FOLLOWS
-Route::get('follows/followUser/{id}', [FollowController::class, 'followUser'])->middleware(['auth', 'verified'])->name('follows.followUser');
-Route::get('follows/followBrand/{id}', [FollowController::class, 'followBrand'])->middleware(['auth', 'verified'])->name('follows.followBrand');
+Route::post('follows/followUser', [FollowController::class, 'followUser'])->middleware(['auth', 'verified'])->name('follows.followUser');
+Route::post('follows/followBrand', [FollowController::class, 'followBrand'])->middleware(['auth', 'verified'])->name('follows.followBrand');
 Route::get('follows/followedUsers', [FollowController::class, 'followedUsers'])->middleware(['auth', 'verified'])->name('follows.followedUsers');
 Route::get('follows/followedBrands', [FollowController::class, 'followedBrands'])->middleware(['auth', 'verified'])->name('follows.followedBrands');
 

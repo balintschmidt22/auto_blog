@@ -11,23 +11,13 @@
             @endif
         @endauth
     </h1>
-    @if(Session::has('followed'))
-        <div class="alert alert-success" role="alert">
-            New brand followed: {{Session::get('followed')->name}}
-        </div>
-    @endif
-
-    @if(Session::has('unfollowed'))
-        <div class="alert alert-warning" role="alert">
-            Brand is no longer followed: {{Session::get('unfollowed')->name}}
-        </div>
-    @endif
 
     @if(Session::has('brand_deleted'))
         <div class="alert alert-warning" role="alert">
             Brand deleted: {{Session::get('brand_deleted')->name}}
         </div>
     @endif
+
     <div>
         <a class="btn btn-primary mt-1 mb-2" href="{{ route('brands.pdf.download') }}">Export to PDF</a>
         <a class="btn btn-primary mt-1 mb-2 m-1" href="{{ route('brands.csv.download') }}">Export to CSV</a>
@@ -42,9 +32,7 @@
                     <th>Name</th>
                     <th>Country</th>
                     <th>Types</th>
-                    @auth
-                        <th>Follow</th>
-                    @endauth
+                    <th>Follow</th>
                 </tr>
             @forelse($brands as $brand)
                 <tr>
@@ -56,11 +44,24 @@
                     <td><a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a></td>
                     <td>{{$brand['country']}}</td>
                     <td>{{App\Models\Brand::find($brand['id'])->types()->count()}}</td>
+                    @guest
+                        <td><a href="{{route('login')}}" class="btn btn-primary">
+                            <i class="fa-solid fa-user-plus" style="color: #ffffff;"></i>
+                        </a></td>
+                    @endguest
                     @auth
-                        @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
-                            <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
+                        @if (Auth::user()->email_verified_at === null)
+                            <td><a href="{{route('verification.notice')}}" class="btn btn-primary">
+                                    <i class="fa-solid fa-user-plus" style="color: #ffffff;"></i>
+                            </a></td>
                         @else
-                            <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+                            <td><a class="btn btn-primary followButton" id="{{$brand['id']}}">
+                                @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
+                                    <i class="fa-solid fa-user-minus" style="color: #ffffff;" id="unfollowed"></i>
+                                @else
+                                    <i class="fa-solid fa-user-plus" style="color: #ffffff;" id="followed"></i>
+                                @endif
+                            </a></td>
                         @endif
                     @endauth
                 </tr>
@@ -86,92 +87,6 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
-        const typeInput = document.getElementById('typeInput');
-        const brandsTab = document.getElementById("foundBrands")
-        const typesTab = document.getElementById("foundTypes")
-
-        searchInput.addEventListener('input', function () {
-            const query = searchInput.value;
-
-            brandsTab.innerHTML = ""
-            typesTab.innerHTML = ""
-
-            axios.post('/brands/search', {
-                params: {
-                    search: query,
-                },
-            })
-            .then((response) => {
-                var brands = Object.values(response.data);
-
-                brandsTab.innerHTML = ""
-                typesTab.innerHTML = ""
-
-                if(brands.length > 0){
-                    var row = document.createElement("tr")
-                    var col = document.createElement("th")
-                    col.innerHTML = "<b>Brands found</b> - " + brands.length
-                    row.appendChild(col)
-                    brandsTab.appendChild(row)
-                }
-
-                brands.forEach(b => {
-                    var row = document.createElement("tr")
-                    var col = document.createElement("td")
-                    var a = document.createElement("a")
-
-                    col.innerHTML = "<a href='brands/" + b['id'] + "' class='text-decoration-none'>" + b['name'] + "</a>"
-                    row.appendChild(col)
-                    brandsTab.appendChild(row)
-                })
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-        });
-
-        typeInput.addEventListener('input', function () {
-            const query = typeInput.value;
-
-            typesTab.innerHTML = ""
-            brandsTab.innerHTML = ""
-
-            axios.post('/types/search', {
-                params: {
-                    search: query,
-                },
-            })
-            .then((response) => {
-                var types = Object.values(response.data);
-
-                brandsTab.innerHTML = ""
-                typesTab.innerHTML = ""
-
-                if(types.length > 0){
-                    var row = document.createElement("tr")
-                    var col = document.createElement("th")
-                    col.innerHTML = "<b>Types found</b> - " + types.length
-                    row.appendChild(col)
-                    typesTab.appendChild(row)
-                }
-
-                types.forEach(t => {
-                    var row = document.createElement("tr")
-                    var col = document.createElement("td")
-                    var a = document.createElement("a")
-
-                    col.innerHTML = "<a href='types/" + t['id'] + "' class='text-decoration-none'>" + t['type'] + "</a>"
-                    row.appendChild(col)
-                    typesTab.appendChild(row)
-                })
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-        });
-    });
-</script>
+    <script src="{{asset('js/brandAndTypeSearch.js')}}"></script>
+    <script src="{{asset('js/followBrand.js')}}"></script>
 @endsection

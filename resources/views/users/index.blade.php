@@ -4,25 +4,11 @@
 @section('content')
 <div class="container">
     <h1>Users - {{count($users)}}</h1>
-    @auth
-        @if(Session::has('followed'))
-            <div class="alert alert-success" role="alert">
-                New user followed: {{Session::get('followed')->username}}
-            </div>
-        @endif
-
-        @if(Session::has('unfollowed'))
-            <div class="alert alert-warning" role="alert">
-                User is no longer followed: {{Session::get('unfollowed')->username}}
-            </div>
-        @endif
-
-        @if(Session::has('user_deleted'))
-            <div class="alert alert-warning" role="alert">
-                User deleted: {{Session::get('user_deleted')->username}}
-            </div>
-        @endif
-    @endauth
+    @if(Session::has('user_deleted'))
+        <div class="alert alert-warning" role="alert">
+            User deleted: {{Session::get('user_deleted')->username}}
+        </div>
+    @endif
     <div>
         <a class="btn btn-primary mt-1 mb-2" href="{{ route('users.pdf.download') }}">Export to PDF</a>
         <a class="btn btn-primary mt-1 mb-2 m-1" href="{{ route('users.csv.download') }}">Export to CSV</a>
@@ -38,8 +24,8 @@
                         <th>Role</th>
                         <th>Country</th>
                         <th>Photos</th>
+                        <th>Follow</th>
                         @auth
-                            <th>Follow</th>
                             <th>Message</th>
                         @endauth
                     </tr>
@@ -64,15 +50,28 @@
                         @endif</td>
                         <td>{{$user['country']}}</td>
                         <td>{{App\Models\User::find($user['id'])->ownImages()->count()}}</td>
+                        @guest
+                            <td><a href="{{route('login')}}" class="btn btn-primary">
+                            <i class="fa-solid fa-user-plus" style="color: #ffffff;"></i>
+                            </a></td>
+                        @endguest
                         @auth
                             @if (Auth::id() == $user['id'])
                                 <td>-</td>
                                 <td>-</td>
                             @else
-                                @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
-                                    <td><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
+                                @if (Auth::user()->email_verified_at === null)
+                                    <td><a href="{{route('verification.notice')}}" class="btn btn-primary">
+                                    <i class="fa-solid fa-user-plus" style="color: #ffffff;"></i>
+                                    </a></td>
                                 @else
-                                    <td><a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+                                    <td><a class="btn btn-primary followButton" id="{{$user['id']}}">
+                                        @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
+                                            <i class="fa-solid fa-user-minus" style="color: #ffffff;" id="unfollowed"></i>
+                                        @else
+                                            <i class="fa-solid fa-user-plus" style="color: #ffffff;" id="followed"></i>
+                                        @endif
+                                    </a></td>
                                 @endif
                                 <td><a href="{{route('users.message', ['id'=>$user['id']])}}" class="btn btn-primary"><i class="fa-solid fa-message" style="color: #ffffff;"></i></a></td>
                             @endif
@@ -99,48 +98,6 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
-
-        searchInput.addEventListener('input', function () {
-            const query = searchInput.value;
-
-            const tab = document.getElementById("foundUsers")
-            tab.innerHTML = ""
-
-            axios.post('/users/search', {
-                params: {
-                    search: query,
-                },
-            })
-            .then((response) => {
-                var users = Object.values(response.data);
-
-                tab.innerHTML = ""
-
-                if(users.length > 0){
-                    var row = document.createElement("tr")
-                    var col = document.createElement("th")
-                    col.innerHTML = "<b>Users found</b> - " + users.length
-                    row.appendChild(col)
-                    tab.appendChild(row)
-                }
-
-                users.forEach(u => {
-                    var row = document.createElement("tr")
-                    var col = document.createElement("td")
-                    var a = document.createElement("a")
-
-                    col.innerHTML = "<a href='users/" + u['id'] + "' class='text-decoration-none'>" + u['username'] + "</a>"
-                    row.appendChild(col)
-                    tab.appendChild(row)
-                })
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-        });
-    });
-</script>
+    <script src="{{asset('js/userSearch.js')}}"></script>
+    <script src="{{asset('js/follow.js')}}"></script>
 @endsection

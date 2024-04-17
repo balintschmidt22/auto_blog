@@ -36,11 +36,20 @@
             <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
         @endif
         {{$brand['name']}} <small>({{$brand['country']}})</small>
+        @guest
+            <td><a href="{{route('login')}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+        @endguest
         @auth
-            @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
-                <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a></td>
+            @if (Auth::user()->email_verified_at === null)
+                <td><a href="{{route('verification.notice')}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
             @else
-                <td><a href="{{route('follows.followBrand', ['id'=>$brand['id']])}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+                <td><a class="btn btn-primary followButton" id="{{$brand['id']}}">
+                    @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
+                        <i class="fa-solid fa-user-minus" style="color: #ffffff;" id="unfollowed"></i>
+                    @else
+                        <i class="fa-solid fa-user-plus" style="color: #ffffff;" id="followed"></i>
+                    @endif
+                </a></td>
             @endif
         @endauth
          - Types: {{'count'($types)}}
@@ -84,4 +93,8 @@
         </table>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{asset('js/followBrand.js')}}"></script>
 @endsection

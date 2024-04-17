@@ -3,43 +3,29 @@
 
 @section('content')
     <div class="container">
-        @auth
-            @if(Session::has('followed'))
-                <div class="alert alert-success" role="alert">
-                    New user followed: {{Session::get('followed')->username}}
-                </div>
-            @endif
+        @if(Session::has('moderator_added'))
+            <div class="alert alert-success" role="alert">
+                New moderator added: {{Session::get('moderator_added')->username}}
+            </div>
+        @endif
 
-            @if(Session::has('unfollowed'))
-                <div class="alert alert-warning" role="alert">
-                    User is no longer followed: {{Session::get('unfollowed')->username}}
-                </div>
-            @endif
+        @if(Session::has('moderator_removed'))
+            <div class="alert alert-warning" role="alert">
+                Moderator removed: {{Session::get('moderator_removed')->username}}
+            </div>
+        @endif
 
-            @if(Session::has('moderator_added'))
-                <div class="alert alert-success" role="alert">
-                    New moderator added: {{Session::get('moderator_added')->username}}
-                </div>
-            @endif
+        @if(Session::has('user_edited'))
+            <div class="alert alert-success" role="alert">
+                User modified: {{Session::get('user_edited')->username}} at {{Session::get('user_edited')->updated_at}}
+            </div>
+        @endif
 
-            @if(Session::has('moderator_removed'))
-                <div class="alert alert-warning" role="alert">
-                    Moderator removed: {{Session::get('moderator_removed')->username}}
-                </div>
-            @endif
-
-            @if(Session::has('user_edited'))
-                <div class="alert alert-success" role="alert">
-                    User modified: {{Session::get('user_edited')->username}} at {{Session::get('user_edited')->updated_at}}
-                </div>
-            @endif
-
-            @if(Session::has('user_edited_by_themself'))
-                <div class="alert alert-success" role="alert">
-                    You edited your profile successfully at: {{Session::get('user_edited_by_themself')->updated_at}}
-                </div>
-            @endif
-        @endauth
+        @if(Session::has('user_edited_by_themself'))
+            <div class="alert alert-success" role="alert">
+                You edited your profile successfully at: {{Session::get('user_edited_by_themself')->updated_at}}
+            </div>
+        @endif
         <div class="row flex">
             <div class="col-auto d-flex align-items-center">
                 <h1 class="mb-3">
@@ -85,11 +71,22 @@
                         @if (Auth::id() != $user->id)
                             <tr>
                                 <td colspan="2">
-                                    @if(in_array($user['id'], array_column(Auth::user()->follows()->get()->toArray(), 'id')))
-                                        <a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary m-2"><i class="fa-solid fa-user-minus" style="color: #ffffff;"></i></a>
-                                    @else
-                                        <a href="{{route('follows.followUser', ['id'=>$user['id']])}}" class="btn btn-primary m-2"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a>
-                                    @endif
+                                    @guest
+                                        <a href="{{route('login')}}" class="btn btn-primary m-2"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a>
+                                    @endguest
+                                    @auth
+                                        @if (Auth::user()->email_verified_at === null)
+                                            <a href="{{route('verification.notice')}}" class="btn btn-primary m-2"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a>
+                                        @else
+                                            <a class="btn btn-primary m-2 followButton" id="{{$user->id}}">
+                                                @if(in_array($user->id, array_column(Auth::user()->follows()->get()->toArray(), 'id')))
+                                                    <i class="fa-solid fa-user-minus" style="color: #ffffff;" id="unfollowed"></i>
+                                                @else
+                                                    <i class="fa-solid fa-user-plus"style="color: #ffffff;" id="followed"></i>
+                                                @endif
+                                            </a>
+                                        @endif
+                                    @endauth
                                     <a href="{{route('users.message', ['id'=>$user['id']])}}" class="btn btn-primary m-2"><i class="fa-solid fa-message" style="color: #ffffff;"></i></a>
                                     @if (Auth::user()->isAdmin())
                                         @if (!$user->isAdmin())
@@ -227,36 +224,6 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var likeButtons = document.getElementsByClassName("likeButton");
-
-        for (var i = 0; i < likeButtons.length; i++) {
-            likeButtons[i].addEventListener('click', function () {
-                const query = this.id
-
-                axios.post('/favourites/add', {
-                    params: {
-                        id: query,
-                    },
-                })
-                .then((response) => {
-                    var likeCount = response.data;
-
-                    var i = this.querySelector("i").id
-
-                    if(i == "disliked"){
-                        this.innerHTML = "<i class='fa-regular fa-heart fa-xl' style='color: #ff0000;' id='liked'></i><b> " + likeCount + "</b>"
-                    }
-                    else{
-                        this.innerHTML = "<i class='fa-solid fa-heart fa-xl' style='color: #ff0000;' id='disliked'></i><b> " + likeCount + "</b>"
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
-            });
-        };
-    });
-</script>
+    <script src="{{asset('js/like.js')}}"></script>
+    <script src="{{asset('js/follow.js')}}"></script>
 @endsection

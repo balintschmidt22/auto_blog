@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\User;
 use App\Models\Image;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -15,9 +16,12 @@ class FollowController extends Controller
         $this->middleware(['auth', 'verified'])->only(['followUser', 'followBrand', 'followedUsers', 'followedBrands']);
     }
 
-    public function followUser(string $id)
+    public function followUser(Request $request)
     {
         $user = Auth::user();
+
+        $q = $request->all();
+        $id = $q['params']['id'];
 
         if ($user['id'] == $id) {
             abort(404);
@@ -30,20 +34,17 @@ class FollowController extends Controller
 
         if (!in_array($follow['id'], $f_ids)) {
             $user->follows()->sync($follow, false);
-
-            Session::flash('followed', $follow);
         } else {
             $user->follows()->detach($follow);
-
-            Session::flash('unfollowed', $follow);
         }
-
-        return redirect()->back();
     }
 
-    public function followBrand(string $id)
+    public function followBrand(Request $request)
     {
         $user = Auth::user();
+
+        $q = $request->all();
+        $id = $q['params']['id'];
 
         $follow = Brand::findOrFail($id);
 
@@ -52,15 +53,9 @@ class FollowController extends Controller
 
         if (!in_array($follow['id'], $f_ids)) {
             $user->followedBrands()->sync($follow, false);
-
-            Session::flash('followed', $follow);
         } else {
             $user->followedBrands()->detach($follow);
-
-            Session::flash('unfollowed', $follow);
         }
-
-        return redirect()->back();
     }
 
     public function followedUsers()
