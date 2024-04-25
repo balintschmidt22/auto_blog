@@ -206,39 +206,33 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $allReceived = $user->messagesReceived();
-        $allSent = $user->messagesSent();
-
-        $recIds = $allReceived->pluck('from_id')->toArray();
-        $sentIds = $allSent->pluck('to_id')->toArray();
+        $recIds = $user->messagesReceived()->pluck('from_id')->toArray();
+        $sentIds = $user->messagesSent()->pluck('to_id')->toArray();
 
         $ids = array_values(array_unique(array_merge($recIds, $sentIds)));
 
         $received = collect();
         $sent = collect();
 
-        // foreach ($ids as $i) {
-        //     $r = $allReceived->where('from_id', '=', $i)->orderBy('updated_at', 'desc')->first();
-        //     if ($r !== null) {
-        //         $received->push($r);
-        //     }
-        //     // $s = $allSent->where('to_id', '=', $i)->orderBy('updated_at', 'desc')->first();
-        //     // if ($r !== null && $s == null) {
-        //     //     $received->push($r);
-        //     // } else if ($r == null && $s !== null) {
-        //     //     $sent->push($s);
-        //     // } else if ($r !== null && $s !== null) {
-        //     //     if ($r['updated_at'] >= $s['updated_at']) {
-        //     //         $received->push($r);
-        //     //     } else {
-        //     //         $sent->push($s);
-        //     //     }
-        //     // }
-        // }
+        foreach ($ids as $i) {
+            $r = $user->messagesReceived()->where('from_id', '=', $i)->orderBy('updated_at', 'desc')->first();
+            $s = $user->messagesSent()->where('to_id', '=', $i)->orderBy('updated_at', 'desc')->first();
+            if ($r !== null && $s === null) {
+                $received->push($r);
+            } else if ($r === null && $s !== null) {
+                $sent->push($s);
+            } else if ($r !== null && $s !== null) {
+                if ($r['updated_at'] > $s['updated_at']) {
+                    $received->push($r);
+                } else {
+                    $sent->push($s);
+                }
+            }
+        }
 
         return view('messages.box', [
-            'received' => $allReceived->orderBy('updated_at', 'desc')->get(),
-            'sent' => $allSent->orderBy('updated_at', 'desc')->get(),
+            'received' => $received->sortByDesc('updated_at'),
+            'sent' => $sent->sortByDesc('updated_at'),
         ]);
     }
 

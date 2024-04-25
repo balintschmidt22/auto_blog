@@ -14,7 +14,7 @@
 
                         <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-md-0">
                           <div class="p-3">
-                            <h2>Received</h2>
+                            <h2>Received - {{count($received)}}</h2>
                             <div class="p-3 overflow-auto box" data-mdb-perfect-scrollbar="true">
                               <ul class="list-unstyled mb-0">
                                 @forelse ($received as $r)
@@ -41,7 +41,7 @@
                                 @empty
                                     <div class="col-12">
                                         <div class="alert alert-warning" role="alert">
-                                            No messages yet!
+                                            Received message box is currently empty!
                                         </div>
                                     </div>
                                 @endforelse
@@ -52,7 +52,7 @@
 
                         <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-md-0">
                             <div class="p-3">
-                                <h2>Sent</h2>
+                                <h2>Sent - {{count($sent)}}</h2>
                                 <div class="p-3 overflow-auto box" data-mdb-perfect-scrollbar="true">
                                   <ul class="list-unstyled mb-0">
                                     @forelse ($sent as $s)
@@ -79,7 +79,7 @@
                                     @empty
                                         <div class="col-12">
                                             <div class="alert alert-warning" role="alert">
-                                                No messages yet!
+                                                Sent message box is currently empty!
                                             </div>
                                         </div>
                                     @endforelse
