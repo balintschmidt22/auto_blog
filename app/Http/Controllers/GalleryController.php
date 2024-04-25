@@ -98,8 +98,8 @@ class GalleryController extends Controller
             'brand' => Brand::find($type->get()->first()['brand_id']),
             'image' => $image,
             $likes = $image->likedBy(),
+            'likes' => $likes->orderBy('username', 'ASC')->get(),
             'like_count' => count($likes->get()->toArray()),
-            'likes' => $likes,
             'comments' => $image->comments()->orderBy('created_at', 'ASC')->get()->toArray(),
         ]);
     }

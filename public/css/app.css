@@ -94,3 +94,10 @@ th {
 .navbar .navbar-collapse {
     text-align: center;
 }
+
+.list-group {
+    max-height: 150px;
+    margin-bottom: 5px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
