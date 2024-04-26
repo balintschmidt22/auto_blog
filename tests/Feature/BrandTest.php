@@ -4,8 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Brand;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class BrandTest extends TestCase
@@ -14,17 +12,6 @@ class BrandTest extends TestCase
     {
         $this->get('/brands')->assertStatus(200);
     }
-
-    // public function test_brands_store_200(): void
-    // {
-    //     $user = User::factory()->create();
-    //     $user->role = "adm";
-
-    //     $response = $this->actingAs($user)
-    //         ->post('/brands/store');
-
-    //     $response->assertStatus(200);
-    // }
 
     public function test_brands_create_usr_403(): void
     {
@@ -78,17 +65,10 @@ class BrandTest extends TestCase
         $this->actingAs($user)->get('/brands/delete/30000')->assertStatus(404);
     }
 
-    // public function test_brands_search_usr_200(): void
-    // {
-    //     $user = User::factory()->create();
-
-    //     $this->actingAs($user)->post('/brands/search', ['search' => 'a'], [])->assertStatus(200);
-    // }
-
     public function test_brands_show_200(): void
     {
         $brand = Brand::first();
-        $this->get('/brands/' . $brand->id)->assertStatus(200);
+        $this->get('brands/' . $brand->id)->assertStatus(200);
     }
 
     public function test_brands_show_404(): void
@@ -96,14 +76,12 @@ class BrandTest extends TestCase
         $this->get('/brands/30000')->assertStatus(404);
     }
 
-    //TODO: Brands update
-
     public function test_brands_edit_usr_403(): void
     {
         $user = User::where('role', 'usr')->first();
         $brand = Brand::first();
 
-        $this->actingAs($user)->get('/brands/' . $brand->id . '/edit')->assertStatus(403);
+        $this->actingAs($user)->get('brands/' . $brand->id . '/edit')->assertStatus(403);
     }
 
     public function test_brands_edit_mod_200(): void
@@ -111,7 +89,7 @@ class BrandTest extends TestCase
         $user = User::where('role', 'mod')->first();
         $brand = Brand::first();
 
-        $this->actingAs($user)->get('/brands/' . $brand->id . '/edit')->assertStatus(200);
+        $this->actingAs($user)->get('brands/' . $brand->id . '/edit')->assertStatus(200);
     }
 
     public function test_brands_edit_adm_200(): void
@@ -119,7 +97,7 @@ class BrandTest extends TestCase
         $user = User::where('role', 'adm')->first();
         $brand = Brand::first();
 
-        $this->actingAs($user)->get('/brands/' . $brand->id . '/edit')->assertStatus(200);
+        $this->actingAs($user)->get('brands/' . $brand->id . '/edit')->assertStatus(200);
     }
 
     public function test_brands_edit_adm_404(): void
@@ -127,5 +105,19 @@ class BrandTest extends TestCase
         $user = User::where('role', 'adm')->first();
 
         $this->actingAs($user)->get('/brands/30000/edit')->assertStatus(404);
+    }
+
+    public function test_pdf_download(): void
+    {
+        $response = $this->get('brands/pdf/download');
+
+        $response->assertDownload('autoblog_brands.pdf');
+    }
+
+    public function test_csv_download(): void
+    {
+        $response = $this->get('brands/csv/download');
+
+        $response->assertDownload('brands.csv');
     }
 }

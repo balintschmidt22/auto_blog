@@ -2,19 +2,18 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\User;
 use Tests\TestCase;
 
 class FavouriteTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
+    public function test_favourites_guest(): void
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $this->get('favourites')->assertRedirect('login');
+    }
+    public function test_favourites_usr_200(): void
+    {
+        $user = User::where('role', 'usr')->first();
+        $this->actingAs($user)->get('favourites')->assertStatus(200);
     }
 }
