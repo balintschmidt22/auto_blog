@@ -184,7 +184,7 @@
                         <form action="{{ route('comments.add', $image['id']) }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            <label class="form-label" for="comment">Comment:</label>
+                            <label class="form-label" for="comment" id="counter">Comment - 0 / 2000</label>
                             <textarea class="form-control @error('comment') is-invalid @enderror" id="comment" name="comment" rows="4"
                             style="background: #fff;" placeholder="Enter your thoughts here (max 2000 characters)"></textarea>
 
@@ -209,4 +209,5 @@
 
 @section('scripts')
     <script src="{{asset('js/likeGalleryShow.js')}}"></script>
+    <script src="{{asset('js/counter.js')}}"></script>
 @endsection
