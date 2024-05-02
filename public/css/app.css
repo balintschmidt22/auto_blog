@@ -101,3 +101,11 @@ th {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
+
+#foundUsers tr,
+#foundBrands tr,
+#foundTypes tr {
+    overflow: hidden;
+    height: 30px;
+    white-space: nowrap;
+}

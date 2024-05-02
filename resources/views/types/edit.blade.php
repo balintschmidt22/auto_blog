@@ -2,7 +2,7 @@
 @section('title', 'Edit type')
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Edit type: {{$type['type']}} ({{$type->brand()->get()->first()['name']}})</h1>
 
         <form action="{{ route('types.update', ['type'=>$type['id']]) }}" method="POST" enctype="multipart/form-data">

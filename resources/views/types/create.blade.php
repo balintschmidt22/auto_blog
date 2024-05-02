@@ -2,7 +2,7 @@
 @section('title', 'Add type')
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Add a new type</h1>
 
         @if(Session::has('type_added'))

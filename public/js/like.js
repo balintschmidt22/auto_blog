@@ -12,9 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     },
                 })
                 .then((response) => {
-                    var likeCount = response.data;
+                    var likeCount = response.data.likeCount;
 
                     var i = this.querySelector("i").id;
+
+                    var lc = document.getElementById("likecount");
+                    if (lc) {
+                        lc.innerHTML = response.data.allLikes;
+                    }
 
                     if (i == "disliked") {
                         this.innerHTML =

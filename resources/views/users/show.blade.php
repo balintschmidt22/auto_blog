@@ -2,7 +2,7 @@
 @section('title', 'Profile: ' . $user->username)
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         @if(Session::has('moderator_added'))
             <div class="alert alert-success" role="alert">
                 New moderator added: {{Session::get('moderator_added')->username}}
@@ -119,13 +119,13 @@
             <table class="table table-bordered table-striped-columns table-hover">
                 <tr>
                     <td class="col-2"><b>Followed By</b></td>
-                    <td class="col-2">{{$followedBy}}</td>
+                    <td class="col-2" id="followcount">{{$followedBy}}</td>
                     <td class="col-2"><b>Follows</b></td>
                     <td class="col-2"><small>Users:</small> {{$follows}} <small>Brands:</small> {{$followedBrands}}</td>
                 </tr>
                 <tr>
                     <td class="col-3"><b>Likes Received</b></td>
-                    <td class="col-3">{{$likedBy}}</td>
+                    <td class="col-3" id="likecount">{{$likedBy}}</td>
                     <td class="col-3"><b>Likes Given</b></td>
                     <td class="col-3">{{$likesGiven}}</td>
                 </tr>

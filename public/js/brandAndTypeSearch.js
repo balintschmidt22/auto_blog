@@ -25,7 +25,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (brands.length > 0) {
                     var row = document.createElement("tr");
                     var col = document.createElement("th");
-                    col.innerHTML = "<b>Brands found</b> - " + brands.length;
+                    col.innerHTML =
+                        "<b class='bg-light'>Brands found - " +
+                        brands.length +
+                        " </b>";
                     row.appendChild(col);
                     brandsTab.appendChild(row);
                 }
@@ -33,12 +36,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 brands.forEach((b) => {
                     var row = document.createElement("tr");
                     var col = document.createElement("td");
-                    var a = document.createElement("a");
 
                     col.innerHTML =
                         "<a href='brands/" +
                         b["id"] +
-                        "' class='text-decoration-none'>" +
+                        "' class='text-decoration-none bg-light'>" +
                         b["name"] +
                         "</a>";
                     row.appendChild(col);
@@ -71,7 +73,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (types.length > 0) {
                     var row = document.createElement("tr");
                     var col = document.createElement("th");
-                    col.innerHTML = "<b>Types found</b> - " + types.length;
+                    col.innerHTML =
+                        "<b class='bg-light'>Types found - " +
+                        types.length +
+                        "</b>";
                     row.appendChild(col);
                     typesTab.appendChild(row);
                 }
@@ -79,12 +84,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 types.forEach((t) => {
                     var row = document.createElement("tr");
                     var col = document.createElement("td");
-                    var a = document.createElement("a");
 
                     col.innerHTML =
                         "<a href='types/" +
                         t["id"] +
-                        "' class='text-decoration-none'>" +
+                        "' class='text-decoration-none bg-light'>" +
                         t["type"] +
                         "</a>";
                     row.appendChild(col);

@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     },
                 })
                 .then((response) => {
-                    var likeCount = response.data;
+                    var likeCount = response.data.likeCount;
 
                     var i = this.querySelector("i").id;
 

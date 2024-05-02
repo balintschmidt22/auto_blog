@@ -2,7 +2,7 @@
 @section('title', 'Photo')
 
 @section('content')
-<div class="container">
+<div class="container bg-light p-4">
     <div>
         <h1 class="mb-4">
             @if(str_starts_with($brand['image'],"placeholder"))

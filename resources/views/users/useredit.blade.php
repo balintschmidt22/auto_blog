@@ -2,7 +2,7 @@
 @section('title', 'Edit your profile')
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Edit user: {{$user['username']}}</h1>
 
         <form action="{{ route('users.userUpdate', ['id'=>$user['id']]) }}" method="POST" enctype="multipart/form-data">

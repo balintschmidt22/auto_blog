@@ -2,7 +2,7 @@
 @section('title', 'Edit brand')
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Edit brand: {{$brand['name']}}</h1>
 
         <form action="{{ route('brands.update', ['brand'=>$brand['id']]) }}" method="POST" enctype="multipart/form-data">

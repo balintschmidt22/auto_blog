@@ -2,7 +2,7 @@
 @section('title', 'Users')
 
 @section('content')
-<div class="container">
+<div class="container bg-light p-4">
     <h1>Users - {{count($users)}}</h1>
     @if(Session::has('user_deleted'))
         <div class="alert alert-warning" role="alert">

@@ -2,7 +2,7 @@
 @section('title', 'Brands')
 
 @section('content')
-<div class="container">
+<div class="container bg-light p-4">
     <h1>Brands - {{count($brands)}}
         @auth
             @if(Auth::user()->isModerator())

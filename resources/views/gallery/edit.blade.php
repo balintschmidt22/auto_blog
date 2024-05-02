@@ -2,7 +2,7 @@
 @section('title', 'Modify image')
 
 @section('content')
-    <div class="container bg-light">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Modify image</h1>
 
         <form action="{{ route('gallery.update', ['gallery'=>$image['id']]) }}" method="POST" enctype="multipart/form-data">

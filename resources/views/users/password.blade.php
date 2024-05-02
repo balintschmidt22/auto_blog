@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <div class="container">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Change password</h1>
 
         <form action="{{ route('users.updatePassword', ['id'=>Auth::id()]) }}" method="POST" enctype="multipart/form-data">

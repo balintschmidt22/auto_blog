@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Image;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,6 +45,16 @@ class FavouriteImageController extends Controller
 
         $likeCount = count($image->likedBy()->get());
 
-        return $likeCount;
+        $imageUser = $image->user()->first();
+        $imgs = User::findOrFail($imageUser['id'])->ownImages();
+        $allLikes = 0;
+        foreach ($imgs->get() as $i) {
+            $allLikes += count($i->likedBy()->get()->toArray());
+        }
+
+        return response()->json([
+            'likeCount' => $likeCount,
+            'allLikes' => $allLikes
+        ]);
     }
 }

@@ -37,6 +37,10 @@ class FollowController extends Controller
         } else {
             $user->follows()->detach($follow);
         }
+
+        $followCount = count($follow->followedBy()->get()->toArray());
+
+        return $followCount;
     }
 
     public function followBrand(Request $request)
@@ -56,6 +60,10 @@ class FollowController extends Controller
         } else {
             $user->followedBrands()->detach($follow);
         }
+
+        $followCount = count($follow->followedBy()->get());
+
+        return $followCount;
     }
 
     public function followedUsers()

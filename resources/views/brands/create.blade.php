@@ -2,7 +2,7 @@
 @section('title', 'Add brand')
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Add a new brand</h1>
 
         @if(Session::has('brand_added'))

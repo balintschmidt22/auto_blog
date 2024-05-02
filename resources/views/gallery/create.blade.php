@@ -2,7 +2,7 @@
 @section('title', 'Upload')
 
 @section('content')
-    <div class="container bg-light">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Upload a photo</h1>
 
         @if(Session::has('image_uploaded'))

@@ -12,7 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     },
                 })
                 .then((response) => {
+                    var followCount = response.data;
                     var i = this.querySelector("i").id;
+
+                    var fc = document.getElementById("followcount");
+
+                    if (fc) {
+                        fc.innerHTML = followCount;
+                    }
 
                     if (i == "unfollowed") {
                         this.innerHTML =

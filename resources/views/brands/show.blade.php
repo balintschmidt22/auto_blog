@@ -2,32 +2,18 @@
 @section('title', 'Types')
 
 @section('content')
-<div class="container">
-    @auth
-        @if(Session::has('followed'))
-            <div class="alert alert-success" role="alert">
-                New brand followed: {{Session::get('followed')->name}}
-            </div>
-        @endif
+<div class="container bg-light p-4">
+    @if(Session::has('type_deleted'))
+        <div class="alert alert-warning" role="alert">
+            Type deleted: {{Session::get('type_deleted')->type}}
+        </div>
+    @endif
 
-        @if(Session::has('unfollowed'))
-            <div class="alert alert-warning" role="alert">
-                Brand is no longer followed: {{Session::get('unfollowed')->name}}
-            </div>
-        @endif
-
-        @if(Session::has('type_deleted'))
-            <div class="alert alert-warning" role="alert">
-                Type deleted: {{Session::get('type_deleted')->type}}
-            </div>
-        @endif
-
-        @if(Session::has('brand_edited'))
-            <div class="alert alert-success" role="alert">
-                Brand edited: {{Session::get('brand_edited')->name}} at {{Session::get('brand_edited')->updated_at}}
-            </div>
-        @endif
-    @endauth
+    @if(Session::has('brand_edited'))
+        <div class="alert alert-success" role="alert">
+            Brand edited: {{Session::get('brand_edited')->name}} at {{Session::get('brand_edited')->updated_at}}
+        </div>
+    @endif
 
     <h1 class="mb-3 mt-2">
         @if(str_starts_with($brand['image'],"placeholder"))
@@ -55,7 +41,7 @@
          - Types: {{'count'($types)}}
     </h1>
     <div>
-        <h5 class="mb-3">| Follows: {{$followedBy}} | Likes: {{$likedBy}}
+        <h5 class="mb-3">| Follows: <span id="followcount">{{$followedBy}}</span> | Likes: {{$likedBy}}
             @auth
                 @if(Auth::user()->isModerator())
                     | <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a>

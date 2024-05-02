@@ -2,7 +2,7 @@
 @section('title', 'Messages')
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         @if(Session::has('message_sent'))
             <div class="alert alert-success mb-4" role="alert">
                 Message sent!

@@ -2,7 +2,7 @@
 @section('title', 'Messages')
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Messages</h1>
         <section style="background-color: #0D6EFD;">
             <div class="container py-5">

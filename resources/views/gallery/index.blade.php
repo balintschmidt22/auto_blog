@@ -2,7 +2,7 @@
 @section('title', 'Gallery')
 
 @section('content')
-<div class="container">
+<div class="container bg-light p-4">
     <div class="row">
         <h1>
             @if ($title === "type")

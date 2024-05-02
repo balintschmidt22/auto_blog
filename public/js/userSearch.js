@@ -21,7 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (users.length > 0) {
                     var row = document.createElement("tr");
                     var col = document.createElement("th");
-                    col.innerHTML = "<b>Users found</b> - " + users.length;
+                    col.innerHTML =
+                        "<b class='bg-light'>Users found - " +
+                        users.length +
+                        "</b>";
                     row.appendChild(col);
                     tab.appendChild(row);
                 }
@@ -34,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     col.innerHTML =
                         "<a href='users/" +
                         u["id"] +
-                        "' class='text-decoration-none'>" +
+                        "' class='text-decoration-none bg-light'>" +
                         u["username"] +
                         "</a>";
                     row.appendChild(col);
