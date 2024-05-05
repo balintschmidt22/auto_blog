@@ -173,7 +173,7 @@ class BrandController extends Controller
         return $pdf->download('autoblog_brands.pdf');
     }
 
-    public function exportCSV(Request $request)
+    public function exportCSV()
     {
         $fileName = 'brands.csv';
         $brands = Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);

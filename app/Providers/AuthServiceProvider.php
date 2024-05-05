@@ -25,10 +25,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Gate::define('admin', function ($user) {
-            return $user['role'] === "adm";
+            return ($user['role'] === "adm" && $user['email_verified_at'] !== null);
         });
         Gate::define('moderator', function ($user) {
-            return ($user['role'] === "mod" || $user['role'] === "adm");
+            return (($user['role'] === "mod" && $user['email_verified_at'] !== null) || ($user['role'] === "adm" && $user['email_verified_at'] !== null));
         });
 
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {

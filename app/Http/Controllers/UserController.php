@@ -47,10 +47,6 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        // $idExists = User::where('id', $id)->exists();
-
-        // abort_unless($idExists, 404, 'ID not found!');
-
         $user = User::findOrFail($id);
         $likesGiven = count($user->likedImages()->get()->toArray());
         $imgs = $user->ownImages();
@@ -167,7 +163,7 @@ class UserController extends Controller
         return $pdf->download('autoblog_users.pdf');
     }
 
-    public function exportCSV(Request $request)
+    public function exportCSV()
     {
         $fileName = 'users.csv';
         $users = User::all()->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE);
