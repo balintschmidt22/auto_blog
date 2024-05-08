@@ -50,9 +50,9 @@
     <div class="row">
         <div class="col-md-7 col-sm-12">
             @if(str_starts_with($image['image'],"placeholder"))
-                <a href="{{url($image['image'])}}"><img src="{{url($image['image'])}}" class="img-fluid" style="max-width: 100%; height: auto" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image"></a>
+                <a href="{{url($image['image'])}}" target="_blank"><img src="{{url($image['image'])}}" class="img-fluid" style="max-width: 100%; height: auto" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image"></a>
             @else
-                <a href="{{URL::asset('storage/'.$image['image'])}}"><img src="{{URL::asset('storage/'.$image['image'])}}" class="img-fluid" style="max-width: 100%; height: auto" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image"></a>
+                <a href="{{URL::asset('storage/'.$image['image'])}}" target="_blank"><img src="{{URL::asset('storage/'.$image['image'])}}" class="img-fluid" style="max-width: 100%; height: auto" alt="{{$image['user']['username']}} - {{$image['type']['type']}} image"></a>
             @endif
         </div>
         <div class="col">
