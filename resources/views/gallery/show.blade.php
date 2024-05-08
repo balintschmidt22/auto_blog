@@ -144,7 +144,7 @@
                                 </a>
                                 <div class="d-flex align-items-center mb-3">
                                     <p class="mb-0">
-                                        {{date('Y-m-d h:i:s',strtotime($comment['created_at']))}}
+                                        {{date('Y-m-d H:i:s',strtotime($comment['created_at']))}}
                                         @auth
                                             @if (Auth::user()->isModerator())
                                                 <a href="{{route('comments.delete', ["id"=>$comment['id']])}}" class="btn btn-danger btn-sm">Delete</a>
