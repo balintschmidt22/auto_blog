@@ -12,14 +12,15 @@ class TypeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:admin')->only(['create', 'store']);
+        $this->middleware('can:moderator')->only(['create', 'edit', 'update', 'store']);
+        $this->middleware('can:admin')->only(['delete']);
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -28,7 +29,7 @@ class TypeController extends Controller
     public function create()
     {
         return view('types.create', [
-            'brands' => Brand::all()->sortBy('name')
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
         ]);
     }
 
@@ -65,13 +66,14 @@ class TypeController extends Controller
      */
     public function show(string $id)
     {
-        return view('types.show', [
+        return view('gallery.index', [
             $type = Type::findOrFail($id),
             'type' => $type,
             'brand' => Brand::find($type['brand_id']),
             $imgs = $type->images(),
             'image_count' => count($imgs->get()->toArray()),
             'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+            'title' => 'type'
         ]);
     }
 
@@ -80,7 +82,12 @@ class TypeController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('types.edit', [
+            $type = Type::findOrFail($id),
+            'type' => $type,
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE),
+            'brand' => $type->brand()->first(),
+        ]);
     }
 
     /**
@@ -88,14 +95,61 @@ class TypeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate(
+            [
+                'brand' => ['required', 'string', 'exists:brands,name'],
+                'name' => ['required', 'string', 'unique:types,type,' . $id],
+            ]
+        );
+        $type = Type::findOrFail($id);
+
+        $newBrand = Brand::where('name', '=', $data['brand'])->first();
+
+        if ($type->brand()->first()['name'] !== $data['brand']) {
+            $type->brand()->dissociate();
+            $type->brand()->associate($newBrand['id']);
+            $type->save();
+        }
+
+        if ($type['type'] !== $data['name']) {
+            $type->update(['type' => $data['name']]);
+        }
+
+        if ($type->wasChanged()) {
+            Session::flash('type_edited', $type);
+        }
+
+        return Redirect::route('types.show', [$id]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $type = Type::findOrFail($id);
+        $brandId = $type['brand_id'];
+        $type->delete();
+
+        Session::flash('type_deleted', $type);
+
+        return redirect('brands/' . $brandId);
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->all();
+        $query = $q['params']['search'];
+
+        $types = Type::all();
+        if (trim($query) !== "") {
+            $filteredTypes = $types->filter(function ($item) use ($query) {
+                return str_contains(strtolower($item['type']), strtolower($query)) !== false;
+            })->sortBy('type', SORT_NATURAL | SORT_FLAG_CASE)->values();
+        } else {
+            $filteredTypes = [];
+        }
+
+        return $filteredTypes;
     }
 }

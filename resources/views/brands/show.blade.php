@@ -2,51 +2,70 @@
 @section('title', 'Types')
 
 @section('content')
-<div class="container">
-    @auth
-        @if(Auth::user()->isAdmin())
-            <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a>
-        @endif
-
-        @if(Session::has('fav_added'))
-        <div class="alert alert-success" role="alert">
-            New favourite brand successfully added with name: {{Session::get('fav_added')->name}}
+<div class="container bg-light p-4">
+    @if(Session::has('type_deleted'))
+        <div class="alert alert-warning" role="alert">
+            Type deleted: {{Session::get('type_deleted')->type}}
         </div>
-        @endif
-
-        @if(Session::has('fav_removed'))
-        <div class="alert alert-success" role="alert">
-            Favourite brand successfully removed with name: {{Session::get('fav_removed')->name}}
-        </div>
-        @endif
-    @endauth
-
-    @if(str_starts_with($brand['image'],"https"))
-        <h1 class="mb-4 mt-2"><img src="{{$brand['image']}}" class="img-thumbnail" alt="{{$brand['name']}} image"> {{$brand['name']}} ({{$brand['country']}}) - Types: {{'count'($types)}}</h1>
-    @else
-        <h1 class="mb-4 mt-2"><img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:100px"> {{$brand['name']}} ({{$brand['country']}}) - Types: {{'count'($types)}} </h1>
     @endif
+
+    @if(Session::has('brand_edited'))
+        <div class="alert alert-success" role="alert">
+            Brand edited: {{Session::get('brand_edited')->name}} at {{Session::get('brand_edited')->updated_at}}
+        </div>
+    @endif
+
+    <h1 class="mb-3 mt-2">
+        @if(str_starts_with($brand['image'],"placeholder"))
+            <img src="{{url($brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
+        @else
+            <img src="{{URL::asset('storage/'.$brand['image'])}}" class="img-thumbnail" alt="{{$brand['name']}} image" style="height:110px">
+        @endif
+        {{$brand['name']}} <small>({{$brand['country']}})</small>
+        @guest
+            <td><a href="{{route('login')}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+        @endguest
+        @auth
+            @if (Auth::user()->email_verified_at === null)
+                <td><a href="{{route('verification.notice')}}" class="btn btn-primary"><i class="fa-solid fa-user-plus" style="color: #ffffff;"></i></a></td>
+            @else
+                <td><a class="btn btn-primary followButton" id="{{$brand['id']}}">
+                    @if(in_array($brand['id'], array_column(Auth::user()->followedBrands()->get()->toArray(), 'id')))
+                        <i class="fa-solid fa-user-minus" style="color: #ffffff;" id="unfollowed"></i>
+                    @else
+                        <i class="fa-solid fa-user-plus" style="color: #ffffff;" id="followed"></i>
+                    @endif
+                </a></td>
+            @endif
+        @endauth
+         - Types: {{'count'($types)}}
+    </h1>
+    <div>
+        <h5 class="mb-3">| Follows: <span id="followcount">{{$followedBy}}</span> | Likes: {{$likedBy}}
+            @auth
+                @if(Auth::user()->isModerator())
+                    | <a href="{{route('types.create')}}" class="text-decoration-none mb-4">Add type</a>
+                    | <a href="{{route('brands.edit', [$brand])}}" class="text-decoration-none mb-4 text-warning">Modify brand</a>
+                @endif
+                @if(Auth::user()->isAdmin())
+                    |
+                    <a href="{{route('brands.delete', ['id'=>$brand['id']])}}" class="text-decoration-none mb-4 text-danger">Delete brand</a>
+                @endif
+                |
+            @endauth
+        </h5>
+    </div>
 
     <div>
         <table class="table table-bordered">
             @if (count($types) != 0)
                 <tr class="table-primary">
-                    {{-- @auth
-                        <th>Favourites</th>
-                    @endauth --}}
                     <th>Type</th>
                     <th>Images</th>
                 </tr>
             @endif
         @forelse($types as $type)
             <tr>
-                {{-- @auth
-                    @if(in_array($brand['id'], array_column(Auth::user()->brands()->get()->toArray(), 'id')))
-                        <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Remove</button></a></td>
-                    @else
-                        <td><a href="{{route('favourites.add', ['id'=>$team['id']])}}"><button>Add fav</button></a></td>
-                    @endif
-                @endauth --}}
                 <td><a href="{{route('types.show', ['type'=>$type['id']])}}" class="text-decoration-none">{{$type['type']}}</a></td>
                 <td>{{App\Models\Type::find($type['id'])->images()->count()}}</td>
             </tr>
@@ -60,4 +79,8 @@
         </table>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{asset('js/followBrand.js')}}"></script>
 @endsection

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ImageUploaded;
 use App\Models\Brand;
 use App\Models\Image;
 use App\Models\Type;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
@@ -15,6 +18,7 @@ class GalleryController extends Controller
     public function __construct()
     {
         $this->middleware(["auth", "verified"])->only(['create', 'store', 'gettypes']);
+        $this->middleware(["can:moderator"])->only(['edit', 'update']);
         $this->middleware(["can:admin"])->only(['delete']);
     }
 
@@ -24,12 +28,9 @@ class GalleryController extends Controller
     public function index()
     {
         return view('gallery.index', [
-            // $images = Image::all()->toArray(),
-            // usort($images, function ($a, $b) {
-            //     return $a['created_at'] >= $b['created_at'];
-            // }),
             'images' => Image::with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
-            'image_count' => count(Image::all()->toArray()),
+            //'image_count' => count(Image::all()->toArray()),
+            'title' => 'Gallery'
         ]);
     }
 
@@ -39,7 +40,7 @@ class GalleryController extends Controller
     public function create()
     {
         return view('gallery.create', [
-            'brands' => Brand::all()->sortBy('name'),
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE),
         ]);
     }
 
@@ -70,10 +71,15 @@ class GalleryController extends Controller
             $data['type']
         );
         $image->user()->associate(
-            Auth::user()->id
+            Auth::id()
         );
 
         $image->save();
+
+        $admin = User::where('role', 'adm')->first();
+        if ($admin !== null) {
+            Mail::to($admin)->send(new ImageUploaded($image, $admin));
+        }
 
         Session::flash('image_uploaded', $image);
 
@@ -92,8 +98,9 @@ class GalleryController extends Controller
             'brand' => Brand::find($type->get()->first()['brand_id']),
             'image' => $image,
             $likes = $image->likedBy(),
+            'likes' => $likes->orderBy('username', 'ASC')->get(),
             'like_count' => count($likes->get()->toArray()),
-            'likes' => $likes,
+            'comments' => $image->comments()->orderBy('created_at', 'ASC')->get()->toArray(),
         ]);
     }
 
@@ -102,7 +109,10 @@ class GalleryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('gallery.edit', [
+            'image' => Image::findOrFail($id),
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+        ]);
     }
 
     /**
@@ -110,7 +120,46 @@ class GalleryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate(
+            [
+                'image' => ['file', 'image', 'max: 4096'],
+                'location' => ['required', 'string'],
+                'brand' => ['required', 'string', 'exists:brands,name'],
+                'type' => ['required', 'integer', 'exists:types,id'],
+            ]
+        );
+        $image = Image::findOrFail($id);
+
+        if (!$request->filled('location')) {
+            $data['location'] = $image['location'];
+        }
+        if ($request->filled('brand') && $request->filled('type')) {
+            $image->type()->associate($data['type']);
+        }
+
+        if ($request->hasFile('image')) {
+            if ($image['image'] !== null) {
+                if (str_starts_with($image['image'], "placeholder"))
+                    $image['image'] = "";
+                else {
+                    unlink(public_path() . "/storage/" . $image['image']);
+                }
+            }
+
+            $file = $data['image'];
+
+            $picture = $file->store('images', ['disk' => 'public']);
+
+            $image->image = $picture;
+        }
+
+        $image->update(['location' => $data['location']]);
+
+        if ($image->wasChanged()) {
+            Session::flash('image_edited', $image);
+        }
+
+        return Redirect::route('gallery.show', [$id]);
     }
 
     /**

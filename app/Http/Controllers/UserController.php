@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Message;
 use App\Models\User;
-//use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use PDF;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["can:admin"])->only(['delete']);
+        $this->middleware(["auth", "verified"])->only(['messageBox', 'message', 'addMessage', 'userEdit', 'userUpdate', 'changePassword', 'updatePassword']);
+        $this->middleware(["can:admin"])->only(['delete', 'addModerator', 'removeModerator', 'edit', 'update']);
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $users = User::all()->sortBy('username')->toArray();
-        return view('users.search', compact('users'));
+        $users = User::all()->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE)->toArray();
+        return view('users.index', compact('users'));
     }
 
     /**
@@ -28,7 +31,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -36,7 +39,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -44,16 +47,28 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        // $idExists = User::where('id', $id)->exists();
-
-        // abort_unless($idExists, 404, 'ID not found!');
+        $user = User::findOrFail($id);
+        $likesGiven = count($user->likedImages()->get()->toArray());
+        $imgs = $user->ownImages();
+        $likedBy = 0;
+        $commentsGot = 0;
+        foreach ($imgs->get() as $i) {
+            $likedBy += count($i->likedBy()->get()->toArray());
+            $commentsGot += count($i->comments()->get()->toArray());
+        }
+        $commentedOn = count($user->commentedOn()->get()->toArray());
 
         return view('users.show', [
-            $user = User::findOrFail($id),
             'user' => $user,
-            $imgs = $user->ownImages(),
             'image_count' => count($imgs->get()->toArray()),
-            'images' => $imgs->with(['type', 'user'])->orderBy('created_at', 'DESC')->paginate(12),
+            'images' => $imgs->with(['type', 'user'])->orderBy('updated_at', 'DESC')->paginate(12),
+            'likesGiven' => $likesGiven,
+            'likedBy' => $likedBy,
+            'followedBy' => count($user->followedBy()->get()->toArray()),
+            'follows' => count($user->follows()->get()->toArray()),
+            'followedBrands' => count($user->followedBrands()->get()->toArray()),
+            'commentedOn' => $commentedOn,
+            'commentsGot' => $commentsGot,
         ]);
     }
 
@@ -62,7 +77,9 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('users.edit', [
+            'user' => User::findOrFail($id)
+        ]);
     }
 
     /**
@@ -70,7 +87,40 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate(
+            [
+                'name' => ['required', 'string', 'unique:users,username,' . $id],
+                'country' => ['required', 'string'],
+                'email' => ['required', 'email:rfc,dns', 'unique:users,email,' . $id],
+                'image' => ['file', 'image', 'max: 4096'],
+            ]
+        );
+        $user = User::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            if ($user['profile_picture'] !== null) {
+                if (str_starts_with($user['profile_picture'], "placeholder"))
+                    $user['profile_picture'] = "";
+                else {
+                    unlink(public_path() . "/storage/" . $user['profile_picture']);
+                }
+            }
+
+            $file = $data['image'];
+
+            $image = $file->store('profile_pictures', ['disk' => 'public']);
+
+            $user->profile_picture = $image;
+        }
+
+        $user->update(['username' => $data['name'], 'country' => $data['country'], 'email' => $data['email']]);
+
+        if ($user->wasChanged()) {
+            Session::flash('user_edited', $user);
+        }
+
+
+        return redirect('users/' . $id);
     }
 
     /**
@@ -79,6 +129,9 @@ class UserController extends Controller
     public function delete(string $id)
     {
         $user = User::findOrFail($id);
+        if ($id == 1) {
+            abort(404);
+        }
         $user->delete();
 
         Session::flash('user_deleted', $user);
@@ -91,11 +144,11 @@ class UserController extends Controller
         $q = $request->all();
         $query = $q['params']['search'];
 
-        $users = collect(User::all());
+        $users = User::all();
         if (trim($query) !== "") {
             $filteredUsers = $users->filter(function ($item) use ($query) {
-                return str_contains($item['username'], $query) !== false;
-            });
+                return str_contains(strtolower($item['username']), strtolower($query)) !== false;
+            })->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE)->values();
         } else {
             $filteredUsers = [];
         }
@@ -105,15 +158,15 @@ class UserController extends Controller
 
     public function createPDF()
     {
-        $users = User::get()->sortBy('username');
-        $pdf = PDF::loadView('users.pdf', compact('users'));
+        $users = User::get()->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE);
+        $pdf = \Barryvdh\DomPDF\Facade\PDF::loadView('users.pdf', compact('users'));
         return $pdf->download('autoblog_users.pdf');
     }
 
-    public function exportCSV(Request $request)
+    public function exportCSV()
     {
         $fileName = 'users.csv';
-        $users = User::all()->sortBy('username');
+        $users = User::all()->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE);
 
         $headers = array(
             "Content-type" => "text/csv",
@@ -123,7 +176,7 @@ class UserController extends Controller
             "Expires" => "0"
         );
 
-        $columns = array('Username', 'Email', 'Country', 'Images', 'Registered');
+        $columns = array('Username', 'Email', 'Country', 'Images', 'Last Modified');
 
         $callback = function () use ($users, $columns) {
             $file = fopen('php://output', 'w');
@@ -134,14 +187,223 @@ class UserController extends Controller
                 $row['Email'] = $user->email;
                 $row['Country'] = $user->country;
                 $row['Images'] = $user->ownImages()->count();
-                $row['Registered'] = $user->created_at;
+                $row['Last Modified'] = $user->updated_at;
 
-                fputcsv($file, array($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Registered']));
+                fputcsv($file, array ($row['Username'], $row['Email'], $row['Country'], $row['Images'], $row['Last Modified']));
             }
 
             fclose($file);
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function messageBox()
+    {
+        $user = Auth::user();
+
+        $recIds = $user->messagesReceived()->pluck('from_id')->toArray();
+        $sentIds = $user->messagesSent()->pluck('to_id')->toArray();
+
+        $ids = array_values(array_unique(array_merge($recIds, $sentIds)));
+
+        $received = collect();
+        $sent = collect();
+
+        foreach ($ids as $i) {
+            $r = $user->messagesReceived()->where('from_id', '=', $i)->orderBy('updated_at', 'desc')->first();
+            $s = $user->messagesSent()->where('to_id', '=', $i)->orderBy('updated_at', 'desc')->first();
+            if ($r !== null && $s === null) {
+                $received->push($r);
+            } else if ($r === null && $s !== null) {
+                $sent->push($s);
+            } else if ($r !== null && $s !== null) {
+                if ($r['updated_at'] > $s['updated_at']) {
+                    $received->push($r);
+                } else {
+                    $sent->push($s);
+                }
+            }
+        }
+
+        return view('messages.box', [
+            'received' => $received->sortByDesc('updated_at'),
+            'sent' => $sent->sortByDesc('updated_at'),
+        ]);
+    }
+
+    public function message(string $id)
+    {
+        $user = Auth::user();
+        $otherUser = User::findOrFail($id);
+
+        if ($user['id'] == $id) {
+            abort(404);
+        }
+
+        $messagesSent = $user->messagesSent()->get()->where('to_id', '=', $id);
+        $messagesReceived = $user->messagesReceived()->get()->where('from_id', '=', $id);
+
+        $messages = $messagesSent->concat($messagesReceived)->values();
+
+        return view('messages.index', [
+            'messages' => $messages->sortByDesc('updated_at'),
+            'otherUser' => $otherUser,
+        ]);
+    }
+
+    public function addMessage(Request $request, string $id)
+    {
+        $data = $request->validate(
+            [
+                'message' => ['required', 'string', 'min:1', 'max: 2000'],
+            ]
+        );
+
+        $user = Auth::id();
+
+        if ($user == $id) {
+            abort(404);
+        }
+
+        $message = new Message;
+        $message->message = Crypt::encrypt($data['message']);
+
+        $message->from()->associate(
+            $user
+        );
+
+        $message->to()->associate(
+            $id
+        );
+
+        $message->save();
+
+        Session::flash('message_sent', $message);
+
+        return redirect()->back();
+    }
+
+    public function addModerator(string $id)
+    {
+        $user = User::findOrFail($id);
+
+        if (!$user->isModerator() && !$user->isAdmin()) {
+            $user['role'] = "mod";
+            $user->save();
+
+            Session::flash('moderator_added', $user);
+        }
+
+        return redirect('users/' . $user['id']);
+    }
+
+    public function removeModerator(string $id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->isModerator() && !$user->isAdmin()) {
+            $user['role'] = "usr";
+            $user->save();
+
+            Session::flash('moderator_removed', $user);
+        }
+
+        return redirect('users/' . $user['id']);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function userEdit(string $id)
+    {
+        if (Auth::id() != $id) {
+            abort(403);
+        }
+        return view('users.useredit', [
+            'user' => User::findOrFail($id)
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function userUpdate(Request $request, string $id)
+    {
+        if (Auth::id() != $id) {
+            abort(403);
+        }
+        $data = $request->validate(
+            [
+                'country' => ['required', 'string'],
+                'image' => ['file', 'image', 'max: 4096'],
+            ]
+        );
+        $user = User::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            if ($user['profile_picture'] !== null) {
+                if (str_starts_with($user['profile_picture'], "placeholder"))
+                    $user['profile_picture'] = "";
+                else {
+                    unlink(public_path() . "/storage/" . $user['profile_picture']);
+                }
+            }
+
+            $file = $data['image'];
+
+            $image = $file->store('profile_pictures', ['disk' => 'public']);
+
+            $user->profile_picture = $image;
+        }
+
+        $user->update(['country' => $data['country']]);
+
+        if ($user->wasChanged()) {
+            Session::flash('user_edited_by_themself', $user);
+        }
+
+
+        return redirect('users/' . $id);
+    }
+
+    public function changePassword(string $id)
+    {
+        if (Auth::id() != $id) {
+            abort(403);
+        }
+        return view('users.password');
+    }
+
+    public function updatePassword(Request $request, string $id)
+    {
+        if (Auth::id() != $id) {
+            abort(403);
+        }
+
+        $data = $request->validate(
+            [
+                'old_password' => ['required'],
+                'new_password' => [
+                    'required',
+                    'between:8,255',
+                    'confirmed'
+                ]
+            ]
+        );
+
+        $user = User::findOrFail($id);
+
+        if (!Hash::check($data['old_password'], Auth::user()->password)) {
+            Session::flash('password_error');
+
+            return redirect()->back();
+        }
+
+        $user->update(['password' => Hash::make($data['new_password'])]);
+
+        Session::flash('password_changed');
+
+        return redirect()->back();
     }
 }

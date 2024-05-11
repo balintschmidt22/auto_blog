@@ -23,7 +23,7 @@ class BrandFactory extends Factory
         return [
             'name' => $name,
             'country' => fake()->country(),
-            'image' => fake()->imageUrl(100, 100, NULL, FALSE, $name, FALSE),
+            'image' => 'placeholders/Logo_Placeholder.png'
         ];
     }
 }

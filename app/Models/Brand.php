@@ -19,4 +19,9 @@ class Brand extends Model
     {
         return $this->hasMany(Type::class, 'brand_id');
     }
+
+    public function followedBy()
+    {
+        return $this->belongsToMany(User::class, 'brand_user')->withTimestamps();
+    }
 }

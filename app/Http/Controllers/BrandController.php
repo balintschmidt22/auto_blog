@@ -6,12 +6,14 @@ use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BrandController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:admin')->only(['create', 'store']);
+        $this->middleware('can:moderator')->only(['create', 'edit', 'update', 'store']);
+        $this->middleware('can:admin')->only(['delete']);
     }
     /**
      * Display a listing of the resource.
@@ -19,7 +21,7 @@ class BrandController extends Controller
     public function index()
     {
         return view('brands.index', [
-            'brands' => Brand::all()->sortBy('name')->toArray(),
+            'brands' => Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->toArray(),
         ]);
     }
 
@@ -67,10 +69,20 @@ class BrandController extends Controller
      */
     public function show(string $id)
     {
+        $brand = Brand::findOrFail($id);
+        $likedBy = 0;
+        foreach ($brand->types()->get() as $t) {
+            foreach ($t->images()->get() as $i) {
+                $likedBy += count($i->likedBy()->get()->toArray());
+            }
+            ;
+        }
+
         return view('brands.show', [
-            $brand = Brand::findOrFail($id),
             'brand' => $brand,
-            'types' => $brand->types()->get()->toArray()
+            'types' => $brand->types()->get()->sortBy('type', SORT_NATURAL | SORT_FLAG_CASE)->toArray(),
+            'followedBy' => count($brand->followedBy()->get()),
+            'likedBy' => $likedBy,
         ]);
     }
 
@@ -79,7 +91,9 @@ class BrandController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('brands.edit', [
+            'brand' => Brand::findOrFail($id)
+        ]);
     }
 
     /**
@@ -87,14 +101,108 @@ class BrandController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->validate(
+            [
+                'name' => ['required', 'string', 'unique:brands,name,' . $id],
+                'country' => ['required', 'string'],
+                'image' => ['file', 'image', 'max: 4096'],
+            ]
+        );
+        $brand = Brand::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            if ($brand['image'] !== null) {
+                if (str_starts_with($brand['image'], "placeholder"))
+                    $brand['image'] = "";
+                else {
+                    unlink(public_path() . "/storage/" . $brand['image']);
+                }
+            }
+
+            $file = $data['image'];
+
+            $image = $file->store('images', ['disk' => 'public']);
+
+            $brand->image = $image;
+        }
+
+        $brand->update(['name' => $data['name'], 'country' => $data['country']]);
+
+        if ($brand->wasChanged()) {
+            Session::flash('brand_edited', $brand);
+        }
+
+
+        return redirect('brands/' . $id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $brand = Brand::findOrFail($id);
+        $brand->delete();
+
+        Session::flash('brand_deleted', $brand);
+
+        return redirect('brands');
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->all();
+        $query = $q['params']['search'];
+
+        $brands = Brand::all();
+        if (trim($query) !== "") {
+            $filteredBrands = $brands->filter(function ($item) use ($query) {
+                return str_contains(strtolower($item['name']), strtolower($query)) !== false;
+            })->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->values();
+        } else {
+            $filteredBrands = [];
+        }
+
+        return $filteredBrands;
+    }
+
+    public function createPDF()
+    {
+        $brands = Brand::get()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
+        $pdf = PDF::loadView('brands.pdf', compact('brands'));
+        return $pdf->download('autoblog_brands.pdf');
+    }
+
+    public function exportCSV()
+    {
+        $fileName = 'brands.csv';
+        $brands = Brand::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
+
+        $headers = array(
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        );
+
+        $columns = array('Name', 'Country', 'Last_Modified');
+
+        $callback = function () use ($brands, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($brands as $brand) {
+                $row['Name'] = $brand->name;
+                $row['Country'] = $brand->country;
+                $row['Last_Modified'] = $brand->updated_at;
+
+                fputcsv($file, array ($row['Name'], $row['Country'], $row['Last_Modified']));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Comment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+
+class CommentController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified'])->only('addComment');
+        $this->middleware(["can:moderator"])->only('delete');
+    }
+
+    /**
+     * Save the new comment.
+     */
+    public function addComment(Request $request, string $id)
+    {
+        $data = $request->validate(
+            [
+                'comment' => ['required', 'string', 'min:1', 'max: 2000'],
+            ]
+        );
+
+        $user = Auth::id();
+
+        $comment = new Comment;
+        $comment->comment = $data['comment'];
+
+        $comment->user()->associate(
+            $user
+        );
+
+        $comment->image()->associate(
+            $id
+        );
+
+        $comment->save();
+
+        Session::flash('comment_added', $comment);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function delete(string $id)
+    {
+        $comment = Comment::findOrFail($id);
+        $comment->delete();
+
+        Session::flash('comment_deleted', $comment);
+
+        return redirect()->back();
+    }
+}

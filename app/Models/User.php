@@ -24,7 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'country',
-        'is_admin',
+        'profile_picture',
+        'role',
     ];
 
     /**
@@ -58,6 +59,41 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdmin()
     {
-        return $this->is_admin === 1;
+        return $this->role === "adm";
+    }
+
+    public function isModerator()
+    {
+        return($this->role === "adm" || $this->role === "mod");
+    }
+
+    public function commentedOn()
+    {
+        return $this->hasMany(Comment::class, 'user_id');
+    }
+
+    public function follows()
+    {
+        return $this->belongsToMany(User::class, 'user_user', 'user_id', 'follows')->withTimestamps();
+    }
+
+    public function followedBy()
+    {
+        return $this->belongsToMany(User::class, 'user_user', 'follows', 'user_id')->withTimestamps();
+    }
+
+    public function followedBrands()
+    {
+        return $this->belongsToMany(Brand::class, 'brand_user')->withTimestamps();
+    }
+
+    public function messagesSent()
+    {
+        return $this->hasMany(Message::class, 'from_id');
+    }
+
+    public function messagesReceived()
+    {
+        return $this->hasMany(Message::class, 'to_id');
     }
 }

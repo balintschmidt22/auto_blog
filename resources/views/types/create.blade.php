@@ -2,7 +2,7 @@
 @section('title', 'Add type')
 
 @section('content')
-    <div class="container">
+    <div class="container bg-light p-4">
         <h1 class="mb-4">Add a new type</h1>
 
         @if(Session::has('type_added'))
@@ -11,13 +11,11 @@
             </div>
         @endif
 
-        {{-- TODO: action, method, enctype --}}
         <form action="{{ route('types.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            {{-- TODO: Validation --}}
             <div class="form-group row mb-3">
-                <label for="brand" class="col-sm-2 col-form-label"><b>Brand</b></label>
+                <label for="brand" class="col-sm-2 col-form-label"><b>Brand*</b></label>
                 <div class="col-sm-8">
                     <select name="brand" id="brand" class="form-control @error('brand') is-invalid @enderror">
                         <option value="{{ old('brand') }}">{{old('brand')}}</option>
@@ -40,7 +38,7 @@
             </div>
 
             <div class="form-group row mb-3">
-                <label for="name" class="col-sm-2 col-form-label"><b>Name</b></label>
+                <label for="name" class="col-sm-2 col-form-label"><b>Name*</b></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}">
                     @error('name')
