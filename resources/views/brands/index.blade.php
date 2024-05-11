@@ -37,9 +37,9 @@
             @forelse($brands as $brand)
                 <tr>
                     @if(str_starts_with($brand['image'],"placeholder"))
-                        <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px"></td>
+                        <td><img src="{{$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px" id="logo"></td>
                     @else
-                        <td><img src="{{"storage/".$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px; max-width: 160px;"></td>
+                        <td><img src="{{"storage/".$brand['image']}}" alt="{{$brand['name']}} image" style="height:100px; max-width: 160px;" id="logo"></td>
                     @endif
                     <td><a href="{{route('brands.show', ['brand'=>$brand['id']])}}" class="text-decoration-none">{{$brand['name']}}</a></td>
                     <td>{{$brand['country']}}</td>

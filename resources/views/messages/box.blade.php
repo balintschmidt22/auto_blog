@@ -15,7 +15,7 @@
                         <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-md-0">
                           <div class="p-3">
                             <h2>Received - {{count($received)}}</h2>
-                            <div class="p-3 overflow-auto box" data-mdb-perfect-scrollbar="true">
+                            <div class="p-3 overflow-auto box" data-mdb-perfect-scrollbar="true" id="messages">
                               <ul class="list-unstyled mb-0">
                                 @forelse ($received as $r)
                                     <li class="p-2 border-bottom">
@@ -53,7 +53,7 @@
                         <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-md-0">
                             <div class="p-3">
                                 <h2>Sent - {{count($sent)}}</h2>
-                                <div class="p-3 overflow-auto box" data-mdb-perfect-scrollbar="true">
+                                <div class="p-3 overflow-auto box" data-mdb-perfect-scrollbar="true" id="messages">
                                   <ul class="list-unstyled mb-0">
                                     @forelse ($sent as $s)
                                         <li class="p-2 border-bottom">

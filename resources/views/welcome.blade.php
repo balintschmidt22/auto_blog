@@ -4,11 +4,6 @@
 @section('content')
 
 <div class="container w-50">
-    {{-- @if (Session::has('email_verified'))
-        <div class="alert alert-success" role="alert">
-            Email verified successfully!
-        </div>
-    @endif --}}
     <div class="d-flex justify-content-center align-items-center">
         <img src="{{url('placeholders/autoblog_logo.png')}}" alt="AutoBlog Logo" class="img-fluid mt-3">
     </div>

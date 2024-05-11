@@ -101,3 +101,34 @@ th {
     height: 30px;
     white-space: nowrap;
 }
+
+@media print {
+    header,
+    footer,
+    aside,
+    nav,
+    form,
+    .navbar,
+    #pagination,
+    #foundUsers,
+    #foundBrands,
+    #foundTypes {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+    }
+
+    #logo {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    #messages {
+        display: block;
+        width: auto;
+        height: auto;
+        overflow: visible !important;
+    }
+}

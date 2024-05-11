@@ -1,35 +1,3 @@
-{{-- <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <style>
-        /* Add custom classes and styles that you want inlined here */
-        </style>
-    </head>
-    <body class="bg-light">
-        <div class="container">
-            <div class="card my-10">
-                <div class="card-body">
-                    <h1 class="h3 mb-2">Hi {{$user['username']}}</h1>
-                    <h5 class="text-teal-700"></h5>
-                    <hr>
-                    <div class="space-y-3">
-                        <p class="text-gray-700">
-                            An image has been uploaded by {{App\Models\User::find($image['user_id'])['username']}} at {{$image['created_at']}}
-                        </p>
-                        <p>
-                            {{$image->brand()['name']}} {{$image->type()->get()->first()['type']}}
-                        </p>
-                        <p>
-                            <img src="{{ $message->embed(public_path() . "/storage/" . $image['image']) }}" style="width: 200px; border: solid 1px black;">
-                        </p>
-                    </div>
-                    <hr>
-                    <a class="btn btn-primary" href="http://localhost:8000/gallery/{{$image['id']}}" target="_blank">View the new post</a>
-                </div>
-            </div>
-        </div>
-    </body>
-</html> --}}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
   <head>

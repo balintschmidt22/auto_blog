@@ -138,7 +138,7 @@
             </table>
         </div>
 
-        <div class="d-flex flex-row justify-content-center">
+        <div class="d-flex flex-row justify-content-center" id="pagination">
             {{ $images->links() }}
         </div>
 
@@ -214,7 +214,7 @@
                     @endforelse
                 </div>
 
-                <div class="d-flex flex-row justify-content-center mt-3">
+                <div class="d-flex flex-row justify-content-center mt-3" id="pagination">
                     {{ $images->links() }}
                 </div>
 
