@@ -1,19 +1,6 @@
 :: Composer-es csomagok telepítése mindenféle interakció és konzolra írás nélkül
 call composer install --no-interaction --quiet
 
-:: Megfelelő .env fájl előállítása
-@echo off
-(
-  echo APP_NAME="AutoBlog"
-  echo APP_ENV=local
-  echo APP_KEY=
-  echo APP_DEBUG=true
-  echo APP_URL=http://localhost
-  echo.
-  echo DB_CONNECTION=sqlite
-) > .env
-@echo on
-
 :: Encryption key kigenerálása
 call php artisan key:generate
 
